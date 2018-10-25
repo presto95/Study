@@ -1,3 +1,5 @@
+[Human Interface Guidelines - iOS - Themes](https://developer.apple.com/design/human-interface-guidelines/ios/overview/themes/)
+
 # iOS 디자인 테마*iOS Design Themes*
 
 당신은 애플리케이션 디자이너로서, 앱 스토어 순위의 상단에 비상한 제품을 위치시킬 기회를 가지고 있습니다. 그렇게 하기 위해, 품질과 기능에 대한 높은 기대를 충족시킬 필요가 있을 것입니다.
