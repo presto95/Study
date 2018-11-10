@@ -21,7 +21,7 @@ option을 누른 채로 마우스 휠을 사용하여 스토리보드 확대/축
 
 `func flipCard(withEmoji emoji: String, on button: UIButton)`
 
-``flipCard(withEmoji: "", on: sender)` : flip card with emoji on sender
+`flipCard(withEmoji: "", on: sender)` : flip card with emoji on sender
 
 ### 이벤트 메소드의 첫 전달인자 레이블이 _인 이유
 
