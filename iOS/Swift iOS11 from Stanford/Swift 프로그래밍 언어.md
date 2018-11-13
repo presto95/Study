@@ -75,6 +75,7 @@ enum Optional<T> {
 ### 구조체
 
 - 값 타입 : 쓰기 시 복사*copy on write*
+  - Swift는 변경사항이 있을 때만 복제함
 - 함수형 프로그래밍 디자인 지원
 - `let`과 `var` 선언에 따라 가변성*mutability* 결정됨
 - 프로토콜을 통한 기능 상속
@@ -86,5 +87,144 @@ enum Optional<T> {
 
 ### 프로토콜
 
-- 기능을 정의하는 타입
+- 기능을 정의하는 타입. 변수와 함수의 리스트
 - 기능에 대하여 다중 상속의 효과를 낼 수 있음
+- API에서 원하는 것을 불러오는 방식.
+- API를 매우 유연하고 더 잘 이해할 수 있게 함. 
+- View -> Controller 통신(delegation)과 같은 블라인드 커뮤니케이션에서 유용하게 사용됨
+  - View는 일반적, Controller는 구체적
+- 각각의 타입에 어떠한 기능을 공유할 때 활용됨 (String, Array 등은 모두 Collection)
+- 다중 상속 가능
+  - 저장 공간을 가지고 있지 않고, 단지 기능의 정의일 뿐. 기능의 상속
+- 선택적으로 구현 가능한 프로토콜을 정의하려면 프로토콜은 @objc 속성을 부여받고, NSObject 객체를 상속해야 함
+- 프로퍼티를 프로토콜 내에 정의할 때 읽기 전용인지, 읽고 쓰기가 모두 가능한지 정의해야 함
+  - `var property: Int { get }`
+  - `var property: Int { get set }`
+- 클래스만 채택 가능한 프로토콜이라면 프로토콜을 정의할 때 `class`를 명시해 주어야 함
+- 프로토콜에 이니셜라이저를 정의할 때, 그것을 채택하는 타입이 이니셜라이저를 구현할 때 `required init`으로 구현해주어야 함
+- 프로토콜 초기 구현 : 익스텐션을 사용하여 프로토콜을 구현할 수 있음
+- 프로토콜은 타입! 다른 클래스나 구조체, 열거형의 타입처럼 동일하게 사용 가능
+- `&` 연산자를 사용하여 여러 개의 프로토콜을 조합할 수 있음
+
+**Delegation**
+
+- 프로토콜의 활용. View와 Controller 간 '숨겨진 커뮤니케이션'을 구현하는 방법
+  1. View는 delegation 프로토콜을 정의함 (View를 위해 Controller가 하기를 원하는 것에 대해)
+  2. View의 API는 delegation 프로토콜 타입을 갖는 weak delegate 프로퍼티를 가짐
+  3. View는 그것 자체가 가지거나 컨트롤할 수 없는 것들을 얻거나 하기 위해 delegate 프로퍼티를 사용함
+  4. Controller이 프로토콜을 구현한다고 선언함
+  5. Controller은 자기 자신을 그 delegate 프로퍼티에 할당함
+     - Controller는 프로토콜을 구현한다고 하였으므로, 프로토콜 타입인 delegate에 Controller를 대입하는 것은 문제가 없다.
+  6. Controller는 프로토콜을 구현함
+  7. **View is hooked up to the Controller**
+- 때때로 클로저가 더 좋은 선택지일 수 있음
+
+**딕셔너리의 키**
+
+- 딕셔너리의 키는 유일해야 하므로 Hashable 프로토콜을 준수해야 함
+  - `Dictionary<Key: Hashable, Value>`
+- Hashable 프로토콜은 Equatable 프로토콜을 준수함
+  - hashValue 프로퍼티를 구현해주어야 함
+- Equatable 프로토콜은 어떤 타입을 비교 가능하게 할 때 준수해야 함
+  - == 연산자를 구현해주어야 함
+
+### 다중 상속
+
+- CountableRange : 셀 수 있는 범위 / Sequence : 요소를 순회할 수 있음 (for-in 구문 사용 가능) / Collection : 요소들의 모음. 서브스크립트 / 인덱스로 접근 가능
+- 위의 프로토콜을 Array, Set 등 많은 타입이 준수하고 있음
+- 프로토콜은 메소드에 대한 기본 구현을 제공할 수 있음 : 익스텐션에서 구현함 : 프로토콜 초기 구현
+  - 한번 구현하여 다른 타입에서 모두 이 구현을 사용할 수 있음
+
+### 함수형 프로그래밍
+
+- 자료 구조의 저장이 아닌, 행동에 집중함
+
+### String
+
+**문자열 색인하기**
+
+- String은 유니코드로 만들어져 있음. Character는 여러 유니코드로 구성되어 있음
+- 그러므로 String을 정수로 색인할 수 없다.
+  - String을 구성하는 유니코드의 수와 Character의 수는 같지 않다.
+- 특수한 타입 `String.Index`로 문자열을 색인한다.
+  - `startIndex` : String의 시작 인덱스 반환. 빈 문자열이 아닌 것에서의 첫 번째 문자의 위치
+  - `endIndex` : String의 끝 인덱스 반환. 문자열의 끝 다음 위치. 유효한 마지막 서브스크립트 인자보다 하나 더 큰 위치 반환
+  - `Range<String.Index>` 타입으로 문자열을 서브스크립트 할 수 있음
+    - `[startIndex..<endIndex]` 범위가 문자열의 처음부터 끝을 나타냄
+    - `[startIndex...endIndex]`는 인덱스 범위를 넘어가 런타임 에러가 발생할 것
+  - 익스텐션을 잘 정의하여 정수로 색인할 수 있게 할 수 있을 것. 그 전에 String이 유니코드로 구성되어 있고, Character와 달라 정수로 색인이 되지 않음을 이해할 필요가 있다.
+
+```swift
+// 대충 요런 식으로 하면 정수 서브스크립트도 가능한 모양이다.
+// 나중에는 인터넷에서 찾아서 사용하면 될듯
+// 아무튼 String이 유니코드로 구성되어 있고, 이것에서 오는 문제점을 이해하자.
+extension String {
+    subscript(index: Int) -> String {
+        return String(self[self.index(self.startIndex, offsetBy: index)])
+    }
+    subscript(range: Range<Int>) -> String {
+        var result = ""
+        for index in range {
+            result += self[index]
+        }
+        return result
+    }
+}
+```
+
+### NSAttributedString
+
+- 문자열의 모든 문자가 각각 딕셔너리를 가지고 있는 문자열. 딕셔너리의 여러 키와 값들이 그 문자를 어떻게 화면에 나타낼지 결정함
+- 각각의 문자가 속성을 가진 문자열.
+- Objective-C에서 가져온 API이므로 사용에 주의하기
+- UILabel, UIButton 등의 텍스트 레이블에 적용 가능
+- NSAttributedString.Key
+  - strokeColor : 경계선 색상
+  - foregroundColor : 글자 색상
+  - strokeWidth : 경계선 두께. 양수일 때 윤곽선
+
+### NS 접두사가 붙은 클래스들
+
+- Objective-C로 작성된 오래된 클래스
+- NSAttributedString은 String과 같지 않다. 
+  - String은 Swift로 작성된 구조체
+  - NSAttributedString은 Objective-C로 작성된 클래스
+    - 값 타입이 아니기 때문에 var를 사용하여 변경 가능하도록*mutable* 할 수 없음
+      - NSMutableAttributedString 클래스를 사용 (NSAttributedString의 서브클래스)
+- NSString과 String은 다른 인코딩을 사용하여 String에서 행한 것이 NSString에서는 같은 행동을 하지 않을 수 있음
+- Objective-C에서 작성된 것과 Swift의 타입과 자동으로 이어주는 것이 있음
+  - 특이한 유니코드 문자 (강세표가 붙은 알파벳, 이모지 등)를 사용하는 문자열을 다룰 때는 각각의 타입이 다른 동작을 행할 수 있음
+
+---
+
+IBOutlet에도 프로퍼티 감시자를 둘 수 있음
+
+프로터피 감시자는 저장 프로퍼티의 저장 공간이 만들어질 때 (초기화될 때) 호출되지 않음
+
+---
+
+## 함수 타입
+
+**클로저와 함수의 차이점**
+
+- 클로저는 인라인 함수. 이름 없는 함수
+- 주변의 값을 얻을 수 있음 : Capture
+- 타입 추론 등을 활용하여 코드의 양을 줄일 수 있음
+
+프로퍼티 초기화시 클로저를 사용할 수 있음. lazy와 함께 사용하여 유용하게 활용할 수 있음
+
+```swift
+lazy var label: UILabel = {
+    let label = UILabel()
+    label.font = UIFont.systemFont(24, weight: .bold)
+    label.text = "asdf"
+}()
+```
+
+### 캡쳐링
+
+주변 변수를 포착함
+
+- 클로저가 주변에 있는 변수를 캡쳐한다면, 함께 힙에 들어감.
+- 메모리 사이클을 유발할 수 있음
+  - 클로저가 클래스 (ex. `self`)를 캡쳐한다면, 클로저가 그 클래스를 힙 안에 넣음. 그 클래스가 클로저를 힙 안에 넣음.
