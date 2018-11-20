@@ -7,6 +7,10 @@
 - `step over` : 한줄 한줄 실행해 나가기
 - `step into` : 메소드가 있으면 타고 들어가기
 
+[참고링크1](http://minsone.github.io/ios/mac/xcode-lldb-debugging-with-xcode-and-lldb)
+
+[참고링크2](http://minsone.github.io/ios/mac/xcode-lldb-debugging-with-xcode-lldb-and-chisel)
+
 # Xcode 프로젝트 파일이 담고 있는 것
 
 ## Target - Build Settings vs. Target - Build Phases
