@@ -1268,7 +1268,7 @@ class _SampleAppPageState extends State<SampleAppPage> {
 
 iOS에서는 `ScrollView`에 뷰를 감싸 사용자가 필요하다면 컨텐츠를 스크롤할 수 있게 허용합니다.
 
-Flutter에서 이러한 것을 하는 가장 쉬운 방법은 `ListView` 위젯을 사용하는 것입니다. 이것은 `ScrollView`와 iOS의 `TableView` 모두인 것처럼 행동하며 수직 포맷으로 위젯을 배치할 수 있습니다.
+Flutter에서 이러한 것을 하는 가장 쉬운 방법은 `ListView` 위젯을 사용하는 것입니다. 위젯을 수직 포맷으로 배치할 수 있기 때문에 `ScrollView` 및 iOS의 `TableView` 모두의 역할을 합니다.
 
 ```dart
 @override
@@ -1290,44 +1290,319 @@ Widget build(BuildContext context) {
 
 ### Flutter에서 어떻게 위젯에 클릭 리스터를 추가합니까?
 
+iOS에서는 `GestureRecognizer`를 뷰에 부착하여 클릭 이벤트를 다룹니다. Flutter에서는 터치 리스너를 추가하는 두 가지 방법이 있습니다.
+
+1. 위젯이 이벤트 탐지를 지원한다면 그것에 함수를 넘기고 함수 내에서 이벤트를 처리하십시오. 예를 들어 `RaisedButton` 위젯은 `onPressed` 매개변수를 가지고 있습니다.
+```dart
+@override
+Widget build(BuildContext context) {
+  return RaisedButton(
+    onPressed: () {
+      print("click");
+    },
+    child: Text("Button"),
+  );
+}
+```
+
+2. 위젯이 이벤트 탐지를 지원하지 않는다면 위젯을 GestureDetector 내에 감싸고 `onTap` 매개변수에 함수를 넘기십시오.
+```dart
+class SampleApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: GestureDetector(
+          child: FlutterLogo(
+            size: 200.0,
+          ),
+          onTap: () {
+            print("tap");
+          },
+        ),
+      ),
+    );
+  }
+}
+```
+
 ### 어떻게 위젯에서 다른 제스처를 다룹니까?
+
+`GestureDetector`를 사용하여 다음과 같은 많은 제스처를 수신할 수 있습니다.
+
+- 탭
+  - `onTapDown` : 탭을 유발할 수 있는 포인터가 화면의 특정 위치에 접촉되었습니다.
+  - `onTapUp` : 탭을 유발하는 포인터가 화면의 특정 위치에 접촉하는 것을 멈추었습니다.
+  - `onTap` : 탭이 발생하였습니다.
+  - `onTapCancel` : 이전에 `onTapDown`을 유발한 포인터가 탭을 유발하지 않습니다.
+- 더블 탭
+  - `onDoubleTap` : 사용자가 연속적으로 빠르게 화면의 같은 위치를 두 번 탭했습니다.
+- 길게 누르기
+  - `onLongPress` : 포인터가 오랜 시간 동안 동일한 위치에서 화면과 접촉한 채로 남아 있습니다.
+- 수직 드래그
+  - `onVerticalDragStart` : 포인터가 화면과 접촉하였고 수직적으로 움직이기 시작할 것입니다.
+  - `onVerticalDragUpdate` : 화면과 접촉 상태인 포인터가 수직 방향으로 더 움직였습니다.
+  - `onVerticalDragEnd` : 이전에 화면과 접촉 상태에 있고 수직적으로 움직이고 있는 포인터가 더이상 화면과 접촉하지 않고, 화면과 접촉하는 것을 멈추었을 때 특정 속도로 움직이고 있었습니다.
+- 수평 드래그
+  - `onHorizontalDragStart` : 포인터가 화면과 접촉하였고 수평적으로 움직이기 시작할 것입니다.
+  - `onHorizontalDragUpdate` : 화면과 접촉 상태인 포인터가 수평 방향으로 더 움직였습니다.
+  - `onHorizontalDragEnd` : 이전에 화면과 접촉 상태에 있고 수평적으로 움직이고 있는 포인터가 더이상 화면과 접촉하지 않습니다.
+
+다음의 예시는 더블 탭으로 Flutter 로고를 회전시키는 `GestureDetector`를 나타냅니다.
+
+```dart
+AnimationController controller;
+CurvedAnimation curve;
+
+@override
+void initState() {
+  controller = AnimationController(duration: const Duration(milliseconds: 2000), vsync: this);
+  curve = CurvedAnimation(parent: controller, curve: Curves.easeIn);
+}
+
+class SampleApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: GestureDetector(
+          child: RotationTransition(
+            turns: curve,
+            child: FlutterLogo(
+              size: 200.0,
+            )),
+          onDoubleTap: () {
+            if (controller.isCompleted) {
+              controller.reverse();
+            } else {
+              controller.forward();
+            }
+          },
+        ),
+      ),
+    );
+  }
+}
+```
 
 ## 테마 및 텍스트*Theming and text*
 
 ### 어떻게 앱의 테마를 지정합니까?
 
+기본적으로 Flutter는 머터리얼 디자인의 아름다운 구현이 포함되어 있습니다. 이것은 당신이 일반적으로 수행하는 많은 스타일링 및 테마 요구를 처리합니다.
+
+앱에서 머터리얼 컴포넌트의 완전한 이점을 취하기 위해 애플리케이션의 진입점에 최상위 레벨 위젯인 MaterialApp을 선언하십시오. MaterialApp은 머터리얼 디자인을 구현하는 애플리케이션을 위해 흔히 요구되는 많은 위젯을 감싸는 편리한 위젯입니다. 그것은 머터리얼에 특정한 기능을 더하여 WidgetsApp을 기반으로 합니다.
+
+하지만 Flutter는 어떠한 디자인 언어를 구현하는데 충분히 유연하고 표현적입니다. iOS에서는 [Human Interface Guidelines](https://developer.apple.com/ios/human-interface-guidelines/overview/themes/)를 고수하는 인터페이스를 만들기 위해 [쿠퍼티노 라이브러리](https://docs.flutter.io/flutter/cupertino/cupertino-library.html)를 사용할 수 있습니다. [쿠퍼티노 위젯 갤러리](https://flutter.io/docs/development/ui/widgets/cupertino)에서 이러한 위젯의 전체 구성을 확인하십시오.
+
+또한 앱 위젯으로 `WidgetApp`을 사용할 수 있는데, 이것은 몇몇 같은 기능을 제공하지만 `MaterialApp`만큼 풍부하지는 않습니다.
+
+어떠한 자식 컴포넌트의 색상과 스타일을 커스터마이징하기 위해 `MaterialApp` 위젯에 `ThemeData` 오브젝트를 넘기십시오. 예를 들어 아래의 코드에서 기본 견본*primary swatch*는 파란색으로 설정되고 텍스트 선택 색상은 빨간색으로 설정됩니다.
+
+```dart
+class SampleApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Sample App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        textSelectionColor: Colors.red
+      ),
+      home: SampleAppPage(),
+    );
+  }
+}
+```
+
 ### 어떻게 `Text` 위젯에 커스텀 폰트를 설정합니까?
 
+iOS에서는 어떤 `ttf` 폰트 파일을 프로젝트에 불러오고 `info.plist` 파일에 참조를 생성합니다. Flutter에서는 폰트 파일을 폴더에 두고 `pubspec.yaml` 파일에서 그것을 참조합니다. 이미지를 불러오는 방법과 비슷합니다.
+
+```yaml
+fonts:
+   - family: MyCustomFont
+     fonts:
+       - asset: fonts/MyCustomFont.ttf
+       - style: italic
+```
+
+그리고 나서 `Text` 위젯에 폰트를 할당합니다.
+
+```dart
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: Text("Sample App"),
+    ),
+    body: Center(
+      child: Text(
+        'This is a custom font text',
+        style: TextStyle(fontFamily: 'MyCustomFont'),
+      ),
+    ),
+  );
+}
+```
+
 ### 어떻게 `Text` 위젯의 스타일을 지정합니까?
+
+폰트와 함께 `Text` 위젯에서 다른 스타일 요소를 커스터마이징할 수 있습니다. `Text` 위젯의 스타일 매개변수는 `TextStyle` 오브젝트를 취하는데, 다음과 같은 많은 매개변수를 커스터마이징할 수 있습니다.
+
+- `color`
+- `decoration`
+- `decorationColor`
+- `decorationStyle`
+- `fontFamily`
+- `fontSize`
+- `fontStyle`
+- `fontWeight`
+- `hashCode`
+- `height`
+- `inherit`
+- `letterSpacing`
+- `textBaseline`
+- `wordSpacing`
 
 ## 폼 입력*Form input*
 
 ### Flutter에서 폼은 어떻게 동작합니까? 어떻게 사용자의 입력을 받습니까?
 
+Flutter가 별개의 상태와 함께 불변하는 위젯을 사용하는 방법을 감안할 때, 사용자 입력이 어떻게 그림에 들어맞는 것인지 궁금해할 수 있습니다. iOS에서는 보통 사용자 입력 또는 액션을 제출할 때 위젯에 현재 값을 쿼리합니다. Flutter에서는 어떻게 동작합니까?
+
+사실 폼은 Flutter에 있는 모든 것들처럼 특별한 위젯으로 다루어집니다. `TextField`나 `TextFormField`를 가지고 있다면 사용자 입력을 받기 위해 `TextEditingController`를 제공할 수 있습니다.
+
+```dart
+class _MyFormState extends State<MyForm> {
+  // 텍스트 컨트롤러를 생성하고 텍스트 필드의 현재 값을 받기 위해 사용합니다.
+  final myController = TextEditingController();
+
+  @override
+  void dispose() {
+    // 위젯을 폐기할 때 컨트롤러를 정리합니다.
+    myController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Retrieve Text Input'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: TextField(
+          controller: myController,
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        // 사용자가 버튼을 누를 때, 사용자가 텍스트 필드에 입력한 텍스트를 가지고 알림창을 보여줍니다.
+        onPressed: () {
+          return showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                // TextEditingController를 사용하여 사용자가 입력한 텍스트를 받습니다.
+                content: Text(myController.text),
+              );
+            },
+          );
+        },
+        tooltip: 'Show me the value!',
+        child: Icon(Icons.text_fields),
+      ),
+    );
+  }
+}
+```
+
+[Flutter 쿡북](https://flutter.io/docs/cookbook)에 있는 [텍스트 필드의 값 받기](https://flutter.io/docs/cookbook/forms/retrieve-input)에서 더 많은 정보와 모든 코드 리스트를 확인할 수 있습니다.
+
 ### 텍스트 필드의 플레이스홀더와 동등한 것은 무엇입니까?
 
+Flutter에서는 `Text` 위젯을 위한 생성자의 decoration 매개변수에 `InputDecoration` 오브젝트를 추가하여 필드에 "힌트"나 플레이스홀더 텍스트를 쉽게 보여줄 수 있습니다.
+
+```dart
+body: Center(
+  child: TextField(
+    decoration: InputDecoration(hintText: "This is a hint"),
+  ),
+)
+```
+
 ### 어떻게 유효성 에러를 보여줍니까?
+
+"힌트"와 마찬가지로 `InputDecoration` 오브젝트를 `Text` 위젯의 생성자의 decoration 매개변수에 넘겨줍니다.
+
+그러나 에러를 보여주면서 시작하고 싶지는 않을 것입니다. 대신 사용자가 유효하지 않은 데이터를 입력했을 때 그 상태를 업데이트하고 새로운 `InputDecoration` 오브젝트를 넘겨주십시오.
 
 ## 하드웨어, 서드 파티 서비스 및 플랫폼과 상호작용하기*Interacting with hardware, third party services and the platform*
 
 ### 어떻게 플랫폼, 플랫폼 네이티브 코드와 상호작용합니까?
 
+Flutter는 기초를 이루는 플랫폼 위에서 직접적으로 코드를 실행하지 않스빈다. 대신 Flutter 앱을 구성하는 Dart 코드가 디바이스에서 네이티브하게 동작하며, 플랫폼이 제공하는 SDK를 "sidestepping"합니다. 예를 들어 그것은 Dart에서 네트워크 요청을 수행할 때 Dart의 컨텍스트에서 직접적으로 동작한다는 것을 의미합니다. 네이티브 앱을 작성할 때 일반적으로 활용하는 안드로이드 또는 iOS API를 사용하지 않습니다. Flutter 앱은 여전히 네이티브 앱의 `ViewController` 내에서 뷰로서 호스팅되지만, `ViewController` 자체나 네이티브 프레임워크에 직접 접근할 수 없습니다.
+
+이것은 Flutter 앱이 그러한 네이티브 API나 어떠한 네이티브 코드와도 상호작용할 수 없다는 것을 의미하지 않습니다. Flutter는 [플랫폼 채널](https://flutter.io/docs/development/platform-integration/platform-channels)을 제공하며 그것은 Flutter의 뷰를 호스팅하는 `ViewController`와 함께 소통하고 데이터를 교환합니다. 플랫폼 채널은 본질적으로 Dart 코드를 호스트 `ViewController` 및 실행중인 iOS 프레임워크와 연결하는 비동기 메세징 메커니즘입니다. 예를 들어 플랫폼 채널을 네이티브 측에 있는 메소드를 실행하거나 디바이스의 센서로부터 몇몇 데이터를 가져오기 위해 사용할 수 있습니다.
+
+플랫폼 채널을 직접적으로 사용하는 것에 외에도, 특정한 목표를 위해 네이티브 및 Dart 코드를 캡슐화하는 다양한 사전 제작된 플러그인을 사용할 수 있습니다. 예를 들어 통합을 작성할 필요 없이 Flutter에서 직접 카메라 롤과 디바이스 카메라에 접근하는 플러그인을 사용할 수 있습니다. 플러그인은 Dart 및 Flutter의 오픈 소스 패키지 저장소 [Pub](https://pub.dartlang.org/)에서 찾을 수 있습니다. 몇몇 패키지는 iOS 또는 안드로이드, 또는 둘 모두에 대한 네이티브 통합을 지원합니다.
+
+니즈와 맞는 플러그인을 Pub에서 찾을 수 없다면 [직접 작성](https://flutter.io/docs/development/packages-and-plugins/developing-packages)하여 [Pub에 배포](https://flutter.io/docs/development/packages-and-plugins/developing-packages#publish)할 수 있습니다.
+
 ### 어떻게 GPS 센서에 접근합니까?
+
+`geolocator` 커뮤니티 플러그인을 사용하십시오.
 
 ### 어떻게 카메라에 접근합니까?
 
+`image_picker` 플러그인이 카메라 접근에 있어서 가장 유명합니다.
+
 ### 어떻게 Facebook을 사용하여 로그인 합니까?
+
+Facebook을 사용하여 로그인하기 위해 `flutter_facebook_login` 커뮤니티 플러그인을 사용하십시오.
 
 ### 어떻게 Firebase의 기능을 사용합니까?
 
+대부분의 Firebase 기능은 [퍼스트 파티 플러그인](https://pub.dartlang.org/flutter/packages?q=firebase)으로 다루어집니다. 이러한 플러그인은 퍼스트 파티 통합이며 Flutter 팀에 의해 유지보수됩니다.
+
+- `firebase_admob` : Firebase AdMob
+- `firebase_analytics` : Firebase Analytics
+- `firebase_auth` : Firebase Auth
+- `firebase_core` : Firebase의 Core 패키지
+- `firebase_database` : Firebase RTDB
+- `firebase_storage` : Firebase Cloud Storage
+- `firebase_messaging` : Firebase Messaging (FCM)
+- `cloud_firestore` : Firebase Cloud Firestore
+
+또한 퍼스트 파티 플러그인에 의해 직접적으로 다루어지지 않은 영역을 다룬 서드 파티 Firebase 플러그인을 Pub에서 찾을 수 있습니다.
+
 ### 어떻게 커스텀 네이티브 통합을 빌드합니까?
+
+Flutter나 그 커뮤니티 플러그인이 누락된 플랫폼에 특화된 기능이 있다면 [개발 중인 패키지 및 플러그인](https://flutter.io/docs/development/packages-and-plugins/developing-packages) 페이지에 따라 직접 빌드할 수 있습니다.
+
+Flutter의 플러그인 아키텍처는 안드로이드에서 이벤트 버스를 사용하는 것과 매우 비슷합니다. ㅁ세지를 실행하고 수신자가 처리하여 결과를 다시 내보냅니다. 이 경우 수신자는 안드로이드나 iOS의 네이티브 측에서 실행되는 코드입니다.
 
 ## 데이터베이스 및 로컬 저장소*Databases and local storage*
 
 ### Flutter에서 어떻게 `UserDefaults`에 접근합니까?
 
+iOS에서는 `UserDefaults`라고 알려져 있는 프로퍼티 리스트를 사용하여 키-값 쌍의 컬렉션을 저장할 수 있습니다.
+
+Flutter에서는 [Shared Preferences 플러그인](https://pub.dartlang.org/packages/shared_preferences)을 사용하여 동등한 기능에 접근하십시오. 이 플러그인은 `UserDefaults` 및 안드로이드에서 동등한 `SharedPreferences`의 기능을 모두 감쌉니다.
+
 ### Flutter에서 CoreData와 동등한 것은 무엇입니까?
+
+iOS에서는 구조화된 데이터를 저장하기 위해 CoreData를 사용할 수 있습니다. 이것은 단순히 SQL 데이터베이스의 상위에 있는 층이므로 모델과 관련된 쿼리를 더 쉽게 만들 수 있습니다.
+
+Flutter에서는 `SQFlite` 플러그인을 사용하여 이 기능에 접근하십시오.
 
 ## 노티피케이션*Notifications*
 
 ### 어떻게 푸시 알림을 설정합니까?
+
+iOS에서는 푸시 알림을 허용하기 위해 개발자 포털에서 앱을 등록할 필요가 있습니다.
+
+Flutter에서는 `firebase_messaging` 플러그인을 사용하여 이 기능에 접근하십시오.
+
+`firebase_messaging` 플러그인 문서를 참고하여 Firebase Cloud Messaging API를 사용하기 위한 더 많은 정보를 확인하십시오.
