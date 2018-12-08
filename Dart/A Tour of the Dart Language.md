@@ -1,7 +1,3 @@
-[TOC]
-
----
-
 # A Tour of the Dart Language
 
 ## 중요 개념
