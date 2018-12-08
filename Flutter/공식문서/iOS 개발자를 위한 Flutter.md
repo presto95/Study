@@ -1540,6 +1540,71 @@ body: Center(
 
 그러나 에러를 보여주면서 시작하고 싶지는 않을 것입니다. 대신 사용자가 유효하지 않은 데이터를 입력했을 때 그 상태를 업데이트하고 새로운 `InputDecoration` 오브젝트를 넘겨주십시오.
 
+```dart
+class SampleApp extends StatelessWidget {
+  // 이 위젯은 애플리케이션의 루트입니다.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Sample App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: SampleAppPage(),
+    );
+  }
+}
+
+class SampleAppPage extends StatefulWidget {
+  SampleAppPage({Key key}) : super(key: key);
+
+  @override
+  _SampleAppPageState createState() => _SampleAppPageState();
+}
+
+class _SampleAppPageState extends State<SampleAppPage> {
+  String _errorText;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Sample App"),
+      ),
+      body: Center(
+        child: TextField(
+          onSubmitted: (String text) {
+            setState(() {
+              if (!isEmail(text)) {
+                _errorText = 'Error: This is not an email';
+              } else {
+                _errorText = null;
+              }
+            });
+          },
+          decoration: InputDecoration(hintText: "This is a hint", errorText: _getErrorText()),
+        ),
+      ),
+    );
+  }
+
+  _getErrorText() {
+    return _errorText;
+  }
+
+  bool isEmail(String emailString) {
+    String emailRegexp =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+
+    RegExp regExp = RegExp(emailRegexp);
+
+    return regExp.hasMatch(emailString);
+  }
+}
+```
+
+
+
 ## 하드웨어, 서드 파티 서비스 및 플랫폼과 상호작용하기*Interacting with hardware, third party services and the platform*
 
 ### 어떻게 플랫폼, 플랫폼 네이티브 코드와 상호작용합니까?
