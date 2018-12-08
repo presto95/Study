@@ -1,5 +1,9 @@
 [Introduction to declarative UI](https://flutter.io/docs/get-started/flutter-for/declarative)
 
+[TOC]
+
+---
+
 # 선언형 UI 소개
 
 이 소개는 Flutter에서 사용되는 선언형 스타일과 많은 다른 UI 프레임워크에서 사용되는 명령형 스타일 간 개념적 차이를 서술합니다.

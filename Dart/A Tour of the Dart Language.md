@@ -1,3 +1,7 @@
+[TOC]
+
+---
+
 # A Tour of the Dart Language
 
 ## 중요 개념
@@ -691,7 +695,7 @@ class EffectiveDoer extends Doer {
 **멤버 재정의**
 
 - 자식 클래스는 인스턴스 메소드, 설정자 및 접근자를 재정의할 수 있음
-- @override` 표기를 사용하여 의도적으로 어떤 멤버를 재정의할 것임을 알리기
+- `@override` 표기를 사용하여 의도적으로 어떤 멤버를 재정의할 것임을 알리기
 
 **재정의 가능한 연산자**
 
