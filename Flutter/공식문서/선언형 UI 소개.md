@@ -1,3 +1,5 @@
+[Introduction to declarative UI](https://flutter.io/docs/get-started/flutter-for/declarative)
+
 # 선언형 UI 소개
 
 이 소개는 Flutter에서 사용되는 선언형 스타일과 많은 다른 UI 프레임워크에서 사용되는 명령형 스타일 간 개념적 차이를 서술합니다.
@@ -16,7 +18,7 @@ Win32부터 웹과 안드로이드 및 iOS의 프레임워크는 UI 프로그래
 
 ![View B (contained by view A) morphs from containing two views, c1 and c2, to containing only view c3](https://flutter.io/images/declarativeUIchanges.png)
 
-선언형 스타일에서는 일반적으로 `ViewB`의 소유자로 가서 셀렉터나 `findViewById`, 또는 이와 비슷한 방법으로 `b` 인스턴스를 가져올 것입니다. 그리고 그것에 변화를 일으킵니다(암시적으로 무효화합니다). 예를 들자면 아래와 같습니다.
+명령형 스타일에서는 일반적으로 `ViewB`의 소유자로 가서 셀렉터나 `findViewById`, 또는 이와 비슷한 방법으로 `b` 인스턴스를 가져올 것입니다. 그리고 그것에 변화를 일으킵니다(암시적으로 무효화합니다). 예를 들자면 아래와 같습니다.
 
 ```
 // 명령형 스타일
