@@ -1,42 +1,116 @@
 # A Tour of the Dart Language
 
+이 페이지는 변수와 연산자에서 클래스와 라이브러리에 이르기까지, Dart의 주요한 특징 각각을 사용하는 방법을 보여줍니다. 다른 언어로 프로그래밍하는 방법을 이미 알고 있다는 가정 하에서 말입니다.
+
+Dart의 코어 라이브러리에 대해 더 배우고 싶다면 [Dart 라이브러리 투어](https://www.dartlang.org/guides/libraries/library-tour)를 참고하십시오. 언어 특징에 대한 세부 사항을 알고 싶을 때마다 [Dart 언어 명세](https://www.dartlang.org/guides/language/spec)를 참고하십시오.
+
+> **팁.** DartPad를 사용하여 Dart의 언어 특징 대부분을 가지고 놀 수 있습니다. [더 배우기](https://www.dartlang.org/tools/dartpad) 
+> 
+> [**DartPad 열기**](https://dartpad.dartlang.org/)
+
+## Dart 기본 프로그램
+
+다음의 코드는 Dart의 가장 기본적인 특징을 많이 사용합니다.
+
+```dart
+// 함수 정의
+printInteger(int aNumber) {
+  print('The number is $aNumber.'); // 콘솔에 출력
+}
+
+// 앱이 실행을 시작하는 곳
+main() {
+  var number = 42; // 변수 선언 및 초기화
+  printInteger(number); // 함수 호출
+}
+```
+
+이 프로그램이 모든 (거의 대부분의) Dart 앱에 적용되는 것을 사용한 것이 여기 나와 있습니다.
+
+`// 주석`
+
+한줄 주석. Dart는 여러줄 주석과 문서화 주석도 지원합니다. [주석](https://www.dartlang.org/guides/language/language-tour#comments)을 참고하십시오.
+
+`int`
+
+타입. 다른 [내장 타입](https://www.dartlang.org/guides/language/language-tour#built-in-types) 중 몇몇에는 `String`, `List`, `bool`이 있습니다.
+
+`42`
+
+숫자 리터럴. 숫자 리터럴은 컴파일 타임 상수의 종류 중 하나입니다.
+
+`print()`
+
+출력을 표시하는 손쉬운 방법.
+
+`'...'` (`"..."`)
+
+문자열 리터럴.
+
+`$변수명` (`${표현식}`)
+
+문자열 보간법. 문자열 리터럴 안에 변수나 표현식의 문자열 표현을 포함하는 것. [문자열](https://www.dartlang.org/guides/language/language-tour#strings)을 참고하십시오.
+
+`main()`
+
+앱 실행이 시작하는, 특별하고, *필수적인*, 전역 함수. [main() 함수](https://www.dartlang.org/guides/language/language-tour#the-main-function)를 참고하십시오.
+
+`var`
+
+타입을 지정하지 않고 변수를 선언하는 방법.
+
+> **알아두기.** 이 사이트의 코드는 [Dart 스타일 가이드](https://www.dartlang.org/guides/language/effective-dart/style)에 있는 관습을 따릅니다.
+
 ## 중요 개념
 
-- 변수에 할당할 수 있는 모든 것은 *오브젝트*이며, 모든 오브젝트는 *클래스*의 인스턴스이다. 숫자, 함수, `null`도 오브젝트이다. 모든 오브젝트는 `Object` 클래스를 상속받는다.
-- 강타입 언어이지만 타입 추론을 지원하므로 타입을 반드시 명시할 필요는 없다. 명시적으로 어떠한 타입도 기대하지 않는다는 것을 원한다면 `dynamic`이라는 특별한 타입을 사용하라.
-- `List<int>`나 `List<dynamic>` 같은 제네릭 타입을 지원한다.
-- `main()`과 같은 전역 함수를 지원하며, 클래스나 오브젝트에 묶인 함수 *(정적 메소드 및 인스턴스 메소드*) 또한 지원한다. 함수 내에 함수를 생성할 수 있다. (*중첩* 또는 *지역* 함수)
-- 전역 변수를 지원하며, 클래스나 오브젝트에 묶인 변수 (*정적 변수 또는 인스턴스 변수*) 또한 지원한다. 인스턴스 변수는 *필드* 또는 *프로퍼티*로도 불린다.
-- `public`, `protected`, `private`와 같은 접근 지정자 키워드를 지원하지 않는다. 식별자가 밑줄(`_`)로 시작한다면 그 라이브러리에서 private 공개 수준을 갖게 된다.
-- *식별자*는 문자나 밑줄(`_`)로 시작할 수 있으며, 이후에 어떠한 조합의 문자나 숫자가 올 수 있다.
-- *표현식*(런타임 값을 취함)과 *선언문*(런타임 값이 아님)을 지원한다. 선언문은 하나 이상의 표현식을 포함하나, 표현식은 직접적으로 선언문을 포함할 수 없다.
-- 경고는 작동하지 않을 코드를 알려주는 것이며, 프로그램 실행을 막지는 않는다. 에러는 컴파일 타임이나 런타임에 일어날 수 있다. 컴파일 타임 에러는 코드 실행을 막는다. 런타임 에러는 코드 실행 중 예외를 발생시킨다.
+- 변수에 위치할 수 있는 모든 것은 *오브젝트*이며, 모든 오브젝트는 *클래스*의 인스턴스입니다. 심지어 숫자, 함수, 그리고 `null`도 오브젝트입니다. 모든 오브젝트는 [Object](https://api.dartlang.org/stable/dart-core/Object-class.html) 클래스로부터 상속받습니다.
+- Dart가 강타입 언어일지라도 타입을 추론할 수 있기 때문에 타입을 명시하는 것은 선택적입니다. 위의 코드에서 `number`는 `int` 타입이 되도록 추론됩니다. 어떠한 타입도 기대하지 않는다고 명시적으로 말하기 원할 때, [특별한 타입 dynamic을 사용](https://www.dartlang.org/guides/language/effective-dart/design#do-annotate-with-object-instead-of-dynamic-to-indicate-any-object-is-allowed)하십시오.
+- Dart는 `List<int>`(정수 리스트)나 `List<dynamic>`(어떠한 타입을 갖는 오브젝트 리스트)와 같은 제네릭 타입을 지원합니다.
+- Dart는 `main()`과 같은 전역 함수뿐만 아니라, 클래스나 오브젝트에 묶인 함수(각각 *정적* 메소드, *인스턴스* 메소드)도 지원합니다. 또한 함수 내 함수(*중첩* 또는 *지역* 함수)를 만들 수 있습니다.
+- 이와 비슷하게 Dart는 전역 변수뿐만 아니라, 클래스나 오브젝트에 묶인 변수(각각 *정적* 변수, *인스턴스* 변수)도 지원합니다. 인스턴스 변수는 때때로 필드 혹은 프로퍼티라고도 알려져 있습니다.
+- Java와는 다르게, Dart는 `public`, `protected`, `private` 키워드를 가지고 있지 않습니다. 식별자가 밑줄(_)로 시작한다면, 그것은 그 라이브러리에서 private합니다. [라이브러리 및 가시성](https://www.dartlang.org/guides/language/language-tour#libraries-and-visibility)을 참고하십시오.
+- *식별자*는 문자나 밑줄(_)로 시작할 수 있으며, 이후에는 문자와 숫자를 더한 어떠한 조합도 올 수 있습니다.
+- Dart는 *표현식*(런타임 값을 가짐)과 *선언문*(런타임 값을 갖지 않음) 모두를 가지고 있습니다. 예를 들어 [조건식](https://www.dartlang.org/guides/language/language-tour#conditional-expressions) `condition ? expr1 : expr2`는 `expr1` 또는 `expr2`의 값을 갖습니다. 값을 갖지 않는 [if-else문]()과 비교해 보십시오. 선언문은 종종 하나 또는 그 이상의 표현식을 포함하나 표현식은 선언문을 직접적으로 포함할 수 없습니다.
+- Dart 툴은 두 종류의 문제 *경고*와 *에러*를 보고할 수 있습니다. 경고는 단지 코드가 동작하지 않을 수 있다는 것을 가리키지만 프로그램 실행을 막지는 않습니다. 에러는 컴파일 타임 또는 런타임에 발생할 수 있습니다. 컴파일 타임 에러는 코드 실행을 막습니다. 런타임 에러는 코드가 실행되는 동안 발생한 [예외](https://www.dartlang.org/guides/language/language-tour#exceptions)의 결과를 불러옵니다.
 
 ## 키워드
 
-- 키워드를 식별자로 사용하는 것을 지양하자.
+다음의 테이블은 Dart 언어가 특별하게 취급하는 단어들을 나열합니다.
+
+이러한 단어를 식별자로 사용하지 마십시오. 그러나 필요하다면 다음의 키워드는 식별자가 될 수 있습니다.
+
 - `show` / `async` / `sync` / `on` / `hide`
-  - 문맥상 키워드. 특정 위치에서만 의미를 가짐. 어디에서든 유효한 식별자로 사용될 수 있다.
+  - 문맥상 키워드가 될 수 있으며, 이는 오직 특정 장소에서만 의미를 갖는다는 것을 의미합니다. 이들은 어느 곳에서나 식별자로 사용될 수 있습니다.
 - `abstract` / `dynamic` / `implements` / `import` / `as` / `export` / `interface` / `external` / `library` / `factory` / `mixin` / `typedef` / `operator` / `covariant` / `Function` / `part` / `get` / `deferred` / `set`
-  - 내장 식별자. 대부분의 자리에서 유효한 식별자로 사용될 수 있으나, 클래스나 타입 이름으로 사용될 수 없고, import 접두사로도 사용될 수 없다.
+  - 내장 식별자. JavaScipt 코드를 Dart로 포팅하는 작업을 단순화하기 위해 이러한 키워드들은 대부분의 장소에서 식별자로 사용될 수 있습니다. 하지만 클래스나 타입 이름, 또는 import 접두사로 사용될 수 없습니다.
 - `await` / `yield`
-  - 비동기를 지원하기 위한 예약어. 이 키워드들은 `async`, `async*`, `sync*`가 명시된 함수의 구현부에서 사용될 수 없다.
+  - Dart 1.0 릴리즈 이후 추가된, [비동기 지원](https://www.dartlang.org/guides/language/language-tour#asynchrony-support)과 관련된 새롭고 제한된 예약어입니다. `async`, `async*`, `sync*`로 마크된 어떠한 함수의 구현부에서 `await`나 `yield`를 식별자로 사용할 수 없습니다.
 - `else` / `assert` / `enum` / `in` / `super` / `switch` / `extends` / `is` / `break` / `this` / `case` / `throw` / `catch` / `false` / `new` / `true` / `class` / `final` / `null` / `try` / `const` / `finally` / `continue` / `for` / `var` / `void` / `default` / `rethrow` / `while` / `return` / `with` / `do` / `if`
-  - 나머지 키워드들은 예약어로서, 식별자로 사용될 수 없다.
+  - 나머지 키워드들은 **예약어**로서, 식별자로 사용될 수 없습니다.
 
 ## 변수
 
+변수를 만들고 초기화하는 예제입니다.
+
 ```dart
-// `name`은 String 타입으로 추론됨
-var name = "Bob";
-// 아래와 같이 타입을 명시해줄 수도 있음
-String name = "Bob";
+var name = 'Bob';
 ```
 
-- 문자열에는 큰따옴표나 작은따옴표를 사용하여 감싼다.
-- 세미콜론을 문장 끝에 붙여야 한다.
-- `dynamic` 또는 `Object` 키워드로 변수를 선언하여 해당 변수에 들어갈 수 있는 타입이 다르게 해줄 수 있다.
-  - Dart는 강타입 언어.
+변수는 참조를 저장합니다. `name`이라고 불리는 변수는 "Bob"이라는 값을 가지고 있는 `String` 오브젝트에 대한 참조를 포함합니다.
+
+`name` 변수의 타입은 `String`으로 추론됩니다. 하지만 이를 지정하여 타입을 바꿀 수 있습니다. 오브젝트가 하나의 타입으로 제한되지 않는다면, [디자인 가이드라인](https://www.dartlang.org/guides/language/effective-dart/design#do-annotate-with-object-instead-of-dynamic-to-indicate-any-object-is-allowed)에 따라 `Object`나 `dynamic` 타입을 지정하십시오.
+
+```dart
+dynamic name = 'Bob';
+```
+
+다른 선택지는 추론될 타입을 명시적으로 선언하는 것입니다.
+
+```dart
+String name = 'Bob';
+```
+
+> **알아두기.** 이 페이지는 지역 변수에 대해 타입 지정보다는, [스타일 가이드 추천](https://www.dartlang.org/guides/language/effective-dart/design#do-annotate-with-object-instead-of-dynamic-to-indicate-any-object-is-allowed)에 따라 `var`를 사용합니다.
 
 ### 기본값
 
