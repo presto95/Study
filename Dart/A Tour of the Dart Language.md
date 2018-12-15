@@ -560,178 +560,519 @@ bool isNoble(int atomicNumber) => _nobleGases[atomicNumber] != null;
 
 ### 선택 매개변수
 
-선택 매개변수는 
+선택 매개변수는 위치*positional* 매개변수이거나 이름 있는*named* 매개변수일 수 있으며, 둘 다 아닐 수 있습니다.
 
-- 함수 또한 오브젝트이고 `Function` 타입을 갖는다.
-  - 함수는 변수에 할당될 수 있고 다른 함수에 인자로 넘겨질 수 있다.
-  - Dart 클래스의 인스턴스를 마치 함수인 것처럼 호출할 수 있다.
+#### 선택 이름 있는 매개변수*Optional named parameters*
+
+함수 호출시 `매개변수_이름: 값`을 사용하여 이름 있는 매개변수를 지정할 수 있습니다.
 
 ```dart
-bool isEven(int number) {
-    return number % 2 == 0;
+enableFlags(bold: true, hidden: false);
+```
+
+함수를 정의할 때 이름 있는 매개변수를 지정하기 위해 `{매개변수1, 매개변수2, _}`를 사용하십시오.
+
+```dart
+// [bold] 와 [hidden] 플래그를 설정합니다.
+void enableFlags({bool bold, bool hidden}) {...}
+```
+
+[Flutter](https://flutter.io/)의 인스턴스 생성 표현식은 복잡해질 수 있습니다. 그래서 위젯 생성자는 배타적으로 이름 있는 매개변수를 사용합니다. 이는 인스턴스 생성 표현식을 읽기 쉽게 해줍니다.
+
+Flutter뿐만 아니라 어떠한 Dart 코드에서도, 이름 있는 매개변수와 함께 [@required](https://pub.dartlang.org/documentation/meta/latest/meta/required-constant.html)를 사용하여 이것이 *필수* 매개변수임을 가리킬 수 있습니다.
+
+```dart
+const ScrollBar({Key key, @required Widget child})
+```
+
+`ScrollBar`가 생성되면 분석기는 `child` 인자가 없을 때 이슈를 보고합니다.
+
+[Required](https://pub.dartlang.org/documentation/meta/latest/meta/required-constant.html)는 [meta](https://pub.dartlang.org/packages/meta) 패키지에 정의되어 있습니다. `package:meta/meta.dart`를 직접 가져오거나, Flutter의 `package:flutter/material.dart`와 같은, `meta`를 내보내는 다른 패키지를 가져오십시오.
+
+#### 선택 위치 매개변수*Optional positional parameters*
+
+함수 매개변수의 세트를 `[]` 마크로 감싸 그것들이 선택 위치 매개변수임을 마크합니다.
+
+```dart
+String say(String from, String msg, [String device]) {
+  var result = '$from says $msg';
+  if (device != null) {
+    result = '$result with a $device';
+  }
+  return result;
 }
-// 위아래 코드는 같은 역할을 함. 한줄 함수나 메소드는 아래와 같이 정의 가능
-// 아래와 같이 arrow syntax를 사용할 때 선언문을 사용할 수 없음. 오직 표현식만 위치할 수 있다.
-bool isEven(int number) => number % 2 == 0;
 ```
 
-- 반환형을 생략할 수 있으나 그렇게 하지 않도록 하자.
-- 두 가지 타입의 매개변수를 갖는다.
-  - required / optional
-  - required 매개변수는 어떠한 optional 매개변수보다도 앞에 위치한다.
-  - 이름 있는 optional 매개변수는 `@required`로 마크될 수 있다.
-
-### 옵셔널 매개변수
-
-- positional 이거나 named일 수 있으나, 둘 다일 수는 없다.
-  - 매개변수 리스트에 `[]`와 `{}`가 함께 존재할 수 없다.
-
-**옵셔널 이름 있는 매개변수*Optional named parameters***
-
-- 함수 정의시 매개변수들을 중괄호 안에 감싸서 Swift의 전달인자 레이블의 효과를 낼 수 있다.
+선택 매개변수 없이 함수를 호출하는 예제입니다.
 
 ```dart
-bool isEven(int number) => number % 2 == 0;
-isEven(3);
-////
-bool isEven({int number}) => number % 2 == 0;
-isEven(number: 3);
+assert(say('Bob', 'Howdy') == 'Bob says Howdy');
 ```
 
-위의 코드를 Swift로 작성하자면...
-
-```swift
-func isEven(_ number: Int) -> Bool { return number % 2 == 0 }
-isEven(3)
-////
-func isEven(number: Int) -> Bool { return number % 2 == 0 }
-isEven(number: 3)
-```
-
-- 이름 있는 매개변수에 `@required`를 명시하여 필수 매개변수로 지정할 수 있다.
-  - `package:meta/meta.dart`를 임포트해야 사용 가능
-  - `package:flutter/material.dart`가 위의 패키지를 임포트하고 있음
-
-**옵셔널 위치 매개변수*Optional positional parameters***
-
-- 대괄호로 매개변수를 감싸기. 해당 매개변수에 값이 전달될 수도 있고 전달되지 않을 수도 있다.
-  - 전달되지 않을 경우 해당 인자는 `null`이다.
-
-**기본 매개변수 값**
-
-- 옵셔널 매개변수 나열시 매개변수 기본값을 설정해줄 수 있음. 기본값은 컴파일 타임 상수여야 한다.
-- 필수 매개변수에는 매개변수 기본값을 설정할 수 없다.
+세 번째 매개변수와 함께 함수를 호출하는 예제입니다.
 
 ```dart
-bool isEven({int number = 3}) => number % 2 == 0;
-// false
-isEven()
+assert(say('Bob', 'Howdy', 'smoke signal') == 'Bob says Howdy with a smoke signal');
 ```
 
-- 이름 있는 매개변수는 이름으로 참조되므로 그 순서에 신경쓰지 않아도 된다.
+#### 매개변수 기본값
 
-> optional positional parameters과 optional named parameters의 차이는 Swift의 전달인자 레이블 효과를 낼 수 있는지에 대한 것이다.?
+함수는 이름 있는 매개변수와 위치 매개변수 모두에서 기본값을 정의하기 위해 `=`를 사용할 수 있습니다. 기본값은 컴파일 타임 상수여야 합니다. 기본값이 주어지지 않는다면 기본값은 `null`입니다.
+
+이름 있는 매개변수에 기본값을 설정하는 예제입니다.
+
+```dart
+// [bold]와 [hidden] 플래그 설정
+void enableFlags({bool bold = false, bool hidden = false}) {...}
+
+// bold는 true가 될 것이고, hideen은 false가 될 것입니다.
+enableFlags(bold: true);
+```
+
+> **Deprecation 기록**: 오래된 코드는 이름 있는 매개변수에 기본값을 설정하기 위해 `=` 대신 콜론(`:`)을 사용했을 수 있습니다. 그 이유는 원래 오직 `:`만이 이름 있는 매개변수를 지원했기 때문입니다. 이 지원은 deprecated될 가능성이 있으므로 **기본값 지정을 위해 =를 사용**하는 것을 추천합니다.
+
+위치 매개변수에 기본값을 설정하는 예제입니다.
+
+```dart
+String say(String from, String msg,
+    [String device = 'carrier pigeon', String mood]) {
+  var result = '$from says $msg';
+  if (device != null) {
+    result = '$result with a $device';
+  }
+  if (mood != null) {
+    result = '$result (in a $mood mood)';
+  }
+  return result;
+}
+
+assert(say('Bob', 'Howdy') == 'Bob says Howdy with a carrier pigeon');
+```
+
+기본값으로 리스트나 맵도 넘겨줄 수 있습니다. 다음의 예제는 `doStuff()`라는 함수를 정의하는데, `list` 매개변수에는 기본 리스트를, `gifts` 매개변수에는 기본 맵을 지정합니다.
+
+```dart
+void doStuff(
+    {List<int> list = const [1, 2, 3],
+    Map<String, String> gifts = const {
+      'first': 'paper',
+      'second': 'cotton',
+      'third': 'leather'
+    }}) {
+  print('list:  $list');
+  print('gifts: $gifts');
+}
+```
 
 ### main() 함수
 
-- 모든 애플리케이션은 `main()` 전역함수를 가지고 있음
-  - 애플리케이션의 진입점
-  - optional `List<String>` 매개변수를 인자로 받음.
+모든 앱은 `main()` 전약 함수를 가지고 있어야 합니다. 이는 앱에게 진입점을 제공합니다. `main()` 함수는 `void`를 반환하고 인자로 `List<String>` 선택 매개변수를 갖습니다.
+
+웹 앱을 위한 `main()` 함수의 예제입니다.
+
+```dart
+void main() {
+  querySelector('#sample_text_id')
+    ..text = 'Click me!'
+    ..onClick.listen(reverseText);
+}
+```
+
+> **알아두기** 위의 코드의 `..` 구문은 [캐스케이드](https://www.dartlang.org/guides/language/language-tour#cascade-notation-)라고 불립니다. 캐스케이드를 사용하여 하나의 오브젝트의 멤버들에 대한 여러 작업을 수행할 수 있습니다.
+
+인자를 취하는 커맨드라인 앱을 위한 `main()` 함수의 예제입니다.
+
+```dart
+// 명령: dart args.dart 1 test
+void main(List<String> arguments) {
+  print(arguments);
+
+  assert(arguments.length == 2);
+  assert(int.parse(arguments[0]) == 1);
+  assert(arguments[1] == 'test');
+}
+```
+
+커맨드라인 인자를 정의하고 파싱하기 위해 [args 라이브러리](https://pub.dartlang.org/packages/args)를 사용할 수 있습니다.
 
 ### 일급 객체로서의 함수
 
-- 함수를 다른 함수의 매개변수로 넘길 수 있음
-- 함수를 변수에 할당할 수 있음
+함수를 다른 함수에 매개변수로 넘겨줄 수 있습니다.
 
 ```dart
-// dynamic 타입 매개변수를 받아 String 타입을 반환하는 변수
-var loudify = (message) => "${message.toUpperCase()}";
+void printElement(int element) {
+  print(element);
+}
+
+var list = [1, 2, 3];
+
+// printElement를 매개변수로 넘겨줌
+list.forEach(printElement);
 ```
+
+변수에 함수를 할당할 수도 있습니다.
+
+```dart
+var loudify = (msg) => '!!! ${msg.toUpperCase()} !!!';
+assert(loudify('hello') == '!!! HELLO !!!');
+```
+
+이 예제는 익명 함수를 사용합니다.
 
 ### 익명 함수
 
-- 익명 함수 / 람다 / 클로저
-- Swift의 클로저와 다른 점
-  - 매개변수는 소괄호로 둘러싸여야 함
-  - 중괄호가 클로저 구현부 전체를 둘러싸는 것이 아니라 매개변수 다음에 위치함
-    - `in` 뒤에 클로저 구현부가 위치하는 것이 아니라 중괄호 안에 클로저를 구현함
-  - 클로저 구현부가 한 줄일 경우 arrow notation 사용 가능
-  - 후행 클로저 / 클로저 축약 문법 없음
+대부분의 함수는, `main()`이나 `printElement()`와 같이 이름이 있습니다. *익명 함수*, 또는 때때로 *람다*나 *클로저*라고도 불리는 이름 없는 함수를 만들 수도 있습니다. 익명 함수를 변수에 할당하여, 예를 들면 컬렉션에 그것을 추가하거나 삭제하고 싶을 수 있습니다.
+
+익명 함수는 이름 있는 함수와 비슷해 보입니다. 콤마로 분리된 0개 이상의 매개변수, 괄호 사이에 있는 선택 매개변수 선언이 그렇습니다.
+
+다음의 코드 블록은 함수의 구현부를 포함합니다.
 
 ```dart
-var list = [1, 2, 3];
+([[Type] param1[, …]]) {
+  codeBlock;
+};
+```
+
+다음의 예제는 타입이 지정되지 않은 매개변수, `item`이 있는 익명 함수를 정의합니다. 함수는 리스트에 있는 각 아이템에서 호출되어, 특정 인덱스에 있는 값을 포함하는 문자열을 출력합니다.
+
+```dart
+var list = ['apples', 'bananas', 'oranges'];
 list.forEach((item) {
-    print(item);
-})
+  print('${list.indexOf(item)}: $item');
+});
 ```
 
-```swift
-var list = [1, 2, 3];
-list.forEach({ item in
-    print(item)
-})
+함수가 오직 하나의 선언문을 포함한다면 화살표 표기를 사용하여 그 길이를 줄일 수 있습니다.
+
+```dart
+list.forEach(
+    (item) => print('${list.indexOf(item)}: $item'));
 ```
 
-### Lexical scope
+### 어휘적 범위*Lexical scope*
 
-- 코드의 레이아웃에 의해 정적으로 변수 스코프가 결정됨
-- 중첩 함수 내에서 스코프 바깥에 있는 변수에 접근할 수 있음
+Dart는 어휘적으로 범위가 지정된 언어입니다. 이는 변수의 범위가 단순히 코드의 레이아웃에 따라 정적으로 결정된다는 것을 의미합니다. 변수가 범위 안에 있는지 확인하기 위해 "중괄호를 따라 바깥쪽으로 따라갈" 수 있습니다.
 
-### Lexical closures
+각각의 범위 수준에 있는 변수를 가지고 있는 중첩 함수의 예제입니다.
 
-- 클로저의 값 캡쳐에 대한 내용. Swift와 다를 것 없음
+```dart
+bool topLevel = true;
 
-### 함수 동등 테스트
+void main() {
+  var insideMain = true;
 
-- `==` 연산자는 인스턴스의 주소를 비교함
+  void myFunction() {
+    var insideFunction = true;
+
+    void nestedFunction() {
+      var insideNestedFunction = true;
+
+      assert(topLevel);
+      assert(insideMain);
+      assert(insideFunction);
+      assert(insideNestedFunction);
+    }
+  }
+}
+```
+
+`nestedFunction()`이 최상위 레벨까지, 모든 레벨에 있는 변수를 어떻게 사용할 수 있는지에 주목하십시오.
+
+### 어휘적 클로저*Lexical closures*
+
+*클로저*는 그 어휘적 범위 내에서 변수에 접근하는 함수 오브젝트입니다. 심지어 함수가 고유 범위 바깥에서 사용될지라도 그렇습니다.
+
+함수는 주변 범위 안에서 정의된 변수를 가둘 수 있습니다. 다음의 예제에서 `makeAdder()`는 `addBy` 변수를 획득합니다. 반환된 함수가 어디로 가든지, 그것은 `addBy`를 기억합니다.
+
+```dart
+/// 함수의 인자와 [addBy]를 더하는 함수 반환
+Function makeAdder(num addBy) {
+  return (num i) => addBy + i;
+}
+
+void main() {
+  // 2를 더하는 함수 생성
+  var add2 = makeAdder(2);
+
+  // 4를 더하는 함수 생성
+  var add4 = makeAdder(4);
+
+  assert(add2(3) == 5);
+  assert(add4(3) == 7);
+}
+```
+
+### 동일함을 위해 함수 검사하기
+
+동일함을 위해 전역 함수, 정적 메소드, 인스턴스 메소드를 검사하는 예제입니다.
+
+```dart
+void foo() {} // 전역 함수
+
+class A {
+  static void bar() {} // 정적 메소드
+  void baz() {} // 인스턴스 메소드
+}
+
+void main() {
+  var x;
+
+  // 전역 함수 비교
+  x = foo;
+  assert(foo == x);
+
+  // 정적 메소드 비교
+  x = A.bar;
+  assert(A.bar == x);
+
+  // 인스턴스 메소드 비교
+  var v = A(); // A의 첫 번째 인스턴스
+  var w = A(); // A의 두 번째 인스턴스
+  var y = w;
+  x = w.baz;
+
+  // 이 클로저는 같은 인스턴스를 참조하므로 같습니다.
+  assert(y.baz == x);
+
+  // 이 클로저는 다른 인스턴스를 참조하므로 같지 않습니다.
+  assert(v.baz != w.baz);
+}
+```
 
 ### 반환 값
 
-- 모든 함수는 값을 반환하며, 반환 값이 명시되지 않았다면 `null`을 반환한다.
-  - `return null;`이 암시적으로 함수 구현부에 위치한 것
+모든 함수는 값을 반환합니다. 반환 값이 지정되어 있지 않다면 `return null;` 선언문이 함수 구현부에 암시적으로 추가됩니다.
+
+```dart
+foo() {}
+
+assert(foo() == null);
+```
 
 ## 연산자
 
-- 많은 연산자가 정의되어 있으며, 재정의 가능한 연산자에 한하여 재정의도 가능하다.
-- 연산자를 사용하여 표현식을 작성할 수 있다.
-- 우선순위는 생각하지 말고 소괄호를 사용하여 가독성 좋게 작성하자.
+Dart는 다음 표에 표시된 연산자를 정의합니다. [재정의 가능한 연산자](https://www.dartlang.org/guides/language/language-tour#overridable-operators)에서 묘사된 것처럼, 이들 중 많은 것들을 재정의할 수 있습니다.
+
+| 묘사         | 연산자                                                                 |
+| ---------- | ------------------------------------------------------------------- |
+| 단항 후위      | `expr++` `expr--` `()` `[]` `.` `?.`                                |
+| 단항 전위      | `-expr` `!expr` `~expr` `++expr` `--expr`                           |
+| 곱셈         | `*` `/` `%` `~/`                                                    |
+| 덧셈         | `+` `-`                                                             |
+| 쉬프트        | `>>` `<<`                                                           |
+| 비트와이즈 AND  | `&`                                                                 |
+| 비트와이즈 XOR  | `^`                                                                 |
+| 비트와이즈 OR   | `|`                                                                 |
+| 관계 및 타입 검사 | `>=` `>` `<=` `<` `as` `is` `is!`                                   |
+| 비교         | `==` `!=`                                                           |
+| 논리 AND     | `&&`                                                                |
+| 논리 OR      | `||`                                                                |
+| null이면     | `??`                                                                |
+| 조건         | `expr1 ? expr2 : expr3`                                             |
+| 캐스케이드      | `..`                                                                |
+| 할당         | `=` `+=` `/=` `~/=` `%=` `+=` `-=` `<<=` `>>=` `&=` `^=` `|=` `??=` |
+
+연산자를 사용할 때 표현식을 만듭니다.
+
+```dart
+a++
+a + b
+a = b
+a == b
+c ? a : b
+a is T
+```
+
+[연산자 표](https://www.dartlang.org/guides/language/language-tour#operators)에서 각 연산자는 다음 줄에 나와있는 연산자보다 더 높은 우선순위를 갖습니다. 예를 들어 곱셈 연산자 `%`는 동등 연산자 `==`보다 우선 순위가 높으며 그 이전에 실행됩니다. `==` 연산자는 논리 AND 연산자 `&&`보다 더 높은 우선 순위를 가지고 있습니다. 이는 다음의 두 줄의 코드가 같은 방식으로 실행된다는 것을 의미합니다.
+
+```dart
+// 괄호는 가독성을 향상시킵니다.
+if ((n % i == 0) && (d % i == 0)) ...
+
+// 읽기 어려우나 위와 같습니다.
+if (n % i == 0 && d % i == 0) ...
+```
+
+> **주의** 두 개의 피연산자에서 동작하는 연산자에 대하여, 왼쪽에 있는 피연산자는 연산자가 사용되는 버전을 결정합니다. 예를 들어 Vector 오브젝트와 Point 오브젝트를 가지고 있다면, `aVector + aPoint`는 Vector 버전의 +를 사용합니다.
 
 ### 산술 연산자
 
-- 다른 언어와 다를 것 없음
-  - `~/` : 정수 값을 반환하는 나누기
-  - `/` : 나누기
-- Swift와는 다르게 C언어 스타일의 단항 연산자 제공
-  - `++` 및 `--`
+Dart는 일반적인 산술 연산자를 지원합니다.
+
+| 연산자     | 의미                              |
+| ------- | ------------------------------- |
+| `+`     | 더하기                             |
+| `-`     | 빼기                              |
+| `-expr` | 단항 뺄셈. 부정(표현식의 부호 반전)으로도 알려져 있음 |
+| `*`     | 곱하기                             |
+| `/`     | 나누기                             |
+| `~/`    | 나누기, 정수 결과를 반환                  |
+| `%`     | 정수 나눗셈에서 나머지 (모듈러 연산)           |
+
+```dart
+assert(2 + 3 == 5);
+assert(2 - 3 == -1);
+assert(2 * 3 == 6);
+assert(5 / 2 == 2.5); // 결과는 double
+assert(5 ~/ 2 == 2); // 결과는 int
+assert(5 % 2 == 1); // 나머지
+
+assert('5/2 = ${5 ~/ 2} r ${5 % 2}' == '5/2 = 2 r 1');
+```
+
+Dart는 또한 전위 및 후위 증감 연산자를 지원합니다.
+
+| 연산자     | 의미                                 |
+| ------- | ---------------------------------- |
+| `++var` | `var = var + 1` (표현식 값은 `var + 1`) |
+| `var++` | `var = var + 1` (표현식 값은 `var`)     |
+| `--var` | `var = var - 1` (표현식 값은 `var - 1`) |
+| `var--` | `var = var - 1` (표현식 값은 `var`)     |
+
+```dart
+var a, b;
+
+a = 0;
+b = ++a; // b가 그 값을 얻기 전에 a를 증가시킴
+assert(a == b); // 1 == 1
+
+a = 0;
+b = a++; // b가 그 값을 얻은 후에 a를 증가시킴
+assert(a != b); // 1 != 0
+
+a = 0;
+b = --a; // b가 그 값을 얻기 전에 a를 감소시킴
+assert(a == b); // -1 == -1
+
+a = 0;
+b = a--; // b가 그 값을 얻은 후에 b를 감소시킴
+assert(a != b); // -1 != 0
+```
 
 ### 비교 및 관계 연산자
 
-- 다른 언어와 다를 것 없음
-  - `==` 연산자를 사용하여 두 오브젝트가 같은 것을 나타내는지 확인할 수 있음
-  - 두 오브젝트가 완벽하게 동일한 것인지 비교하고 싶으면 `==` 연산자 대신 `identical()` 함수를 사용하라.
+| 연산자  | 의미    |
+| ---- | ----- |
+| `==` | 같음    |
+| `!=` | 같지 않음 |
+| `>`  | 초과    |
+| `<`  | 미만    |
+| `>=` | 이상    |
+| `<=` | 이하    |
 
-### 타입 테스트 연산자
+두 오브젝트 x와 y가 같은 것을 나타내는지 검사하기 위해 `==` 연산자를 사용하십시오. 두 오브젝트가 정확히 같은 오브젝트인지 알 필요가 있는 드문 경우에 `identical()` 함수를 사용하십시오. `==` 연산자가 동작하는 방법은 다음과 같습니다.
 
-- Swift와 비슷
-  - `as` : 타입 캐스팅
-    - 타입 캐스팅이 실패하면 예외를 던짐
-  - `is` : 오브젝트가 특정 타입이라면 `true`
-  - `is!` : 오브젝트가 특정 타입이라면 `false`
+1. x나 y가 null이면, 둘 모두 null이면 true를 반환하고, 오직 하나만 null이면 false를 반환합니다.
+2. `x.==(y)` 메소드 호출의 결과를 반환합니다. `==`와 같은 연산자는 첫 번째 피연산자에서 호출되는 메소드입니다. [재정의 가능한 연산자](https://www.dartlang.org/guides/language/language-tour#overridable-operators)에서 확인할 수 있는 것처럼, `==`를 포함하여 많은 연산자를 재정의할 수 있습니다.
+
+```dart
+assert(2 == 2);
+assert(2 != 3);
+assert(3 > 2);
+assert(2 < 3);
+assert(3 >= 3);
+assert(2 <= 3);
+```
+
+### 타입 검사 연산자
+
+`as`, `is`, `is!` 연산자는 런타임에서 타입을 검사하기 위한 손쉬운 방법입니다.
+
+| 연산자   | 의미                                                                                                               |
+| ----- | ---------------------------------------------------------------------------------------------------------------- |
+| `as`  | 타입캐스팅 ([라이브러리 접두사](https://www.dartlang.org/guides/language/language-tour#specifying-a-library-prefix) 지정에도 사용됨) |
+| `is`  | 오브젝트가 지정된 타입을 가지고 있으면 true                                                                                       |
+| `is!` | 오브젝트가 지정된 타입을 가지고 있으면 false                                                                                      |
+
+`obj`가 `T`에 의해 지정된 인터페이스를 구현한다면 `obj is T`의 결과는 true입니다. 예를 들어 `obj is Object`는 항상 true입니다.
+
+`as` 연산자를 사용하여 오브젝트를 특정 타입으로 캐스팅하십시오. 일반적으로 오브젝트를 사용하는 표현식이 뒤따라오는 오브젝트에 대한 `is` 검사의 축약 형태로 그것을 사용합니다. 예를 들어 다음의 코드를 고려하십시오.
+
+```dart
+if (emp is Person) {
+  // 타입 검사
+  emp.firstName = 'Bob';
+}
+```
+
+`as` 연산자를 사용하여 더 짧은 코드를 작성할 수 있습니다.
+
+```dart
+(emp as Person).firstName = 'Bob';
+```
+
+> **알아두기** 위의 두 코드는 동일하지 않습니다. `emp`가 null이거나 Person이 아니면 첫 번째 예제는 아무것도 하지 않습니다. 두 번째 예제는 예외를 던집니다.
 
 ### 할당 연산자
 
-- 다른 언어와 다를 것 없음
-  - `~/=` : 정수 값을 반환하는 나누기 결과를 할당
+이미 봤다시피 `=` 연산자를 사용하여 값을 할당합니다. 할당되려는 변수가 null일 때만 할당하려면 `??=` 연산자를 사용하십시오.
+
+```dart
+// a에 값 할당
+a = value;
+// b가 null이면 b에 값 할당. 그렇지 않으면 b는 상태를 유지
+b ??= value;
+```
+
+`+=`와 같은 합성 할당 연산자는 할당과 함께 하는 동작을 합성합니다. (`=` `-=` `/=` `%=` `>>=` `^=` `+=` `*=` `~/=` `<<=` `&=` `|=`)
+
+합성 할당 연산자가 작동하는 방법입니다.
+
+|               | 합성 연산자    | 같은 표현식       |
+| ------------- | --------- | ------------ |
+| *op* 연산자에 대하여 | `a op= b` | `a = a op b` |
+| 예시            | `a += b`  | `a = a + b`  |
+
+```dart
+var a = 2; // =를 사용하여 할당
+a *= 3; // 할당 및 곱하기: a = a * 3
+assert(a == 6);
+```
 
 ### 논리 연산자
 
-- 다른 언어와 다를 것 없음
+논리 연산자를 사용하여 불리언 표현식을 반전하거나 결합할 수 있습니다.
+
+| 연산자     | 의미                                       |
+| ------- | ---------------------------------------- |
+| `!expr` | 표현식 반전 (false를 true로, true를 false로 변화시킴) |
+| `||`    | 논리 OR                                    |
+| `&&`    | 논리 AND                                   |
+
+```dart
+if (!done && (col == 0 || col == 3)) {
+  // ...
+}
+```
 
 ### 비트와이즈 및 쉬프트 연산자
 
-- 다른 언어와 다를 것 없음
+Dart에 있는 숫자의 개별 비트를 다룰 수 있습니다. 정수와 함께 비트와이즈 및 쉬프트 연산자를 사용할 수 있습니다.
 
-### 논리 표현식
+| 연산자     | 의미                              |
+| ------- | ------------------------------- |
+| `&`     | AND                             |
+| `|`     | OR                              |
+| `^`     | XOR                             |
+| `~expr` | 단항 비트와이즈 보수 (0은 1이 되고, 1은 0이 됨) |
+| `<<`    | 좌측 쉬프트                          |
+| `>>`    | 우측 쉬프트                          |
+
+```dart
+final value = 0x22;
+final bitmask = 0x0f;
+
+assert((value & bitmask) == 0x02); // AND
+assert((value & ~bitmask) == 0x20); // AND NOT
+assert((value | bitmask) == 0x2f); // OR
+assert((value ^ bitmask) == 0x2d); // XOR
+assert((value << 4) == 0x220); // 좌측 쉬프트
+assert((value >> 4) == 0x02); // 우측 쉬프트
+```
+
+### 조건 표현식
+
+Dart는 
 
 - 삼항 연산자 지원
 - Swift처럼 `a ?? b`를 지원한다! `a`가 `null`이면 `b`를 반환하고, 그렇지 않으면 `a`를 반환한다.
