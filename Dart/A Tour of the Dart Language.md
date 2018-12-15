@@ -59,7 +59,7 @@ main() {
 
 타입을 지정하지 않고 변수를 선언하는 방법.
 
-> **알아두기.** 이 사이트의 코드는 [Dart 스타일 가이드](https://www.dartlang.org/guides/language/effective-dart/style)에 있는 관습을 따릅니다.
+> **알아두기** 이 사이트의 코드는 [Dart 스타일 가이드](https://www.dartlang.org/guides/language/effective-dart/style)에 있는 관습을 따릅니다.
 
 ## 중요 개념
 
@@ -70,7 +70,7 @@ main() {
 - 이와 비슷하게 Dart는 전역 변수뿐만 아니라, 클래스나 오브젝트에 묶인 변수(각각 *정적* 변수, *인스턴스* 변수)도 지원합니다. 인스턴스 변수는 때때로 필드 혹은 프로퍼티라고도 알려져 있습니다.
 - Java와는 다르게, Dart는 `public`, `protected`, `private` 키워드를 가지고 있지 않습니다. 식별자가 밑줄(_)로 시작한다면, 그것은 그 라이브러리에서 private합니다. [라이브러리 및 가시성](https://www.dartlang.org/guides/language/language-tour#libraries-and-visibility)을 참고하십시오.
 - *식별자*는 문자나 밑줄(_)로 시작할 수 있으며, 이후에는 문자와 숫자를 더한 어떠한 조합도 올 수 있습니다.
-- Dart는 *표현식*(런타임 값을 가짐)과 *선언문*(런타임 값을 갖지 않음) 모두를 가지고 있습니다. 예를 들어 [조건식](https://www.dartlang.org/guides/language/language-tour#conditional-expressions) `condition ? expr1 : expr2`는 `expr1` 또는 `expr2`의 값을 갖습니다. 값을 갖지 않는 [if-else문]()과 비교해 보십시오. 선언문은 종종 하나 또는 그 이상의 표현식을 포함하나 표현식은 선언문을 직접적으로 포함할 수 없습니다.
+- Dart는 *표현식*(런타임 값을 가짐)과 *선언문*(런타임 값을 갖지 않음) 모두를 가지고 있습니다. 예를 들어 [조건 표현식](https://www.dartlang.org/guides/language/language-tour#conditional-expressions) `condition ? expr1 : expr2`는 `expr1` 또는 `expr2`의 값을 갖습니다. 값을 갖지 않는 [if-else문]()과 비교해 보십시오. 선언문은 종종 하나 또는 그 이상의 표현식을 포함하나 표현식은 선언문을 직접적으로 포함할 수 없습니다.
 - Dart 툴은 두 종류의 문제 *경고*와 *에러*를 보고할 수 있습니다. 경고는 단지 코드가 동작하지 않을 수 있다는 것을 가리키지만 프로그램 실행을 막지는 않습니다. 에러는 컴파일 타임 또는 런타임에 발생할 수 있습니다. 컴파일 타임 에러는 코드 실행을 막습니다. 런타임 에러는 코드가 실행되는 동안 발생한 [예외](https://www.dartlang.org/guides/language/language-tour#exceptions)의 결과를 불러옵니다.
 
 ## 키워드
@@ -110,134 +110,457 @@ dynamic name = 'Bob';
 String name = 'Bob';
 ```
 
-> **알아두기.** 이 페이지는 지역 변수에 대해 타입 지정보다는, [스타일 가이드 추천](https://www.dartlang.org/guides/language/effective-dart/design#do-annotate-with-object-instead-of-dynamic-to-indicate-any-object-is-allowed)에 따라 `var`를 사용합니다.
+> **알아두기** 이 페이지는 지역 변수에 대해 타입 지정보다는, [스타일 가이드 추천](https://www.dartlang.org/guides/language/effective-dart/design#do-annotate-with-object-instead-of-dynamic-to-indicate-any-object-is-allowed)에 따라 `var`를 사용합니다.
 
 ### 기본값
 
-- 초기화되지 않은 변수는 `null`을 초기값으로 갖는다. Dart에서 모든 타입은 오브젝트이므로 숫자 타입의 변수도 초기값을 `null`로 갖는다.
+초기화되지 않은 변수는 초기값으로 `null`을 갖습니다. 숫자 타입의 변수도 초기에는 null인데, 숫자도 Dart의 다른 모든 것들처럼 오브젝트이기 때문입니다.
+
+```dart
+int lineCount;
+assert(lineCount == null);
+```
 
 ### final 및 const
 
-```dart
-// `name`은 변경될 수 없으며, String 타입으로 추론됨
-final name = "Bob";
-// 아래와 같이 타입을 명시한 상수를 선언할 수 있음
-final String name = "Bob";
-```
+변수를 변경할 의도가 전혀 없다면, `var`나 타입에 더하기보다는, `final`이나 `const`를 사용하십시오. final 변수는 오직 한 번만 설정될 수 있습니다. const 변수는 컴파일 타임 상수입니다. (const 변수는 암시적으로 final입니다.) final 전역 변수 또는 클래스 변수는 그것이 사용되는 최초 시점에 초기화됩니다.
 
-- 변수를 변화시킬 의도가 전혀 없다면, `var` 대신  `final`이나 `const`를 사용하라.
-  - `final` 변수는 오직 한 번만 설정 가능하다.
-  - `const` 변수는 컴파일 타임 상수이다. `const` 변수는 암시적으로 `final`이다.
-- `final` 전역변수 또는 클래스 변수는 사용되는 처음에 초기화된다.
-- 인스턴스 변수는 `const`가 아닌 `final`이다. `final` 인스턴스 변수는 생성자 구현부 시작 전에 초기화되어야 한다.
-  - 변수 선언부, 생성자*constructor* 매개변수, 생성자 이니셜라이저 리스트
-- `const`는 컴파일 타임 상수를 원할 때 사용하라.
-- `const`는 상수*값*을 생성할 때도 사용할 수 있음
+> **알아두기** 인스턴스 변수는 `final`은 될 수 있으나 `const`는 될 수 없습니다. final 인스턴스 변수는 생성자 구현부가 시작하기 전에 초기화되어 있어야 합니다. 변수 선언, 생성자 매개변수, 또는 생성자의 [이니셜라이저 리스트](https://www.dartlang.org/guides/language/language-tour#initializer-list)에서 그렇게 되어야 합니다.
+
+final 변수를 만들고 설정하는 예제가 있습니다.
 
 ```dart
-// array는 이제 다른 것을 가리킬 수 없다. (array에 다른 리스트를 할당할 수 없다.)
-// array가 가리키는 빈 리스트에 값을 추가할 수 있다.
-final array = [];
-// array는 이제 다른 것을 가리킬 수 없다.
-// array가 가리키는 빈 리스트는 const이므로 값을 추가할 수 없다.
-final array = const [];
-// const로 선언된 변수는 할당된 참조도 const이다.
-// const array = const []; 와 같은 코드이나 const를 중복되게 사용하지 말자.
-const array = [];
+final name = 'Bob'; // 타입 지정 없이 선언
+final String nickname = 'Bobby';
 ```
 
-> Dart에서 모든 타입은 클래스이며, 참조 타입이다.
+final 변수의 값을 변경할 수 없습니다.
+
+```dart
+// error
+name = 'Alice'; // Error: final 변수는 오직 한 번만 설정될 수 있습니다.
+```
+
+**컴파일 타임 상수**를 원한다면 `const`를 사용하십시오. const 변수가 클래스 레벨이 있다면, `static const`로 마크하십시오. 변수를 선언하는 곳에서 숫자나 문자열 리터럴, const 변수, 또는 상수에 대한 산술 연산의 결과와 같은 값을 컴파일 타임 상수에 설정하십시오.
+
+```dart
+const bar = 1000000;  // 감압 단위 (dynes/cm2)
+const double atm = 1.01325 * bar; // 표준 기압
+```
+
+`const` 키워드는 상수 선언에만 사용되지 않습니다. 상수 *값*을 만들 때도 사용 가능하며, 상수 값을 *만드는* 생성자를 선언할 때도 사용 가능합니다. 어떠한 변수라도 상수 값을 가질 수 있습니다.
+
+```dart
+var foo = const [];
+final bar = const [];
+const baz = []; // `const []`와 같음
+```
+
+위에 있는 `baz`처럼, `const` 선언의 초기화 표현식에서 `const`를 생략할 수 있습니다. [const를 중복으로 사용하지 마십시오](https://www.dartlang.org/guides/language/effective-dart/usage#dont-use-const-redundantly)를 참고하십시오.
+
+final이 아닌 변수, const가 아닌 변수, 심지어 그것이 상수 값을 갖기 위해 사용될지라도 그 값을 변경할 수 있습니다.
+
+```dart
+foo = [1, 2, 3];  // 이전에는 const [] 였음
+```
+
+const 변수의 값을 변경할 수 없습니다.
+
+```dart
+// Error
+baz = [42]; // Error: 상수 선언된 변수에 값을 할당할 수 없습니다.
+```
+
+상수 값을 만들기 위해 `const`를 사용하는 더 많은 정보는 [리스트](https://www.dartlang.org/guides/language/language-tour#lists), [맵](https://www.dartlang.org/guides/language/language-tour#maps), [클래스](https://www.dartlang.org/guides/language/language-tour#classes)를 참고하십시오.
 
 ## 내장 타입
 
-- 숫자 / 문자열 / 불리언 / 리스트(*배열*) / 맵*maps* / 런*runes*(유니코드 문자로 나타내어진 문자열) / 심볼*symbols*
-- 리터럴 문법을 사용하여 위의 오브젝트를 초기화할 수 있음
-- 일반적으로 변수를 초기화하기 위해 생성자*constructor*를 사용함
+Dart 언어는 다음의 타입에 대한 특별한 지원을 제공합니다.
+
+- 숫자
+- 문자열
+- 불리언
+- 리스트 (*배열*이라고도 알려져 있음)
+- 맵
+- 룬 (문자열에서 유니코드 문자를 표현하기 위함)
+- 심볼
+
+이러한 특별한 타입들은 리터럴을 사용하여 오브젝트를 초기화할 수 있습니다. 예를 들어 `'this is a string'`은 문자열 리터럴이고, `true`는 불리언 리터럴입니다.
+
+Dart의 모든 변수는 오브젝트(*클래스*의 인스턴스)를 참조하기 때문에 변수를 초기화하기 위해 *생성자*를 보통 사용할 수 있습니다. 몇몇 내장 타입은 그만의 생성자를 가지고 있습니다. 예를 들어 맵을 만들기 위해 `Map()` 생성자를 사용할 수 있습니다.
 
 ### 숫자
 
-- 두 종류가 있다.
-  - **int** : 플랫폼에 따라, 64비트를 넘지 않는 정수 값
-  - **double** : 64비트 부동 소수점
-    - Dart 2.1 이전에는 double 문맥에 정수 리터럴을 사용하면 에러가 났다.
-- `int`와 `double`은 `num`의 하위 타입.
-  - `dart:math` 라이브러리에서 `num` 타입이 지원하지 않는 것들을 찾아볼 수 있다.
+Dart의 숫자는 두 가지 종류로 나뉩니다.
+
+- [**int**](https://api.dartlang.org/stable/dart-core/int-class.html)
+  - 정수 값은 그 플랫폼에 따라 64비트보다 길지 않습니다. Dart VM에서 값은 -2<sup>63</sup>에서 2<sup>63</sup> - 1까지 될 수 있습니다. JavaScript에서 컴파일된 Dart는 [JavaScript 숫자](https://stackoverflow.com/questions/2802957/number-of-bits-in-javascript-numbers/2803010#2803010)를 사용하여 -2<sup>53</sup>에서 2<sup>53</sup> - 1까지 될 수 있습니다.
+- [**double**](https://api.dartlang.org/stable/dart-core/double-class.html)
+  - IEEE 754 표준에 의해 지정된 64비트(두 배 정밀도) 부동 소수점 숫자. 
+
+`int`와 `double`은 `num`의 하위 타입입니다. num 타입은 +, -, /, *와 같은 기본 연산자를 포함합니다. 또한 `abs()`, `ceil()`, `floor()`와 같은 메소드도 가지고 있습니다. (>>와 같은 비트와이즈 연산자는 `int` 클래스에 정의되어 있습니다.) num과 그 하위 타입이 당신이 찾고 있는 것을 가지고 있지 않다면, [dart:math](https://api.dartlang.org/stable/dart-math) 라이브러리는 가지고 있을지도 모릅니다.
+
+정수는 소수점이 없는 숫자입니다. 정수 리터럴을 정의하는 예제가 여기 있습니다.
 
 ```dart
-// int형 변수 x
 var x = 1;
-// double형 변수 y
-var y = 1.2;
-// 문자열을 정수로 파싱
-var one = int.parse("1");
-// 문자열을 실수로 파싱
-var onePointOne = double.parse("1.1");
-// 정수를 문자열로 파싱
-var oneAsString = 1.toString();
-// 실수를 문자열로 파싱. 소수점 아래 둘째 자리까지 유지
-var piAsString = 3.14159.toStringAsFixed(2);
+var hex = 0xDEADBEEF;
+```
+
+숫자가 소수를 포함한다면, 그것은 double입니다. double 리터럴을 정의하는 예제가 여기 있습니다.
+
+```dart
+var y = 1.1;
+var exponents = 1.42e5;
+```
+
+Dart 2.1에서 정수 리터럴은 필요하다면 double로 자동으로 변환됩니다.
+
+```dart
+double z = 1; // double z = 1.0과 같음
+```
+
+> **버전 기록** : Dart 2.1 이전에서 double 컨텍스트에 정수 리터럴을 사용하는 것은 에러를 발생시켰습니다.
+
+문자열을 숫자로, 또는 그 반대로 변환하는 방법이 여기 있습니다.
+
+```dart
+// String -> int
+var one = int.parse('1');
+assert(one == 1);
+
+// String -> double
+var onePointOne = double.parse('1.1');
+assert(onePointOne == 1.1);
+
+// int -> String
+String oneAsString = 1.toString();
+assert(oneAsString == '1');
+
+// double -> String
+String piAsString = 3.14159.toStringAsFixed(2);
+assert(piAsString == '3.14');
+```
+
+int 타입은 전통적인 비트와이즈 쉬프트 (<<, >>), AND (&), OR(|) 연산자를 지정합니다.
+
+```dart
+assert((3 << 1) == 6); // 0011 << 1 == 0110
+assert((3 >> 1) == 1); // 0011 >> 1 == 0001
+assert((3 | 4) == 7); // 0011 | 0100 == 0111
+```
+
+리터럴 숫자는 컴파일 타임 상수입니다. 많은 산술 표현식 또한, 피연산자들이 숫자 값을 구하는 컴파일 타임 상수인 한, 컴파일 타임 상수입니다.
+
+```dart
+const msPerSecond = 1000;
+const secondsUntilRetry = 5;
+const msUntilRetry = secondsUntilRetry * msPerSecond;
 ```
 
 ### 문자열
 
-- Dart에서 문자열은 UTF-16 코드 단위의 시퀀스. 작은따옴표 또는 큰따옴표를 사용하여 문자열을 생성할 수 있다.
-- 문자열 내에 `${expression}`을 사용하여 표현식의 값을 넣을 수 있다. 표현식이 식별자라면 `{}`를 생략할 수 있다.
-- 오브젝트와 상응하는 문자열을 얻기 위해 오브젝트의 `toString()` 메소드를 호출하기.
-- `+` 연산자로 문자열을 이어붙일 수 있음
-- 멀티 라인 문자열을 지원. Swift와 같은 방법으로 작성. (세 개의 작은따옴표 또는 큰따옴표 사이에 작성)
-- `r` 접두사를 붙여 *raw string*을 생성할 수 있음
-  - 이스케이핑 문자, 문자열 보간법 등이 적용되지 않음
+Dart의 문자열은 UTF-16 코드 단위의 시퀀스입니다. 문자열을 만들기 위해 작은따옴표 또는 큰따옴표를 사용할 수 있습니다.
 
 ```dart
-// In a raw string, not even \n gets special treatment.
-var s = r"In a raw string, not even \n gets special treatment.";
+var s1 = 'Single quotes work well for string literals.';
+var s2 = "Double quotes work just as well.";
+var s3 = 'It\'s easy to escape the string delimiter.';
+var s4 = "It's even easier to use the other delimiter.";
 ```
 
-- 유니코드 문자로 표현된 문자열을 만들고 싶다면 runes를 참고하기
-- `const` 문자열에 문자열 보간법을 사용하여 `const` 변수를 포함할 수 있으나, 일반 변수는 포함할 수 없음
+`${표현식}`을 사용하여 문자열 안에 표현식의 값을 넣을 수 있습니다. 표현식이 식별자라면 {}을 생략할 수 있습니다. 오브젝트에 대응하는 문자열을 얻기 위해 Dart는 오브젝트의 `toString()` 메소드를 호출합니다.
+
+```dart
+var s = 'string interpolation';
+
+assert('Dart has $s, which is very handy.' ==
+    'Dart has string interpolation, ' +
+        'which is very handy.');
+assert('That deserves all caps. ' +
+        '${s.toUpperCase()} is very handy!' ==
+    'That deserves all caps. ' +
+        'STRING INTERPOLATION is very handy!');
+```
+
+> **알아두기** : `==` 연산자는 두 오브젝트가 동일한지 검증합니다. 두 개의 문자열은 같은 코드 단위의 시퀀스를 포함한다면 동일합니다.
+
+인접한 문자열 리터럴 또는 `+` 연산자를 사용하여 문자열을 이어붙일 수 있습니다.
+
+```dart
+var s1 = 'String '
+    'concatenation'
+    " works even over line breaks.";
+assert(s1 ==
+    'String concatenation works even over '
+    'line breaks.');
+
+var s2 = 'The + operator ' + 'works, as well.';
+assert(s2 == 'The + operator works, as well.');
+```
+
+여러줄 문자열을 만드는 다른 방법은 작은따옴표 또는 큰따옴표를 세 번 사용하는 것입니다.
+
+```dart
+var s1 = '''
+You can create
+multi-line strings like this one.
+''';
+
+var s2 = """This is also a
+multi-line string.""";
+```
+
+`r` 접두사를 붙여 "raw" 문자열을 만들 수 있습니다.
+
+```dart
+var s = r'In a raw string, not even \n gets special treatment.';
+```
+
+문자열에서 유니코드 문자열을 표현하는 방법은 [룬](https://www.dartlang.org/guides/language/language-tour#runes)을 참고하십시오.
+
+리터럴 문자열은, 어떠한 보간된 표현식이 null이나 숫자, 문자열, 또는 불리언 값을 내는 컴파일 타임 상수인 한, 컴파일 타임 상수입니다.
+
+```dart
+// const 문자열 안에서 동작합니다.
+const aConstNum = 0;
+const aConstBool = true;
+const aConstString = 'a constant string';
+
+// const 문자열 안에서 작동하지 않습니다.
+var aNum = 0;
+var aBool = true;
+var aString = 'a string';
+const aConstList = [1, 2, 3];
+
+const validConstString = '$aConstNum $aConstBool $aConstString';
+// const invalidConstString = '$aNum $aBool $aString $aConstList';
+```
+
+문자열을 사용하는 더 많은 정보는 [문자열 및 정규표현식](https://www.dartlang.org/guides/libraries/library-tour#strings-and-regular-expressions)에서 참고하십시오.
 
 ### 불리언
 
-- `bool` 타입 사용. `true` 및 `false`. 컴파일 타임 상수.
+불리언 값을 표현하기 위해 Dart는 `bool`이라는 이름의 타입을 가지고 있습니다. 오직 두 개의 오브젝트만이 bool 타입을 갖습니다. 불리언 리터럴 `true`와 `false`가 그것이며, 둘 모두 컴파일 타임 상수입니다.
+
+Dart의 타입 안전은 `if (불리언이_아닌_값)`이나 `assert (불리언이_아닌_값)`을 사용할 수 없다는 것을 의미합니다. 대신 다음과 같이 명시적으로 값을 검증하십시오.
+
+```dart
+// 빈 문자열 검증
+var fullName = '';
+assert(fullName.isEmpty);
+
+// 0 검증
+var hitPoints = 0;
+assert(hitPoints <= 0);
+
+// null 검증
+var unicorn;
+assert(unicorn == null);
+
+// NaN 검증
+var iMeantToDoThis = 0 / 0;
+assert(iMeantToDoThis.isNaN);
+```
 
 ### 리스트
 
-- 일반적으로 *array*와 의미가 같음
-- 대괄호 리터럴을 사용하여 리스트 초기화 가능
+아마 거의 모든 프로그래밍 언어에서 가장 일반적인 컬렉션은 *배열*, 또는 오브젝트의 순서 있는 그룹일 것입니다. Dart에서 배열은 [List](https://api.dartlang.org/stable/dart-core/List-class.html) 오브젝트이므로, 대부분의 사람들은 *리스트*라고 부릅니다.
+
+Dart의 리스트 리터럴은 JavaScript의 배열 리터럴처럼 보입니다.
+
+```dart
+var list = [1, 2, 3];
+```
+
+> **알아두기** 분석기는 `list`가 `List<int>` 타입을 가지고 있다고 추론합니다. 리스트에 정수가 아닌 오브젝트를 추가하려고 한다면 분석기나 런타임은 에러를 일으킵니다. [타입 추론](https://www.dartlang.org/guides/language/sound-dart#type-inference)을 참고하십시오.
+
+리스트는 0 기반 인덱싱을 사용합니다. 0은 첫 번째 요소의 인덱스이고 `list.length - 1`은 마지막 요소의 인덱스입니다. JavaScript처럼 리스트의 길이를 얻고 리스트 요소를 참조할 수 있습니다.
+
+```dart
+var list = [1, 2, 3];
+assert(list.length == 3);
+assert(list[1] == 2);
+
+list[1] = 1;
+assert(list[1] == 1);
+```
+
+컴파일 타임 상수 리스트를 만들기 위해 리스트 리터럴 이전에 `const`를 추가하십시오.
+
+```dart
+var constantList = const [1, 2, 3];
+// constantList[1] = 1; // 이 코드는 에러를 발생시킵니다.
+```
+
+List 타입은 리스트를 다루기 위한 많은 손쉬운 메소드를 가지고 있습니다. 리스트에 대한 더 많은 정보는 [제네릭](https://www.dartlang.org/guides/language/language-tour#generics)과 [컬렉션](https://www.dartlang.org/guides/libraries/library-tour#collections)을 참고하십시오.
 
 ### 맵
 
-- 키와 값의 쌍. Swift의 딕셔너리.
-  - 키는 유일해야 함
-- 중괄호 사이에 키와 값을 콜론으로 구분하여 초기화 가능, `Map` 타입
+일반적으로 맵은 키와 값으로 구성된 오브젝트입니다. 키와 값은 어떠한 타입의 오브젝트라도 될 수 있습니다. 각각의 *키*는 오직 한 번만 발생하지만, 같은 *값*을 여러 번 사용할 수 있습니다. Dart의 맵에 대한 지원은 맵 리터럴과 [Map](https://api.dartlang.org/stable/dart-core/Map-class.html) 타입에 의해 제공됩니다.
+
+맵 리터럴을 사용하여 생성하는 Dart 맵에 대한 예제입니다.
 
 ```dart
-// Map<String, String> 타입으로 추론됨
 var gifts = {
-    "first": "partridge",
-    "second": "turtledoves",
-    "fifth": "golden rings"
+  // Key:    Value
+  'first': 'partridge',
+  'second': 'turtledoves',
+  'fifth': 'golden rings'
 };
-// Map 생성자를 사용할 수도 있음. Swift와 비슷
-var gifts = Map();
-gifts[1] = "asdf";
-gifts[3] = "fsad";
+
+var nobleGases = {
+  2: 'helium',
+  10: 'neon',
+  18: 'argon',
+};
 ```
+
+> **알아두기** 분석기는 `gifts`를 `Map<String, String>` 타입으로 추론하고, `nobleGases`를 `Map<int, String>` 타입으로 추론합니다. 이들에게 잘못된 타입의 값을 추가하려 한다면, 분석기나 런타임은 에러를 발생시킵니다. [타입 추론](https://www.dartlang.org/guides/language/sound-dart#type-inference)을 참고하십시오.
+
+Map 생성자를 사용하여 같은 오브젝트를 만들 수 있습니다.
+
+```dart
+var gifts = Map();
+gifts['first'] = 'partridge';
+gifts['second'] = 'turtledoves';
+gifts['fifth'] = 'golden rings';
+
+var nobleGases = Map();
+nobleGases[2] = 'helium';
+nobleGases[10] = 'neon';
+nobleGases[18] = 'argon';
+```
+
+> **알아두기** `Map()` 대신 `new Map()`을 확인할 것이라 기대했을 것입니다. Dart 2에서부터 `new` 키워드는 선택적입니다. [생성자 사용하기](https://www.dartlang.org/guides/language/language-tour#using-constructors)를 참고하십시오.
+
+JavaScript와 같은 방법으로 키-값 쌍을 맵에 추가할 수 있습니다.
+
+```dart
+var gifts = {'first': 'partridge'};
+gifts['fourth'] = 'calling birds'; // 키-값 쌍 추가하기
+```
+
+JavaScript와 같은 방법으로 맵에서 값을 가져올 수 있습니다.
+
+```dart
+var gifts = {'first': 'partridge'};
+assert(gifts['first'] == 'partridge');
+```
+
+맵에 없는 키를 찾는다면 null을 반환받을 것입니다.
+
+```dart
+var gifts = {'first': 'partridge'};
+assert(gifts['fifth'] == null);
+```
+
+`.length`를 사용하여 맵에 있는 키-값 쌍의 숫자를 얻을 수 있습니다.
+
+```dart
+var gifts = {'first': 'partridge'};
+gifts['fourth'] = 'calling birds';
+assert(gifts.length == 2);
+```
+
+컴파일 타임 상수 맵을 만들기 위해 맵 리터럴 이전에 `const`를 추가하십시오.
+
+```dart
+final constantMap = const {
+  2: 'helium',
+  10: 'neon',
+  18: 'argon',
+};
+// constantMap[2] = 'Helium'; // 이 코드는 에러를 발생시킵니다.
+```
+
+맵에 관한 더 많은 정보는 [제네릭](https://www.dartlang.org/guides/language/language-tour#generics)과 [맵](https://www.dartlang.org/guides/libraries/library-tour#maps)을 참고하십시오.
 
 ### 룬*Runes*
 
-- UTF-32 (유니코드)로 구성된 문자열
-- 문자열 (`String`)과 이것을 구분하여 사용해야 함
-  - 문자열은 UTF-16
+Dart에서 룬은 문자열의 UTF-32 코드의 포인트들입니다.
+
+유니코드는 전세계의 쓰기 시스템에서 사용되는 각각의 문자, 숫자, 심볼에 대한 유일한 숫자 값을 정의합니다. Dart의 문자열이 UTF-16 코드 단위의 시퀀스이기 때문에, 32비트의 유니코드 값을 문자열 내에 표현하려면 특별한 구문이 필요합니다.
+
+유니코드 코드 포인트를 표현하는 일반적인 방법은 `\uXXXX`입니다. XXXX는 네 개의 16진수 값입니다. 예를 들어 하트 문자는 `\u2665`입니다. 네 개 이하 또는 이상의 16진수를 지정하기 위해 값을 중괄호 안에 위치시킵니다. 예를 들어 웃고 있는 이모지는 `\u{1f600}`입니다.
+
+[String](https://api.dartlang.org/stable/dart-core/String-class.html) 클래스는 룬 정보를 추출하기 위해 사용할 수 있는 몇 가지 프로퍼티를 가지고 있습니다. `codeUnitAt`과 `codeUnit` 프로퍼티는 16비트 코드 단위를 반환합니다. 문자열의 룬을 얻기 위해 `runes` 프로퍼티를 사용하십시오.
+
+다음의 예시는 룬, 16비트 코드 단위, 32비트 코드 포인트 간의 관계를 묘사합니다.
+
+```dart
+main() {
+  var clapping = '\u{1f44f}';
+  print(clapping);
+  print(clapping.codeUnits);
+  print(clapping.runes.toList());
+
+  Runes input = new Runes(
+      '\u2665  \u{1f605}  \u{1f60e}  \u{1f47b}  \u{1f596}  \u{1f44d}');
+  print(new String.fromCharCodes(input));
+}
+/*
+👏
+[55357, 56399]
+[128079]
+♥  😅  😎  👻  🖖  👍
+👏
+[55357, 56399]
+[128079]
+♥  😅  😎  👻  🖖  👍
+*/
+```
+
+> **알아두기** 리스트 작업을 사용하여 룬을 다룰 때 주의하십시오. 이 접근법은 특정 언어, 문자 집합, 연산에 따라 쉽게 부서질 수 있습니다. 스택오버플로우에 있는 [Dart에서 String을 어떻게 반전시킵니까?](http://stackoverflow.com/questions/21521729/how-do-i-reverse-a-string-in-dart)를 참고하십시오.
 
 ### 심볼*Symbols*
 
-- `#` 다음 식별자 이름을 위치시킴. `#radix`
-- 심볼 오브젝트는 Dart 프로그램에서 선언된 연산자나 식별자를 나타냄
-- 이름에 의해 식별자가 참조되는 API에서 매우 중요함
-- 컴파일 타임 상수.
+[Symbol](https://api.dartlang.org/stable/dart-core/Symbol-class.html) 오브젝트는 Dart 프로그램에서 선언된 연산자나 식별자를 나타냅니다. 심볼을 사용할 필요가 전혀 없을 수 있으나, 이름으로 식별자를 참조하는 API에는 매우 귀중한 것입니다. 축소는 식별자 심볼이 아닌 식별자 이름을 바꾸기 때문입니다.
+
+식별자에 대한 심볼을 얻기 위해 심볼 리터럴을 사용하십시오. `#` 기호 다음에 식별자가 오는 형태입니다.
+
+```dart
+#radix
+#bar
+```
+
+심볼 리터럴은 컴파일 타임 상수입니다.
 
 ## 함수
+
+Dart는 본질적으로 객체지향 언어입니다. 그래서 심지어 함수도 오브젝트이고 [Function](https://api.dartlang.org/stable/dart-core/Function-class.html)이라는 타입을 갖습니다. 이것은 함수가 변수에 할당되거나 다른 함수로 인자로서 넘겨질 수 있다는 것을 의미합니다. 또한 Dart의 클래스의 인스턴스를 마치 함수인 것처럼 호출할 수 있습니다. [호출 가능한 클래스](https://www.dartlang.org/guides/language/language-tour#callable-classes)를 참고하십시오.
+
+함수를 구현하는 예시입니다.
+
+```dart
+bool isNoble(int atomicNumber) {
+  return _nobleGases[atomicNumber] != null;
+}
+```
+
+Effective Dart가 [public API에 대한 타입 지정](https://www.dartlang.org/guides/language/effective-dart/design#prefer-type-annotating-public-fields-and-top-level-variables-if-the-type-isnt-obvious)을 추천하고 있을지라도, 타입을 생략하더라도 함수는 여전히 동작합니다.
+
+```dart
+isNoble(atomicNumber) {
+  return _nobleGases[atomicNumber] != null;
+}
+```
+
+오직 하나의 표현식만을 포함하는 함수에서 속기 구문을 사용할 수 있습니다.
+
+```dart
+bool isNoble(int atomicNumber) => _nobleGases[atomicNumber] != null;
+```
+
+`=> 표현식` 구문은 `{ return 표현식; }`의 약칭입니다. `=>` 표기법은 *화살표* 구문이라고 때때로 언급됩니다.
+
+> **알아두기** *선언문*이 아닌, 오직 *표현식*만이 화살표(=>)와 세미콜론(;) 사이에 나타날 수 있습니다. 예를 들어 [if 문](https://www.dartlang.org/guides/language/language-tour#if-and-else)은 거기에 들어갈 수 없으나 [조건 표현식](https://www.dartlang.org/guides/language/language-tour#conditional-expressions)은 들어갈 수 있습니다.
+
+함수는 두 가지 종류의 매개변수, 필수와 선택 매개변수를 가질 수 있습니다. 필수 매개변수는 제일 먼저 나열되며, 이후에 선택 매개변수가 따라옵니다. 이름 있는 선택 매개변수 또한 `@required`로 마크될 수 있습니다.
+
+### 선택 매개변수
+
+선택 매개변수는 
 
 - 함수 또한 오브젝트이고 `Function` 타입을 갖는다.
   - 함수는 변수에 할당될 수 있고 다른 함수에 인자로 넘겨질 수 있다.
@@ -932,7 +1255,7 @@ names.addAll(['Seth', 'Kathy', 'Lars']);
 print(names is List<String>); // true
 ```
 
-> **알아두기.** 대조적으로 Java에서의 제니릭은 소거*erasure*를 사용합니다. 이는 제네릭 타입 매개변수가 런타임에서 삭제된다는 것을 의미합니다. Java에서 어떠한 오브젝트가 List인지 테스트할 수 있으나 그것이 `List<String>`인지는 테스트할 수 없습니다.
+> **알아두기** 대조적으로 Java에서의 제니릭은 소거*erasure*를 사용합니다. 이는 제네릭 타입 매개변수가 런타임에서 삭제된다는 것을 의미합니다. Java에서 어떠한 오브젝트가 List인지 테스트할 수 있으나 그것이 `List<String>`인지는 테스트할 수 없습니다.
 
 ### 매개변수를 갖는 타입 제한하기
 
@@ -1011,7 +1334,7 @@ import 'dart:html';
 import 'package:test/test.dart';
 ```
 
-> **알아두기.** *URI*는 uniform resource identifier의 약자입니다. URL(uniform resource locator)는 URI의 일반적인 종류입니다.
+> **알아두기** *URI*는 uniform resource identifier의 약자입니다. URL(uniform resource locator)는 URI의 일반적인 종류입니다.
 
 ### 라이브러리 접두사 지정하기
 
@@ -1112,7 +1435,7 @@ Future checkVersion() async {
 }
 ```
 
-> **알아두기.** 비동기 함수가 시간이 오래 걸리는 작업을 수행할지라도 그러한 작업을 기다리지 않습니다. 대신 비동기 함수는 첫 번째 `await` 표현식[세부사항](https://github.com/dart-lang/sdk/blob/master/docs/newsletter/20170915.md#synchronous-async-start)과 마주칠 때까지만 실행됩니다. 그리고 나서 Future 오브젝트를 반환하며, `await` 표현식이 완료된 직후의 실행을 재개합니다.
+> **알아두기** 비동기 함수가 시간이 오래 걸리는 작업을 수행할지라도 그러한 작업을 기다리지 않습니다. 대신 비동기 함수는 첫 번째 `await` 표현식[세부사항](https://github.com/dart-lang/sdk/blob/master/docs/newsletter/20170915.md#synchronous-async-start)과 마주칠 때까지만 실행됩니다. 그리고 나서 Future 오브젝트를 반환하며, `await` 표현식이 완료된 직후의 실행을 재개합니다.
 
 `try`, `catch`, `finally`를 사용하여 `await`를 사용한 코드의 에러를 처리하고 정리할 수 있습니다.
 
@@ -1170,7 +1493,7 @@ Stream으로부터 값을 가져올 필요가 있을 때 두 가지 선택지가
 - `async`와 *비동기 for 루프asynchronous for loop*(`await for`) 사용하기
 - [라이브러리 투어](https://www.dartlang.org/guides/libraries/library-tour#stream)에 서술된 Stream API 사용하기
   
-> **알아두기.** `await for`를 사용하기 전, 코드가 깔끔하며 스트림의 결과 모두를 기다리는 것을 정말 원하는지 확실하게 하십시오. 예를 들어 보통 UI 이벤트 리스너에서는 `await for`를 **사용해서는 안됩니다.** UI 프레임워크는 끝없는 이벤트 스트림을 전송하기 때문입니다.
+> **알아두기** `await for`를 사용하기 전, 코드가 깔끔하며 스트림의 결과 모두를 기다리는 것을 정말 원하는지 확실하게 하십시오. 예를 들어 보통 UI 이벤트 리스너에서는 `await for`를 **사용해서는 안됩니다.** UI 프레임워크는 끝없는 이벤트 스트림을 전송하기 때문입니다.
 
 비동기 for 루프는 다음의 형태를 가지고 있습니다.
 
@@ -1314,7 +1637,7 @@ void main() {
 }
 ```
 
-> **알아두기.** 현재 typedef는 함수 타입에 제한되어 있습니다. 우리는 이것이 변화하기를 기대합니다.
+> **알아두기** 현재 typedef는 함수 타입에 제한되어 있습니다. 우리는 이것이 변화하기를 기대합니다.
 
 typedef는 단순히 별칭이기 때문에, 어떠한 함수의 타입을 검증하는 방법을 제공합니다.
 
