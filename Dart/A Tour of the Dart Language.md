@@ -1514,41 +1514,107 @@ try {
 
 ## 클래스
 
-- Dart는 클래스 및 믹스인 기반 상속을 사용한 객체 지향 언어.
-- 모든 오브젝트는 클래스의 인스턴스이며, 모든 클래스는 `Object`의 자식클래스이다.
-- **믹스인 기반 상속**
-  - `Object`를 제외하고 (기반 클래스이므로), 모든 클래스가 정확히 하나의 부모 클래스를 가지고 있을지라도, 클래스 몸체는 다중 클래스 계층에서 재사용될 수 있다.
+Dart는 클래스와 믹스인 기반 상속과 함께하는 객체 지향 언어입니다. 모든 오브젝트는 클래스의 인스턴스이고, 모든 클래스는 [Object](https://api.dartlang.org/stable/dart-core/Object-class.html)에서 내려옵니다. *믹스인 기반 상속*은 Object를 제외한 모든 클래스가 정확히 하나의 부모 클래스를 가지고 있을지라도, 클래스 구현부가 다중 클래스 상속에서 재사용될 수 있다는 것을 의미합니다.
 
 ### 클래스 멤버 사용하기
 
-- 오브젝트는 함수 및 데이터로 구성된 *멤버*를 갖는다. (각각 *메소드* 및 *인스턴스 변수*)
-- 메소드를 호출하는 것은, 오브젝트에서 그것을 이끌어내는 것*invoke*.
-- `.` 연산자로 인스턴스 변수나 메소드를 참조할 수 있음
-- `?.` 연산자로 왼쪽 피연산자가 `null`일 때 발생하는 예외를 피할 수 있음. `null`인 경우 아무 일도 일어나지 않는다.
+오브젝트는 함수와 데이터 (각각 *메소드*와 *인스턴스 변수*)로 구성된 *멤버*를 가지고 있습니다. 메소드를 호출할 때, 오브젝트에 대하여 그것을 *호출합니다*. 메소드는 그 오브젝트의 함수와 데이터에 접근합니다.
+
+점(`.`)을 사용하여 인스턴스 변수나 메소드를 참조합니다.
+
+```dart
+var p = Point(2, 2);
+
+// 인스턴스 변수 y의 값 설정
+p.y = 3;
+
+// y의 값 얻기
+assert(p.y == 3);
+
+// p에 대한 distanceTo() 호출
+num distance = p.distanceTo(Point(4, 4));
+```
+
+`.` 대신 `?.`을 사용하여 왼쪽 피연산자가 null일 때의 예외를 피할 수 있습니다.
+
+```dart
+// p가 null이 아니면 y 값을 4로 설정
+p?.y = 4;
+```
 
 ### 생성자 사용하기
 
-- 생성자*constructor*를 사용하여 오브젝트를 생성한다.
-- 생성자 이름은 `ClassName` 또는 `ClassName.identifier`이다.
-- `new` 키워드는 Dart 2부터 사용하지 않아도 된다. 사용하지 말자.
+*생성자*를 사용하여 오브젝트를 만들 수 있습니다. 생성자 이름은 `클래스_이름` 또는 `클래스_이름.식별자`의 형태가 될 수 있습니다. 예를 들어 다음의 코드는 `Point()` 생성자와 `Point.fromJson()` 생성자를 사용하여 `Point` 오브젝트를 만듭니다.
 
 ```dart
 var p1 = Point(2, 2);
-// 생성자의 매개변수에 맵을 넘겨줌
-var p2 = Point.fromJson({"x": 1, "y": 2});
+var p2 = Point.fromJson({'x': 1, 'y': 2});
 ```
 
-- 몇몇 클래스는 상수 생성자*constant constructor*를 제공하며, 생성자 이름 앞에 `const`를 붙인다.
+다음의 코드는 같은 효과를 내지만, 생성자 이름 전에 선택적인 키워드 `new`를 사용합니다.
+
+```dart
+var p1 = new Point(2, 2);
+var p2 = new Point.fromJson({'x': 1, 'y': 2});
+```
+
+> **버전 기록** `new` 키워드는 Dart 2에서 선택적이게 되었습니다.
+
+몇몇 클래스는 [상수 생성자](https://www.dartlang.org/guides/language/language-tour#constant-constructors)를 제공합니다. 상수 생성자를 사용하여 컴파일 타임 상수를 만들기 위해 생성자 이름 이전에 `const` 키워드를 추가하십시오.
+
+```dart
+var p = const ImmutablePoint(2, 2);
+```
+
+두 개의 동일한 컴파일 타임 상수를 생성하는 것은 동일한 인스턴스의 결과를 냅니다.
 
 ```dart
 var a = const ImmutablePoint(1, 1);
+var b = const ImmutablePoint(1, 1);
+
+assert(identical(a, b)); // 같은 인스턴스!
 ```
 
-- `const`로 선언된 변수는 이에 할당된 모든 것들도 상수. 암시적으로 모두 `const` 키워드가 붙어있는 것.
+*상수 컨텍스트*에서 생성자나 리터럴 이전에 `const`를 생략할 수 있습니다.
+
+```dart
+// 많은 const 키워드 사용
+const pointAndLine = const {
+  'point': const [const ImmutablePoint(0, 0)],
+  'line': const [const ImmutablePoint(1, 10), const ImmutablePoint(-2, 11)],
+};
+```
+
+`const` 키워드의 첫 번째 사용을 제외하고 모두 생략할 수 있습니다.
+
+```dart
+// 오직 하나의 const가 상수 컨텍스트를 만들어 냅니다.
+const pointAndLine = {
+  'point': [ImmutablePoint(0, 0)],
+  'line': [ImmutablePoint(1, 10), ImmutablePoint(-2, 11)],
+};
+```
+
+상수 생성자가 상수 컨텍스트 바깥에 있고 `const` 없이 호출된다면, **상수가 아닌 오브젝트**를 만들어 냅니다.
+
+```dart
+var a = const ImmutablePoint(1, 1); // 상수를 생성
+var b = ImmutablePoint(1, 1); // 상수를 생성하지 않음
+
+assert(!identical(a, b)); // 같은 인스턴스가 아님!
+```
+
+> **버전 기록** `const` 키워드는 Dart 2에서 상수 컨텍스트에서 선택적이게 되었습니다.
 
 ### 오브젝트 타입 가져오기
 
-- 오브젝트의 `runtimeType` 프로퍼티로 가져올 수 있음. `Type` 오브젝트를 반환함.
+런타임에서 오브젝트의 타입을 얻기 위해 Object의 `runtimeType` 프로퍼티를 사용할 수 있습니다. 이는 [Type](https://api.dartlang.org/stable/dart-core/Type-class.html) 오브젝트를 반환합니다.
+
+```dart
+print('The type of a is ${a.runtimeType}');
+```
+
+여기까지 우리는 클래스를 *사용*하는 방법을 알아보았습니다. 나머지 섹션은 클래스를 *구현*하는 방법에 관하여 보여줍니다.
 
 ### 인스턴스 변수
 
@@ -1560,12 +1626,29 @@ class Point {
 }
 ```
 
-- 모든 인스턴스 변수는 암시적으로 접근자 메소드를 생성한다. `final`이 아닌 인스턴스 변수는 암시적으로 설정자 메소드 또한 생성한다.
-  - 메소드라고는 하지만 Swift의 get set이 모두 있는 연산 프로퍼티라고 생각하면 될듯. `.` 연산자를 통해 변수에 접근하거나 값을 할당할 수 있음
+모든 초기화되지 않은 변수는 `null` 값을 갖습니다.
+
+모든 인스턴스 변수는 암시적으로 *접근자* 메소드를 생성합니다. final이 아닌 인스턴스 변수는 또한 암시적으로 *생성자* 메소드를 생성합니다. [접근자 및 생성자](https://www.dartlang.org/guides/language/language-tour#getters-and-setters)를 참고하십시오.
+
+```dart
+class Point {
+  num x;
+  num y;
+}
+
+void main() {
+  var point = Point();
+  point.x = 4; // x의 설정자 메소드 사용
+  assert(point.x == 4); // x의 접근자 메소드 사용
+  assert(point.y == null); // 기본값 null
+}
+```
+
+생성자나 메소드 대신 인스턴스 변수가 선언된 곳에서 그것을 초기화한다면, 값은 인스턴스가 생성될 때, 생성자와 그 이니셜라이저 리스트가 실행되기 전에 설정됩니다.
 
 ### 생성자
 
-- 그 클래스의 이름과 같은 이름의 함수를 만들어 생성자를 선언한다.
+클래스와 같은 이름을 갖는 함수를 만드는 것으로, 선택적으로 [이름 있는 생성자](https://www.dartlang.org/guides/language/language-tour#named-constructors)에 서술된 것처럼 추가적인 식별자를 더하여, 생성자를 선언하십시오. 이는 클래스의 새로운 인스턴스를 만듭니다.
 
 ```dart
 class Point {
@@ -1577,242 +1660,601 @@ class Point {
 }
 ```
 
-- `this` 키워드는 현재 인스턴스를 참조하며, 위의 경우처럼 이름이 충돌할 때만 사용하고, 나머지 경우에는 사용을 지양하자.
-- 인스턴스 변수에 생성자 인자를 할당하는 패턴은 매우 흔하므로, 이에 대한 syntatic sugar가 존재한다.
+`this` 키워드는 현재 인스턴스를 참조합니다.
+
+> **알아두기** 이름이 충돌할 때만 `this`를 사용하십시오. 그렇지 않은 경우 Dart의 스타일은 `this`를 생략합니다.
+
+생성자의 인자를 인스턴스 변수에 할당하는 패턴은 매우 흔한 것으로, Dart는 이를 쉽게 하기 위한 syntatic sugar를 가지고 있습니다.
 
 ```dart
 class Point {
-    num x, y;
-    Point(this.x, this.y);
+  num x, y;
+
+  // 생성자 구현부가 실행되기 전에 x와 y를 설정하는 syntatic sugar
+  Point(this.x, this.y);
 }
 ```
 
-**기본 생성자**
+#### 기본 생성자
 
-- 생성자를 선언하지 않으면 기본 생성자가 제공된다.
-- 인자가 없으며 부모 클래스의 인자가 없는 생성자를 호출한다.
+생성자를 선언하지 않는다면 기본 생성자가 주어집니다. 기본 생성자는 인자를 가지고 있지 않으며 부모 클래스의 인자가 없는 생성자를 호출합니다.
 
-**생성자는 상속되지 않는다**
+#### 생성자는 상속되지 않는다
 
-- 자식 클래스는 부모 클래스로부터 생성자를 상속받지 않는다. 생성자를 선언하지 않은 자식 클래스는 오직 기본 생성자만을 갖는다.
+자식 클래스는 부모 클래스로부터 생성자를 상속받지 않습니다. 생성자를 선언하지 않은 자식 클래스는 기본 생성자(인자 없음, 이름 없음)만을 가지고 있습니다.
 
-**이름 있는 생성자*Named constructor***
+#### 이름 있는 생성자
 
-- 하나 이상의 생성자를 구현하거나 추가적인 명백함을 제공하기 위해 이름 있는 생성자를 사용한다.
+이름 있는 생성자를 사용하여 클래스에 다양한 생성자를 구현하거나 추가적인 명백함을 제공하십시오.
 
 ```dart
 class Point {
-    num x, y;
-    Point(this.x, this.y);
-    // 인자를 받지 않는 named constructor
-    Point.origin() {
-        x = 0;
-        y = 0;
-    }
+  num x, y;
+
+  Point(this.x, this.y);
+
+  // 이름 있는 생성자
+  Point.origin() {
+    x = 0;
+    y = 0;
+  }
 }
 ```
 
-**부모 클래스에 있는 사용자 정의 생성자 호출하기**
+생성자는 상속되지 않는다는 것을 기억하십시오. 이는 부모 클래스의 이름 있는 생성자가 자식 클래스에게 상속되지 않는다는 것을 의미합니다. 부모 클래스에서 정의된 이름 있는 생성자와 함께 자식 클래스가 만들어지기 원한다면 자식 클래스에서 그 생성자를 구현해야 합니다.
 
-- 부모 클래스가 이름이 없고 인자가 없는 생성자를 가지고 있지 않다면, 부모 클래스에 있는 생성자 중 하나를 명시적으로 호출해 주어야 한다.
-  - 생성자 몸체 시작 직전에 `:`을 사용하여 상위 클래스의 생성자를 명시한다.
-  - `super` 키워드를 사용하여 부모 클래스를 참조한다.
+#### 부모 클래스에 있는 사용자 정의 생성자 호출하기
+
+기본적으로 자식 클래스에 있는 생성자는 부모 클래스의 이름이 없고 인자가 없는 생성자를 호출합니다. 부모 클래스의 생성자는 생성자 구현부의 시작 지점에서 호출됩니다. [이니셜라이저 리스트](https://www.dartlang.org/guides/language/language-tour#initializer-list) 또한 사용될 수 있다면 그것은 부모 클래스가 호출되기 전에 실행됩니다. 요약하자면, 실행의 순서는 다음과 같습니다.
+
+1. 이니셜라이저 리스트
+2. 부모 클래스의 인자가 없는 생성자
+3. 메인 클래스의 인자가 없는 생성자
+
+부모 클래스가 이름이 없고 인자가 없는 생성자를 가지고 있지 않다면 부모 클래스에 있는 생성자들 중 하나를 호출해주어야 합니다. 부모 클래스의 생성자를 콜론(`:`) 뒤, 생성자 구현부 직전에 지정하십시오.
+
+다음의 예제에서 Employee 클래스를 위한 생성자는 부모 클래스 Person에 있는 이름 있는 생성자를 호출합니다.
 
 ```dart
 class Person {
-    String firstName;
-    Person.fromJson(Map data) {
-        print("In Person"):
-    }
+  String firstName;
+
+  Person.fromJson(Map data) {
+    print('in Person');
+  }
 }
+
 class Employee extends Person {
-    Employee.fromJson(Map data) : super.fromJson(data) {
-        print("In Employee");
-    }
+  // Person은 기본 생성자를 가지고 있지 않습니다.
+  // super.fromJson(data)를 호출해야 합니다.
+  Employee.fromJson(Map data) : super.fromJson(data) {
+    print('in Employee');
+  }
+}
+
+main() {
+  var emp = new Employee.fromJson({});
+
+  // 출력:
+  // in Person
+  // in Employee
+  if (emp is Person) {
+    // 타입 검사
+    emp.firstName = 'Bob';
+  }
+  (emp as Person).firstName = 'Bob';
 }
 ```
 
-- 인자는 함수 호출과 같은 표현식일 수 있다.
-
-**이니셜라이저 리스트**
-
-- 상위 클래스의 생성자를 호출하는 것 이외에, 생성자 몸체가 실행되기 전에 인스턴스 변수를 초기화할 수 있다.
-- 콤마로 이니셜라이저를 구분한다.
+부모 클래스의 생성자에 있는 인자가 생성자 호출 이전에 구해지기 때문에 인자는 함수 호출과 같은 표현식이 될 수 있습니다.
 
 ```dart
-Point.fromJson(Map<String, num> json) : x = json["x"], y = json["y"] {
-    print("In Point.fromJson(): ($x, $x)");
+class Employee extends Person {
+  Employee() : super.fromJson(getDefaultData());
+  // ···
 }
 ```
 
-- `final` 필드를 세팅할 때 사용될 수 있다.
+> **경고** 부모 클래스에 있는 인자에 `this`로 접근할 수 없습니다. 예를 들어 인자는 정적 메소드를 호출할 수 있으나 인스턴스 메소드는 호출할 수 없습니다.
 
-**생성자 리다이렉트**
+#### 이니셜라이저 리스트
 
-- 다른 생성자에 초기화를 위임함
-- 리다이렉트하는 생성자의 몸체는 비어 있고, 콜론 뒤에 생성자 호출 코드를 작성한다.
+부모 클래스의 생성자를 호출하는데 더하여 생성자 구현부가 실행되기 전에 인스턴스 변수를 초기화할 수 있습니다. 이니셜라이저들을 콤마로 구분하십시오.
+
+```dart
+// 이니셜라이저 리스트느 생성자 구현부가 실행되기 전에 인스턴스 변수를 설정합니다.
+Point.fromJson(Map<String, num> json)
+    : x = json['x'],
+      y = json['y'] {
+  print('In Point.fromJson(): ($x, $y)');
+}
+```
+
+> **경고** 이니셜라이저의 오른쪽 부분은 `this`를 통한 접근을 할 수 없습니다.
+
+개발 단계에서 이니셜라이저 리스트에 `assert`를 사용하여 입력을 검증할 수 있습니다.
+
+```dart
+Point.withAssert(this.x, this.y) : assert(x >= 0) {
+  print('In Point.withAssert(): ($x, $y)');
+}
+```
+
+이니셜라이저 리스트는 final 필드를 설정할 때 유용합니다.
+
+```dart
+import 'dart:math';
+
+class Point {
+  final num x;
+  final num y;
+  final num distanceFromOrigin;
+
+  Point(x, y)
+      : x = x,
+        y = y,
+        distanceFromOrigin = sqrt(x * x + y * y);
+}
+
+main() {
+  var p = new Point(2, 3);
+  print(p.distanceFromOrigin);
+}
+```
+
+#### 생성자 리다이렉트
+
+때때로 같은 클래스에 있는 다른 생성자로 리다이렉트하는 것이 생성자의 유일한 목적일 수 있습니다. 리다이렉트하는 생성자의 구현부는 비어 있으며, 콜론 뒤에 생성자를 호출하는 코드가 나타납니다.
 
 ```dart
 class Point {
-    num x, y;
-    Point(this.x, this.y);
-    Point.alongXAxis(num x) : this(x, 0);
+  num x, y;
+
+  // 주요 생성자
+  Point(this.x, this.y);
+
+  // 주요 생성자에 위임
+  Point.alongXAxis(num x) : this(x, 0);
 }
 ```
 
-**상수 생성자**
+#### 상수 생성자
 
-- 클래스가 절대 변하지 않는 오브젝트를 생산한다면, 이러한 오브젝트들을 컴파일 타임 상수로 만들 수 있다.
-- 생성자를 `const`로 정의하고 모든 인스턴스 변수를 `final`로 선언한다.
+클래스가 절대 변하지 않는 오브젝트를 생산한다면 이 오브젝트를 컴파일 타임 상수로 만들 수 있습니다. 이를 달성하기 위해 `const` 생성자를 정의하고 모든 인스턴스 변수가 `final`인지 확인하십시오.
 
-**팩토리 생성자**
+```dart
+class ImmutablePoint {
+  static final ImmutablePoint origin =
+      const ImmutablePoint(0, 0);
 
-- 항상 새로운 인스턴스를 생성하지 않는 생성자를 구현할 때 `factory` 키워드를 명시한다.
-- 다른 생성자처럼 똑같이 호출한다.
+  final num x, y;
+
+  const ImmutablePoint(this.x, this.y);
+}
+```
+
+상수 생성자가 항상 상수를 만드는 것은 아닙니다. [생성자 사용하기](https://www.dartlang.org/guides/language/language-tour#using-constructors)를 참고하십시오.
+
+#### 팩토리 생성자
+
+`factory` 키워드를 사용하여 클래스의 새로운 인스턴스를 항상 생성하지는 않는 생성자를 구현하십시오. 예를 들어 팩토리 생성자는 캐시로부터 인스턴스를 반환하거나, 그 하위 타입의 인스턴스를 반환할 수 있습니다.
+
+다음의 예제는 캐시로부터 오브젝트를 반환하는 팩토리 생성자를 보여줍니다.
+
+```dart
+class Logger {
+  final String name;
+  bool mute = false;
+
+  // _cache는 이름 앞에 _가 있기 때문에 라이브러리에서 비공개 접근 수준을 가집니다.
+  static final Map<String, Logger> _cache =
+      <String, Logger>{};
+
+  factory Logger(String name) {
+    if (_cache.containsKey(name)) {
+      return _cache[name];
+    } else {
+      final logger = Logger._internal(name);
+      _cache[name] = logger;
+      return logger;
+    }
+  }
+
+  Logger._internal(this.name);
+
+  void log(String msg) {
+    if (!mute) print(msg);
+  }
+}
+```
+
+> **알아두기** 팩토리 생성자는 `this`를 통한 접근을 할 수 없습니다.
+
+다른 생성자를 호출하는 것처럼 팩토리 생성자를 호출하십시오.
+
+```dart
+var logger = Logger('UI');
+logger.log('Button clicked');
+```
 
 ### 메소드
 
-- 오브젝트를 위한 행동을 제공하는 함수.
+메소드는 오브젝트에 대한 행동을 제공하는 함수입니다.
 
-**인스턴스 메소드**
+#### 인스턴스 메소드
 
-- 인스턴스 변수 및 `this`에 접근할 수 있다.
-
-**접근자 및 설정자**
-
-- 오브젝트의 프로퍼티에 읽고 쓰기 접근을 제공하는 특별한 메소드
-- 각각의 인스턴스 변수는 암시적인 접근자를 가지고 있으며, `final`이 아닌 경우 암시적인 설정자 또한 가지고 있다.
-- `get` 및 `set` 키워드를 사용하여 추가적인 구현을 해줄 수 있다.
+오브젝트에 있는 인스턴스 메소드는 인스턴스 변수와 `this`에 접근할 수 있습니다. 다음의 예제에서 `distanceTo()` 메소드는 인스턴스 메소드의 예시입니다.
 
 ```dart
-class Rectangle {
-    num left, top, width. height;
-    Rectangel(this.left, this.top, this.width, this.height);
-    num get right => left + width;
-    set right(num value) => left = value - width;
-    num get bottom => top + height;
-    set bottom(num value) => top = value - height;
+import 'dart:math';
+
+class Point {
+  num x, y;
+
+  Point(this.x, this.y);
+
+  num distanceTo(Point other) {
+    var dx = x - other.x;
+    var dy = y - other.y;
+    return sqrt(dx * dx + dy * dy);
+  }
 }
 ```
 
-- 메소드처럼 정의하긴 하였으나 실제 사용할 때는 프로퍼티에 접근하거나 값을 할당하는 문법을 사용한다.
+#### 접근자 및 설정자
 
-**추상 메소드**
+접근자 및 설정자는 오브젝트의 프로퍼티에 읽기 및 쓰기 접근을 제공하는 특별한 메소드입니다. 각 인스턴스 변수가 암시적으로 접근자를 갖고, 적절할 때에 추가적으로 설정자를 갖는다는 것을 떠올리십시오. 접근자와 설정자를 구현하는 것으로 추가적인 프로퍼티를 만들 수 있는데, `get`과 `set` 키워드를 사용합니다.
 
-- 인스턴스 접근자 및 설정자 메소드는 추상적일 수 있다.
-  - 인터페이스를 정의하나 구현은 다른 클래스의 책임이다.
-- 추상 클래스에만 존재할 수 있다.
+```dart
+class Rectangle {
+  num left, top, width, height;
+
+  Rectangle(this.left, this.top, this.width, this.height);
+
+  // 두 개의 계산 프로퍼티, right와 bottom 정의
+  num get right => left + width;
+  set right(num value) => left = value - width;
+  num get bottom => top + height;
+  set bottom(num value) => top = value - height;
+}
+
+void main() {
+  var rect = Rectangle(3, 4, 20, 15);
+  assert(rect.left == 3);
+  rect.right = 12;
+  assert(rect.left == -8);
+}
+```
+
+접근자와 설정자를 사용하여 클라이언트 코드의 변경 없이 인스턴스 변수로 시작하고 나중에 메소드로 래핑할 수 있습니다.
+
+> **알아두기** 증가 연산자(++)와 같은 연산자들은 접근자가 명시적으로 정의된 것에 관계 없이 기대되는 방식대로 동작합니다. 기대하지 않은 사이드 이펙트를 피하기 위해 연산자는 정확히 한 번만 접근자를 호출하며, 그 값을 임시 변수에 저장합니다.
+
+#### 추상 메소드
+
+인스턴스 메소드, 접근자 메소드, 설정자 메소드는 추상적일 수 있습니다. 이는 인터페이스를 정의하나 다른 클래스에 그 구현의 책임을 맡기는 것을 의미합니다. 추상 메소드는 오직 [추상 클래스](https://www.dartlang.org/guides/language/language-tour#abstract-classes)에만 존재할 수 있습니다.
+
+메소드를 추상 메소드로 만들기 위해 메소드 구현부 대신 세미콜론(;)을 사용하십시오.
 
 ```dart
 abstract class Doer {
-    // 추상 메소드 선언
-    void doSomething();
+  // 인스턴스 변수 및 메소드 정의
+
+  void doSomething(); // 추상 메소드 정의
 }
+
 class EffectiveDoer extends Doer {
-    void doSomething() {
-        // 실제 구현
-    }
+  void doSomething() {
+    // 구현. 메소드는 여기서 추상적이지 않음
+  }
 }
 ```
 
 ### 추상 클래스
 
-- `abstract` 키워드를 사용하여 추상 클래스를 정의한다.
-- 인터페이스를 정의할 때 유용하게 사용된다.
-- 추상 클래스의 인스턴스를 만들 수는 없다.
+`abstract` 한정자를 사용하여 *추상* 클래스를 정의하십시오. 이 클래스는 구체적이게 될 수 없습니다. 추상 클래스는 인터페이스를 정의할 때 유용하며, 종종 몇몇 구현과 함께합니다. 추상 클래스가 구체적이게 된 것처럼 보이기를 원한다면 [팩토리 생성자](https://www.dartlang.org/guides/language/language-tour#factory-constructors)를 정의하십시오.
+
+추상 클래스는 보통 추상 메소드를 갖습니다.
+
+```dart
+// 이 클래스는 추상 클래스로 선언되었으므로 구체적이게 될 수 없습니다.
+abstract class AbstractContainer {
+  // 생성자, 필드, 메소드 정의
+
+  void updateChildren(); // 추상 메소드
+}
+```
 
 ### 암시적 인터페이스
 
-- 모든 클래스는 암시적으로 클래스의 모든 인스턴스 멤버와 그것이 구현하는 어떠한 인터페이스를 포함하는 인터페이스를 정의한다.
-  - 생성자는 인터페이스에 포함되지 않는다.
-- B 클래스의 구현을 상속받지 않고 B 클래스의 API를 지원하는 A 클래스를 만들고 싶다면, A 클래스는 B 클래스를 구현해야 한다.
-- `implements` 키워드를 사용하여 구현할 클래스를 명시할 수 있다.
-- 다중 인터페이스 구현을 지원한다.
+모든 클래스는 암시적으로 해당 클래스의 모든 인스턴스 멤버와 그것이 구현하는 어떠한 인터페이스를 포함하는 인터페이스를 정의합니다. 클래스 B의 구현을 상속받지 않고 그것의 API를 지원하는 클래스 A를 만들기 원한다면 클래스 A는 클래스 B의 인터페이스를 구현해야 합니다.
+
+클래스는 `implements` 절에 인터페이스를 선언하고 그 인터페이스가 요구하는 API를 제공하는 것으로 하나 또는 그 이상의 인터페이스를 구현합니다.
+
+```dart
+// Person. greet()를 포함하는 암시적 인터페이스
+class Person {
+  // 인터페이스에 포함되나 오직 이 라이브러리에서만 볼 수 있음
+  final _name;
+
+  // 생성자이므로, 인터페이스에 포함되지 않음
+  Person(this._name);
+
+  // 인터페이스에 포함됨
+  String greet(String who) => 'Hello, $who. I am $_name.';
+}
+
+// Person 인터페이스 구현
+class Impostor implements Person {
+  get _name => '';
+
+  String greet(String who) => 'Hi $who. Do you know who I am?';
+}
+
+String greetBob(Person person) => person.greet('Bob');
+
+void main() {
+  print(greetBob(Person('Kathy')));
+  print(greetBob(Impostor()));
+}
+```
+
+다양한 인터페이스를 구현하는 클래스를 지정하는 예시입니다.
+
+```dart
+class Point implements Comparable, Location {...}
+```
 
 ### 클래스 확장
 
-- `extends` 키워드를 사용하여 자식 클래스를 생성
-- `super` 키워드를 사용하여 부모 클래스를 참조
+`extends`를 사용하여 자식 클래스를 만들고, `super`를 사용하여 부모 클래스를 참조합니다.
 
-**멤버 재정의**
+```dart
+class Television {
+  void turnOn() {
+    _illuminateDisplay();
+    _activateIrSensor();
+  }
+  // ···
+}
 
-- 자식 클래스는 인스턴스 메소드, 설정자 및 접근자를 재정의할 수 있음
-- `@override` 표기를 사용하여 의도적으로 어떤 멤버를 재정의할 것임을 알리기
+class SmartTelevision extends Television {
+  void turnOn() {
+    super.turnOn();
+    _bootNetworkInterface();
+    _initializeMemory();
+    _upgradeApps();
+  }
+  // ···
+}
+```
 
-**재정의 가능한 연산자**
+#### 멤버 재정의
 
-- 여러 연산자를 재정의할 수 있음
-- `!=` 연산자는 재정의할 수 없는데, `==` 연산자의 구현에 의한 syntatic sugar일 뿐이기 때문이다.
-  - `e1 != e2` / `!(e1 == e2)`
+자식 클래스는 인스턴스 메소드, 접근자, 설정자를 재정의할 수 있습니다. `@override` 선언을 사용하여 의도적으로 멤버를 재정의한다는 것을 가리킬 수 있습니다.
 
-**noSuchMethod()**
+```dart
+class SmartTelevision extends Television {
+  @override
+  void turnOn() {...}
+  // ···
+}
+```
 
-- 코드가 존재하지 않는 메소드나 인스턴스 변수에 접근할 때, `noSuchMethod()` 메소드를 재정의하여 존재하지 않는 것에 접근했다는 것에 대한 사용자 정의 처리를 해줄 수 있음
-- 위의 메소드를 정의하지 않고 위와 같은 동작을 한다면 NoSuchMethodError가 발생한다.
+타입 안전한 코드에서 메소드의 매개변수 또는 인스턴스 변수의 타입을 좁히기 위해 `covariant` 키워드를 사용할 수 있습니다.
 
-### 열거형 타입
+#### 재정의 가능한 연산자
 
-- 클래스의 특별한 타입
-- 상수값의 고정된 숫자를 나타냄
+다음과 같은 연산자를 재정의할 수 있습니다. 예를 들어 Vector 클래스를 정의한다면 두 개의 벡터값을 더하는 `+` 메소드를 정의할 것입니다.
 
-**열거형 사용하기**
+- `<`, `+`, `|`, `[]`, `>`, `/`, `^`, `[]=`, `<=`, `~/`, `&`, `~`, `>=`, `*`, `<<`, `==`, `-`, `%`, `>>`
 
-- `enum` 키워드 사용
+> **알아두기** `!=`는 재정의 가능한 연산자가 아닌 것에 주목하십시오. `e1 != e2` 표현식은 단지 `!(e1 == e2)`의 syntatic sugar일 뿐입니다.
+
+`+` 연산자와 `-` 연산자를 재정의하는 클래스의 예시입니다.
+
+```dart
+class Vector {
+  final int x, y;
+
+  Vector(this.x, this.y);
+
+  Vector operator +(Vector v) => Vector(x + v.x, y + v.y);
+  Vector operator -(Vector v) => Vector(x - v.x, y - v.y);
+
+  // == 연산자와 hashCode가 보이지 않습니다. 아래 노트를 참고하십시오.
+  // ···
+}
+
+void main() {
+  final v = Vector(2, 3);
+  final w = Vector(2, 2);
+
+  assert(v + w == Vector(4, 5));
+  assert(v - w == Vector(0, 1));
+}
+```
+
+`==`를 재정의한다면 Object의 `hashCode` 접근자도 재정의해야 합니다. [맵 키 구현](https://www.dartlang.org/guides/libraries/library-tour#implementing-map-keys)에서 `==`와 `hashCode`를 재정의하는 예시를 확인하십시오.
+
+재정의와 관련하여 [클래스 확장](https://www.dartlang.org/guides/language/language-tour#extending-a-class)을 참고하십시오.
+
+#### noSuchMethod()
+
+코드가 존재하지 않는 메소드나 인스턴스 변수를 사용하려는 시도를 하는 것을 감지하고 반응하기 위해 `noSuchMethod()`를 재정의할 수 있습니다.
+
+```dart
+class A {
+  // noSuchMehotd를 재정의하지 않는다면 존재하지 않는 멤버를 사용하는 것은 NoSuchMethodError의 결과를 가져옵니다.
+  @override
+  void noSuchMethod(Invocation invocation) {
+    print('You tried to use a non-existent member: ' +
+        '${invocation.memberName}');
+  }
+}
+```
+
+다음 중 **하나**가 true가 아니라면 구현하지 않은 메소드를 **호출할 수 없습니다**.
+
+- 리시버가 `dynamic` 정적 타입을 가지고 있음
+- 리시버가 구현되지 않은 메소드를 정의한 정적 타입을 가지고 있음 (abstract는 괜찮음), 리시버의 동적 타입은 `Object` 클래스에 있는 `noSuchMethod()`의 구현과 다른 것을 가지고 있음
+
+[noSuchMethod 포워딩 명세](https://github.com/dart-lang/sdk/blob/master/docs/language/informal/nosuchmethod-forwarding.md)를 참고하십시오.
+
+### 열거형
+
+상수값의 고정된 숫자를 나타내기 위해 사용되는 특별한 종류의 클래스입니다.
+
+#### 열거형 사용하기
+
+`enum` 키워드를 사용하여 열거형을 선언합니다.
 
 ```dart
 enum Color { red, green, blue }
 ```
 
-- 열거형의 각 값은 `index` 접근자를 가지고 있음. 인덱스를 반환함.
-- 열거형의 `values` 상수를 사용하여 열거형의 모든 값의 리스트를 얻을 수 있음
-- `switch`문의 조건에 사용할 수 있다.
-- 열거형은 명시적으로 인스턴스화될 수 없다.
-- 열거형을 상속하거나, 믹스인하거나, 구현할 수 없다.
-- C언어의 열거형과 비슷한 느낌. Swift처럼 다양한 기능을 가진 열거형은 제공하지 않는다.
+열거형에 있는 각 값은 `index` 접근자를 가지고 있습니다. 이는 열거형 선언에서 값에 대한 0 기반의 위치를 반환합니다. 예를 들어 첫 번째 값은 0 인덱스를 가지고 있으며 두 번째 값은 1 인덱스를 가지고 있습니다.
 
-### 믹스인 : 클래스에 기능 추가하기
+```dart
+assert(Color.red.index == 0);
+assert(Color.green.index == 1);
+assert(Color.blue.index == 2);
+```
 
-- 믹스인은 다중 클래스 상속에서 클래스 코드를 재사용하는 방법이다.
-- 하나 또는 그 이상의 믹스인 이름 앞에 `with` 키워드를 명시하여 믹스인을 사용한다.
+열거형에 있는 모든 값 리스트를 얻기 위해 열거형의 `values` 상수를 사용하십시오.
+
+```dart
+List<Color> colors = Color.values;
+assert(colors[2] == Color.blue);
+```
+
+[switch문](https://www.dartlang.org/guides/language/language-tour#switch-and-case)에서 열거형을 사용할 수 있으며, 모든 열거형 값을 다루지 않는다면 경고를 받을 것입니다.
+
+```dart
+var aColor = Color.blue;
+
+switch (aColor) {
+  case Color.red:
+    print('Red as roses!');
+    break;
+  case Color.green:
+    print('Green as grass!');
+    break;
+  default: // 이것이 없다면 경고 발생
+    print(aColor); // 'Color.blue'
+}
+```
+
+열거형은 다음의 한계를 가지고 있습니다.
+
+- 열거형의 자식 클래스를 만들 수 없고, 믹스인할 수 없고, 구현할 수 없음
+- 열거형을 명시적으로 구체화할 수 없음
+
+[Dart 언어 명세](https://www.dartlang.org/guides/language/spec)를 참고하십시오.
+
+#### 믹스인: 클래스에 기능 추가하기
+
+믹스인은 다중 클래스 상속에서 클래스의 코드를 재사용하기 위한 방법입니다.
+
+믹스인을 *사용*하기 위해 하나 또는 그 이상의 믹스인 이름과 함께 `with` 키워드를 사용하십시오.
 
 ```dart
 class Musician extends Performer with Musical {
-    // ...
+  // ···
 }
-class Maestro extends Person with Musical, Aggressive, Demented {
-    // ...
+
+class Maestro extends Person
+    with Musical, Aggressive, Demented {
+  Maestro(String maestroName) {
+    name = maestroName;
+    canConduct = true;
+  }
 }
 ```
 
-- 믹스인을 구현하기 위해 `Object`를 상속받는 클래스를 생성하고 어떠한 생성자로 선언하지 마라.
-- 믹스인이 일반적인 클래스처럼 사용되기 원하지 않는다면, `mixin` 키워드를 사용하여 믹스인을 선언하라.
+믹스인을 *구현*하기 위해 Object를 확장한 클래스를 만들고 생성자를 선언하지 마십시오. 믹스인이 일반적인 클래스처럼 사용 가능하게 되기를 원하지 않는다면 `class` 대신 `mixin` 키워드를 사용하십시오.
 
 ```dart
 mixin Musical {
-    // ...
+  bool canPlayPiano = false;
+  bool canCompose = false;
+  bool canConduct = false;
+
+  void entertainMe() {
+    if (canPlayPiano) {
+      print('Playing piano');
+    } else if (canConduct) {
+      print('Waving hands');
+    } else {
+      print('Humming to self');
+    }
+  }
 }
 ```
 
-- 오직 특정 타입만 믹스인을 사용하도록 하기 위해, 필요한 부모 클래스를 `on` 키워드를 사용하여 명시한다.
+오직 특정 타입이 믹스인을 사용할 수 있다는 것을 지정하기 위해, 예를 들어 믹스인이 그것이 정의하지 않는 메소드를 호출할 수 있을 때, 요구하는 부모 클래스를 지정하기 위해 `on`을 사용하십시오.
 
 ```dart
 mixin MusicalPerformer on Musician {
-    // ...
+  // ···
 }
 ```
 
+> **버전 기록** `mixin` 키워드 지원은 Dart 2.1에서 소개되었습니다. 이른 릴리즈에 대한 코드는 대신에 `abstract`를 일반적으로 사용했습니다. [Dart SDK 변화 기록](https://github.com/dart-lang/sdk/blob/master/CHANGELOG.md)과 [2.1 믹스인 명세](https://github.com/dart-lang/language/blob/master/accepted/2.1/super-mixins/feature-specification.md#dart-2-mixin-declarations)에서 2.1에서의 믹스인에 대한 변화를 확인하십시오.
+
 ### 클래스 변수 및 메소드
 
-- `static` 키워드를 사용하여 클래스 변수 및 메소드를 선언한다.
+`static` 키워드를 사용하여 클래스 전역의 변수와 메소드를 구현하십시오.
 
-**정적 변수**
+#### 정적 변수
 
-- 정적 변수 (클래스 변수)는 사용될 때까지 초기화되지 않는다.
+정적 변수(클래스 변수)는 클래스 전역의 상태와 상수에 유용합니다.
 
-**정적 메소드**
+```dart
+class Queue {
+  static const initialCapacity = 16;
+  // ···
+}
 
-- 정적 메소드 (클래스 메소드)는 인스턴스에서 동작하지 않으며, `this` 또한 사용할 수 없다.
-- 흔히 사용되는 유틸리티나 기능을 하는 메소드는 전역 함수로 만드는 것을 고려하라.
+void main() {
+  assert(Queue.initialCapacity == 16);
+}
+```
+
+정적 변수는 그것들이 사용될 때까지 초기화되지 않습니다.
+
+> **알아두기** 이 페이지는 상수 이름에 `소문자 캐멀케이스`를 선호하는 [스타일 가이드 추천](https://www.dartlang.org/guides/language/effective-dart/style#identifiers)을 따릅니다.
+
+#### 정적 메소드
+
+정적 메소드(클래스 메소드)는 인스턴스에 대해서 작동하지 않습니다. 그러므로 `this`를 통해 접근할 수 없습니다.
+
+```dart
+import 'dart:math';
+
+class Point {
+  num x, y;
+  Point(this.x, this.y);
+
+  static num distanceBetween(Point a, Point b) {
+    var dx = a.x - b.x;
+    var dy = a.y - b.y;
+    return sqrt(dx * dx + dy * dy);
+  }
+}
+
+void main() {
+  var a = Point(2, 2);
+  var b = Point(4, 4);
+  var distance = Point.distanceBetween(a, b);
+  assert(2.8 < distance && distance < 2.9);
+  print(distance);
+}
+```
+
+> **알아두기** 일반적이로 널리 사용되는 유틸리티와 기능에 대해서는 정적 메소드 대신 전역 함수를 사용하는 것을 고려하십시오.
+
+컴파일 타임 상수로 정적 메소드를 사용할 수 있습니다. 예를 들어 상수 생성자에 매개변수로 정적 메소드를 넘겨줄 수 있습니다.
 
 ## 제네릭
 
