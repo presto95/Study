@@ -15,7 +15,7 @@ void main() {
 }
 ```
 
-## 변수*Variables*
+## 변수
 
 Dart의 코드가 타입에 안전할지라도 대부분의 변수에 타입을 명시할 필요는 없습니다. 타입 추론 덕분입니다.
 
@@ -32,7 +32,7 @@ var image = {
 
 기본값, `final` 및 `const` 키워드, 정적 타입을 포함하여 Dart의 변수에 관하여 [더 읽어보기](https://www.dartlang.org/guides/language/language-tour#variables)
 
-## 흐름 제어문*Control flow statements*
+## 흐름 제어문
 
 Dart는 일반적인 흐름 제어문을 지원합니다.
 
@@ -58,7 +58,7 @@ while (year < 2016) {
 
 `break` 및 `continue`, `switch` 및 `case`, `assert`를 포함하여 Dart의 흐름 제어문에 관하여 [더 읽어보기](https://www.dartlang.org/guides/language/language-tour#control-flow-statements)
 
-## 함수*Functions*
+## 함수
 
 각 함수의 인자와 반환값에 타입을 명시하는 것을 [권장합니다](https://www.dartlang.org/guides/language/effective-dart/design#types).
 
@@ -81,7 +81,7 @@ flybyObjects.where((name) => name.contains('turn')).forEach(print);
 
 옵셔널 매개변수, 매개변수 기본값, lexical scope를 포함하여 Dart의 함수에 관하여 [더 읽어보기](https://www.dartlang.org/guides/language/language-tour#functions)
 
-## 주석*Comments*
+## 주석
 
 Dart에서 주석은 보통 `//`으로 시작합니다.
 
@@ -97,7 +97,7 @@ Dart에서 주석은 보통 `//`으로 시작합니다.
 
 문서화 도구가 작동하는 방법을 포함하여 Dart의 주석에 관하여 [더 읽어보기](https://www.dartlang.org/guides/language/language-tour#comments)
 
-## 가져오기*Imports*
+## 가져오기
 
 다른 라이브러리에 정의된 API에 접근하기 위해 `import`를 사용하십시오.
 
@@ -114,7 +114,7 @@ import 'path/to/my_other_file.dart';
 
 라이브러리 접두사, `show` 및 `hide`, `deferred` 키워드를 통한 지연 로딩을 포함하여 Dart의 라이브버리와 가시성에 관하여 [더 읽어보기](https://www.dartlang.org/guides/language/language-tour#libraries-and-visibility)
 
-## 클래스*Classes*
+## 클래스
 
 세 개의 프로퍼티, 두 개의 생성자, 하나의 메소드를 갖는 클래스의 예시가 있습니다. 프로퍼티 중 하나는 직접적으로 설정될 수 없으므로 (변수 대신) 접근자 메소드를 사용하여 정의되었습니다.
 
@@ -161,7 +161,7 @@ voyager3.describe();
 
 이니셜라이저 리스트, 옵셔널 `new` 및 `const`, 생성자 리다이렉트, `factory` 생성자, 접근자, 생성자, 그리고 더 많은 것을 포함하여 Dart의 클래스에 관하여 [더 읽어보기](https://www.dartlang.org/guides/language/language-tour#classes)
 
-## 상속*Interitance*
+## 상속
 
 Dart는 단일 상속을 지원합니다.
 
@@ -175,7 +175,7 @@ class Orbiter extends Spacecraft {
 
 클래스 확장, 옵셔널 `@override` 선언, 그리고 더 많은 것에 관하여 [더 읽어보기](https://www.dartlang.org/guides/language/language-tour#extending-a-class)
 
-## 믹스인*Mixins*
+## 믹스인
 
 믹스인은 다중 클래스 계층에서 코드를 재사용하는 방법입니다. 다음의 클래스는 믹스인인 것처럼 행동할 수 있습니다.
 
@@ -200,7 +200,7 @@ class PilotedCraft extends Spacecraft with Piloted {
 
 믹스인에 관하여 [더 읽어보기](https://www.dartlang.org/guides/language/language-tour#adding-features-to-a-class-mixins)
 
-## 인터페이스 및 추상 클래스*Interfaces and abstract classes*
+## 인터페이스 및 추상 클래스
 
 Dart에는 `interface` 키워드가 없습니다. 대신 모든 클래스는 암시적으로 인터페이스를 정의합니다. 그러므로 어떠한 클래스라도 구현할 수 있습니다.
 
@@ -230,7 +230,7 @@ abstract class Describable {
 
 추상 클래스 및 메소드에 관하여 [더 읽어보기](https://www.dartlang.org/guides/language/language-tour#abstract-classes)
 
-## 비동기*Async*
+## 비동기
 
 콜백 지옥을 피하고 코드의 가독성을 높이기 위해 `asnyc` 및 `await`를 사용할 수 있습니다.
 
@@ -288,7 +288,7 @@ Stream<String> report(Spacecraft craft, Iterable<String> objects) async* {
 
 비동기 함수, `Futuer`, `Stream`, 비동기 루프(`await for`)를 포함하여 비동기 지원에 관하여 [더 읽어보기](https://www.dartlang.org/guides/language/language-tour#asynchrony-support)
 
-## 예외*Exceptions*
+## 예외
 
 예외를 발생시키기 위해 `throw`를 사용하십시오
 
@@ -317,6 +317,6 @@ try {
 
 스택 트레이스, `rethrow`, Error와 Exception의 차이를 포함하여 예외에 관하여 [더 읽어보기](https://www.dartlang.org/guides/language/language-tour#exceptions)
 
-## 다른 주제*Other topics*
+## 다른 주제
 
 더욱더 많은 코드가 [Language Tour](https://www.dartlang.org/guides/language/language-tour)와 [Library Tour](https://www.dartlang.org/guides/libraries/library-tour)에 있습니다. [API 레퍼런스](https://api.dartlang.org/)도 참고하십시오. 종종 예제를 포함합니다.
