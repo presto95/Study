@@ -1072,137 +1072,445 @@ assert((value >> 4) == 0x02); // 우측 쉬프트
 
 ### 조건 표현식
 
-Dart는 
+Dart는 [if-else문](https://www.dartlang.org/guides/language/language-tour#if-and-else)을 사용하지 않고도 간소하게 표현식을 구하게 해주는 두 개의 연산자를 가지고 있습니다.
 
-- 삼항 연산자 지원
-- Swift처럼 `a ?? b`를 지원한다! `a`가 `null`이면 `b`를 반환하고, 그렇지 않으면 `a`를 반환한다.
-  - Swift는 옵셔널 바인딩에 `??` 연산자가 사용됨
-  - Dart는 `null` 체크용
+- `condition ? expr1 : expr2` 
+  - *condition*이 true이면 `expr1`를 구하고 그 값을 반환합니다. 그렇지 않으면 `expr2`의 값을 구하고 반환합니다.
+- `expr1 ?? expr2`
+  - *expr1*이 null이 아니면 그 값을 반환합니다. 그렇지 않으면 `expr2`의 값을 구하고 반환합니다.
 
-### 캐스케이드 표기법*Cascade notation*
-
-- 캐스케이드 (`..`)는 같은 오브젝트에서 연산 시퀀스를 만들게 해준다. 함수 호출에 더하여 같은 오브젝트에서 필드에 접근할 수 있다.
-- 명백하게 말하여 캐스케이드를 위한 *double dot* 표기법은 연산자가 아니다.
+불리언 표현식에 기반한 값을 할당할 필요가 있을 때 `?:`을 사용하는 것을 고려하십시오.
 
 ```dart
-// 마지막 캐스케이드 표기법에 세미콜론 붙이기.
-void main() {
-  var c = A()
-  ..a = 3
-  ..b = 4;
-}
-class A {
-  int a;
-  int b;
+var visibility = isPublic ? 'public' : 'private';
+```
+
+불리언 표현식의 null 검사에는 `??`을 사용하는 것을 고려하십시오.
+
+```dart
+String playerName(String name) => name ?? 'Guest';
+```
+
+이전의 예제는 적어도 두 개의 다른 방법으로 작성될 수 있으나, 간단명료하지는 않습니다.
+
+```dart
+// ?: 연산자 사용의 조금 더 긴 버전
+String playerName(String name) => name != null ? name : 'Guest';
+
+// if-else문을 사용한 매우 긴 버전
+String playerName(String name) {
+  if (name != null) {
+    return name;
+  } else {
+    return 'Guest';
+  }
 }
 ```
 
-- 실제 오브젝트를 반환하는 함수에 캐스케이드 표기법을 사용할 때 조심하기. `void`를 반환하는 호출 후 캐스케이드 표기법을 사용할 수 없다.
+### 캐스케이드 표기법*Cascade notation*
+
+캐스케이드(`..`)는 같은 오브젝트에 대해 작업 시퀀스를 만들 수 있게 해줍니다. 같은 오브젝트에 대하여 함수 호출뿐만 아니라 필드에 할당도 해줄 수 있습니다. 이는 임시 변수를 만드는 단계를 절약해주고, 더 유려한 코드를 작성할 수 있게 해줍니다.
+
+```dart
+querySelector('#confirm') // 오브젝트 획득
+  ..text = 'Confirm' // 그 멤버 사용
+  ..classes.add('important')
+  ..onClick.listen((e) => window.alert('Confirmed!'));
+```
+
+첫 번째 메소드 호출인 `querySelector()`는 셀렉터 오브젝트를 반환합니다. 캐스케이드 표기법을 따르는 코드는 이 셀렉터 오브젝트에서 작동하며, 반환되는 어떠한 뒤이은 값도 무시합니다.
+
+이전의 예제는 다음과 같습니다.
+
+```dart
+var button = querySelector('#confirm');
+button.text = 'Confirm';
+button.classes.add('important');
+button.onClick.listen((e) => window.alert('Confirmed!'));
+```
+
+캐스케이드를 중첩하여 사용할 수 있습니다.
+
+```dart
+final addressBook = (AddressBookBuilder()
+      ..name = 'jenny'
+      ..email = 'jenny@example.com'
+      ..phone = (PhoneNumberBuilder()
+            ..number = '415-555-0100'
+            ..label = 'home')
+          .build())
+    .build();
+```
+
+실제 오브젝트를 반환하는 함수에 캐스케이트를 사용하는 것에 주의하십시오. 다음의 코드는 실패합니다.
+
+```dart
+var sb = StringBuffer();
+sb.write('foo')
+  ..write('bar'); // Error: write 메소드는 void에서 정의되어 있지 않습니다.
+```
+
+> **알아두기** 엄밀히 말하면, 캐스케이드를 위한 "두 개의 점" 표기법은 연산자가 아닙니다. 단지 Dart 문법의 일부분일 뿐입니다.
 
 ### 다른 연산자
 
-- 다른 언어와 다를 것 없음
-- `?.` : 조건 멤버 접근 연산자. 접근하려는 왼쪽 값의 `null` 여부를 확인하여 `null`이 아니라면 오른쪽 값에 접근
-  - Swift에서는 옵셔널 체이닝. Dart에서는 `null` 체크
+다른 예제에서 대부분의 남아 있는 연산자를 보았을 것입니다.
 
-## 조건문
+| 연산자  | 이름        | 의미                                                                                                                 |
+| ---- | --------- | ------------------------------------------------------------------------------------------------------------------ |
+| `()` | 함수 적용     | 함수 호출                                                                                                              |
+| `[]` | 리스트 접근    | 리스트에 있는 특정 인덱스의 값을 참조                                                                                              |
+| `.`  | 멤버 접근     | 표현식의 프로퍼티를 참조. `foo.bar`는 `foo` 표현식에 있는 `bar` 프로퍼티를 선택함                                                            |
+| `?.` | 조건적 멤버 접근 | `.`와 같으나 왼쪽 피연산자는 null일 수 있음. `foo?.bar`는, `foo?.bar`의 값이 null인 경우, `foo`가 null이 아니라면 `foo` 표현식에서 `bar` 프로퍼티를 선택함. |
 
-### if 및 else
+`.`, `?`, `..` 연산자에 대한 더 많은 정보는 [클래스](https://www.dartlang.org/guides/language/language-tour#classes)를 참고하십시오.
 
-- 다른 언어와 다를 것 없음
-- 조건에는 `bool` 타입만 들어갈 수 있으며, 소괄호로 감싸져야 한다.
+## 흐름 제어문
 
-### for 반복문
+다음의 것들을 사용하여 Dart 코드에서 흐름을 제어할 수 있습니다.
 
-- C언어 스타일의 for문 사용하기
-- 반복 가능한 오브젝트에 대하여 `forEach()` 메소드를 사용하여 순환할 수 있음
-- `for-in` 구문도 사용 가능
+- `if`와 `else`
+- `for` 루프
+- `while`과 `do-while` 루프
+- `break`와 `continue`
+- `switch`와 `case`
+- `assert`
+
+[예외](https://www.dartlang.org/guides/language/language-tour#exceptions)에서 설명된 것처럼, `try-catch`와 `throw`를 사용해서도 제어 흐름에 영향을 줄 수 있습니다.
+
+### if와 else
+
+Dart는 선택적인 `else`문과 함께 `if`문을 지원합니다. [조건 표현식](https://www.dartlang.org/guides/language/language-tour#conditional-expressions)도 참고하십시오.
 
 ```dart
-var array = [0, 1, 2];
-for (var x in array) {
-    print(x);
+if (isRaining()) {
+  you.bringRainCoat();
+} else if (isSnowing()) {
+  you.wearJacket();
+} else {
+  car.putTopDown();
+}
+```
+
+JavaScript와는 달리, 조건은 불리언 값을 사용해야 합니다. 다른 것은 안됩니다. 더 많은 정보는 [불리언](https://www.dartlang.org/guides/language/language-tour#booleans)에 있습니다.
+
+### for 루프
+
+표준 `for` 루프를 사용하여 반복이 가능합니다.
+
+```dart
+var message = StringBuffer('Dart is fun');
+for (var i = 0; i < 5; i++) {
+  message.write('!');
+}
+```
+
+Dart의 `for` 루프 안에 있는 클로저는 인덱스 *값*을 획득하여 JavaScript에서의 흔한 함정을 피합니다. 다음을 고려하십시오.
+
+```dart
+var callbacks = [];
+for (var i = 0; i < 2; i++) {
+  callbacks.add(() => print(i));
+}
+callbacks.forEach((c) => c());
+```
+
+결과는 기대한 것처럼 `0`과 `1`입니다. 대조적으로 JavaScript에서 이 예제는 `2`와 `2`를 출력할 것입니다.
+
+반복하고 있는 오브젝트가 Iterable이라면 [forEach()](https://api.dartlang.org/stable/dart-core/Iterable/forEach.html) 메소드를 사용할 수 있습니다. `forEach()`를 사용하는 것은 현재 반복 카운터를 알 필요가 없다면 좋은 선택입니다.
+
+```dart
+candidates.forEach((candidate) => candidate.interview());
+```
+
+List와 Set과 같은 Iterable 클래스는 [iteration](https://www.dartlang.org/guides/libraries/library-tour#iteration)의 `for-in` 형식을 지원합니다.
+
+```dart
+var collection = [0, 1, 2];
+for (var x in collection) {
+  print(x); // 0 1 2
 }
 ```
 
 ### while 및 do-while
 
-- 다른 언어와 다를 것 없음
+`while` 루프는 루프 이전에 조건 값을 평가합니다.
+
+```dart
+while (!isDone()) {
+  doSomething();
+}
+```
+
+`do-while` 루프는 루프 *이후* 조건 값을 평가합니다.
+
+```dart
+do {
+  printLine();
+} while (!atEndOfPage());
+```
 
 ### break 및 continue
 
-- 다른 언어와 다를 것 없음
+루프를 멈추기 위해 `break`를 사용하십시오.
+
+```dart
+while (true) {
+  if (shutDownRequested()) break;
+  processIncomingRequests();
+}
+```
+
+다음 루프 반복으로 넘어가기 위해 `continue`를 사용하십시오.
+
+```dart
+for (int i = 0; i < candidates.length; i++) {
+  var candidate = candidates[i];
+  if (candidate.yearsExperience < 5) {
+    continue;
+  }
+  candidate.interview();
+}
+```
+
+리스트나 세트와 같은 [Iterable](https://api.dartlang.org/stable/dart-core/Iterable-class.html)을 사용하고 있다면 예제를 다르게 작성할 수 있습니다.
+
+```dart
+candidates
+    .where((c) => c.yearsExperience >= 5)
+    .forEach((c) => c.interview());
+```
 
 ### switch 및 case
 
-- 조건으로 정수, 문자열 또는 컴파일 타임 상수가 들어갈 수 있다.
-- 열거형 타입이 `switch`문과 궁합이 잘 맞는다.
-- 비지 않은 `case`절은 `break`, `continue`, `throw`, `return` 등의 키워드를 사용하여 `case`절을 끝내야 함
-- 빈 `case` 절에는 `break` 등을 명시할 필요가 없으며 자동으로 fallthrough 된다.
-- 각 `case`절은 지역 변수를 가질 수 있다.
+Dart에서 switch문은 `==`을 사용하여 정수, 문자열, 또는 컴파일 타임 상수를 비교합니다. 비교되는 오브젝트는 같은 클래스의 인스턴스이며 그 하위 타입이 아니어야 합니다. 그리고 그 클래스는 `==`를 재정의하면 안됩니다. [열거형 타입](https://www.dartlang.org/guides/language/language-tour#enumerated-types)은 `switch`문과 잘 어울립니다.
+
+> **알아두기** Dart에서 switch문은 인터프리터나 스캐너와 같은 제한된 환경에서 의도됩니다.
+
+비어 있지 않은 각 `case`절은 `break`문으로 끝납니다. 비어 있지 않은 `case`절을 끝내는 다른 유효한 방법은 `continue`, `throw` 또는 `return`문을 사용하는 것입니다.
+
+`default`절은 어떠한 `case`절도 일치하지 않는 경우의 코드를 실행하기 위해 사용하십시오.
+
+```dart
+var command = 'OPEN';
+switch (command) {
+  case 'CLOSED':
+    executeClosed();
+    break;
+  case 'PENDING':
+    executePending();
+    break;
+  case 'APPROVED':
+    executeApproved();
+    break;
+  case 'DENIED':
+    executeDenied();
+    break;
+  case 'OPEN':
+    executeOpen();
+    break;
+  default:
+    executeUnknown();
+}
+```
+
+다음의 예제는 `case`절에서 `break`문을 빠뜨렸고 에러를 발생시킵니다.
+
+```dart
+var command = 'OPEN';
+switch (command) {
+  case 'OPEN':
+    executeOpen();
+    // ERROR: break를 빠뜨림
+
+  case 'CLOSED':
+    executeClosed();
+    break;
+}
+```
+
+그러나 Dart는 빈 `case`문을 지원하며, fall-through의 형태를 허용합니다.
+
+```dart
+var command = 'CLOSED';
+switch (command) {
+  case 'CLOSED': // fall through하는 빈 케이스
+  case 'NOW_CLOSED':
+    // CLOSED와 NOW_CLOSED의 경우에 실행됨
+    executeNowClosed();
+    break;
+}
+```
+
+정말로 fall-through를 원한다면 `continue`문과 레이블을 사용할 수 있습니다.
+
+```dart
+var command = 'CLOSED';
+switch (command) {
+  case 'CLOSED':
+    executeClosed();
+    continue nowClosed;
+  // nowClosed 레이블에서 실행을 지속함
+
+  nowClosed:
+  case 'NOW_CLOSED':
+    // CLOSED와 NOW_CLOSED의 경우에 실행됨
+    executeNowClosed();
+    break;
+}
+```
+
+`case`절은 지역 변수를 가질 수 있으며 그 절의 범위 내에서만 존재합니다.
 
 ### Assert
 
-- `assert`문을 사용하여 조건이 `false`일 때 실행을 막을 수 있다. (AssertionError 예외를 던짐)
-- 배포용 빌드에서는 효과가 없다.
-- Flutter는 디버그 모드에서 assert를 활성화한다.
-- 두 번째 인자에 문자열을 추가하여 assert에 메세지를 붙일 수 있다.
+`assert`문을 사용하여 불리언 조건이 false일 때 정상적인 실행을 방해할 수 있습니다. 이 투어 곳곳에서 assert문의 예시를 찾을 수 있습니다.
+
+```dart
+// 변수가 null이 아닌지 확인하십시오.
+assert(text != null);
+
+// 값이 100 미만의 값인지 확인하십시오.
+assert(number < 100);
+
+// 이것이 https URL인지 확인하십시오.
+assert(urlString.startsWith('https'));
+```
+
+> **알아두기** assert문은 프로덕션 코드에서는 효과가 없습니다. 오직 개발 단계에서 효과를 냅니다. Flutter는 [디버그 모드](https://flutter.io/debugging/#debug-mode-assertions)에서 assert를 활성화합니다. [dartdevc](https://webdev.dartlang.org/tools/dartdevc)와 같은 개발에 한정된 툴은 일반적으로 기본적으로 assert를 지원합니다. [dart](https://www.dartlang.org/dart-vm/tools/dart-vm)나 [dart2js](https://webdev.dartlang.org/tools/dart2js)와 같은 몇몇 툴은 `--enable-asserts` 커맨드라인 플래그를 통하여 assert를 지원합니다.
+
+assert에 메세지를 부착하기 위해 두 번째 인자에 문자열을 추가하십시오.
+
+```dart
+assert(urlString.startsWith('https'),
+    'URL ($urlString) should start with "https".');
+```
+
+`assert`에 있는 첫 번째 인자는 불리언 값을 결정하는 어떠한 표현식일 수 있습니다. 표현식의 값이 true이면 assert는 성공하고 실행은 지속됩니다. false이면 assert는 실패하고 예외([AssertionError](https://api.dartlang.org/stable/dart-core/AssertionError-class.html))를 던집니다.
 
 ## 예외
 
-- 예외는 기대하지 않은 무언가가 일어난 것을 가리키는 에러.
-- 예외가 처리되지 않으면 일반적으로 프로그램이 종료된다.
-- Dart의 예외는 모두 확인되지 않은 예외이므로 메소드는 어떤 예외를 던질지 선언할 수 없으며, 어떠한 예외를 캐치할 필요도 없다.
-- `Exception` 타입 및 `Error` 타입을 제공한다. 두 오브젝트 뿐만 아니라 `null`이 아닌 오브젝트도 예외로서 던질 수 있다.
+Dart 코드는 예외를 던지고 받을 수 있습니다. 예외는 무언가 기대하지 않은 것이 일어났다는 것을 가리키는 에러입니다. 예외가 받아지지 않았다면 예외를 발생시킨 isolate는 중단되고, 일반적으로 isolate와 그 프로그램은 종료됩니다.
 
-### Throw
+Java와는 다르게, Dart의 모든 예외는 확인되지 않은 예외입니다. 메소드는 어떠한 예외를 던질 것인지 선언하지 않습니다. 어떤 예외를 받는 것이 요구되지도 않습니다.
 
-- `throw` 키워드를 사용하여 예외를 던진다.
-- `Error`나 `Exception`을 구현한 타입을 던지는 것이 좋다.
+Dart는 [Exception](https://api.dartlang.org/stable/dart-core/Exception-class.html) 타입과 [Error](https://api.dartlang.org/stable/dart-core/Error-class.html) 타입뿐만 아니라 수많은 사전 정의된 하위 타입도 제공합니다. 물론 자신만의 예외를 정의할 수 있습니다. 그러나 Dart 프로그램은 Exception과 Error 오브젝트뿐만 아니라, null이 아닌 어떠한 오브젝트를 예외로 던질 수 있습니다.
+
+### throw
+
+
+다음의 예제는 예외를 던지는, 또는 *발생시키는* 것입니다.
 
 ```dart
-throw FormatException("Expected at least 1 section");
-throw "Out of llamas!";
+throw FormatException('Expected at least 1 section');
 ```
 
-### Catch
+임의의 오브젝트도 던질 수 있습니다.
 
-- `try` 키워드를 사용하여 예외 처리문을 작성할 수 있음
-  - `on` 키워드는 예외 타입을 특정할 필요가 있을 때 사용
-  - `catch` 키워드는 예외 오브젝트가 필요할 때 사용
-  - 둘 다 한번에 사용 가능, 둘 중 하나만 사용하는 것도 가능
-- 예외를 캐치하여 적절한 처리를 해줄 수 있다.
+```dart
+throw 'Out of llamas!';
+```
+
+> **알아두기** 프로덕션 퀄리티의 코드는 보통 [Error](https://api.dartlang.org/stable/dart-core/Error-class.html)나 [Exception](https://api.dartlang.org/stable/dart-core/Exception-class.html)을 구현한 타입을 던집니다.
+
+예외를 던지는 것은 표현식이기 때문에 =>문 안에서 예외를 던질 수 있습니다. 뿐만 아니라 표현식을 허용하는 다른 어떠한 곳에서도 가능합니다.
+
+```dart
+void distanceTo(Point other) => throw UnimplementedError();
+```
+
+### catch
+
+예외를 받는 것, 또는 획득하는 것은 예외를 다시 던지지 않는다면, 예외가 전파되는 것을 멈춥니다. 예외를 받는 것은 그것을 처리할 수 있는 기회를 제공하는 것입니다.
 
 ```dart
 try {
-    breedMoreLlamas();
+  breedMoreLlamas();
 } on OutOfLlamasException {
-    // OutOfLlamasException 타입의 예외에 대한 처리
-} on Exception catch (e) {
-    // Exception 타입의 예외에 대한 처리
-    // on Exception / catch (e)
-} catch (e) {
-    // 모든 타입을 캐치하여 처리
+  buyMoreLlamas();
 }
 ```
 
-- `catch`에 두 개의 매개변수를 작성할 수 있는데, 이 경우 두 번째 매개변수로 스택 트레이스 (`StackTrace` 오브젝트)가 들어온다.
-- `catch` 블록에 `rethrow;`를 명시하여 호출자가 예외를 확인하게 할 수 있다.
-
-### Finally
-
-- 예외처리 블록에서 예외가 던져졌든 던져지지 않았든 항상 실행되는 코드를 작성하는 절
-- `try`절에서 예외가 던져졌고 `catch`절에서 예외를 처리하지 못했다면, `finally`절이 실행된 후 예외가 발생한다.
+하나 이상의 타입의 예외를 던질 수 있는 코드를 다루기 위해 여러 개의 catch절을 지정할 수 있습니다. 첫 번째 catch절은 던져진 오브젝트와 일치하며 그 예외를 다룹니다. catch절이 타입을 지정하지 않는다면 그 절은 던져진 어떠한 오브젝트 타입이라도 다룰 수 있습니다.
 
 ```dart
 try {
-    breedMoreLlamas();
+  breedMoreLlamas();
+} on OutOfLlamasException {
+  // 지정된 예외
+  buyMoreLlamas();
+} on Exception catch (e) {
+  // 예외인 다른 모든 것들
+  print('Unknown exception: $e');
 } catch (e) {
-    print("Error: $e");
-} finally {
-    cleanLlamaStalls();
+  // 지정된 타입 없음. 모든 것을 처리함
+  print('Something really unknown: $e');
 }
 ```
+
+이전의 코드가 보여주듯, `on`이나 `catch`를 사용할 수 있고, 둘 모두를 사용할 수도 있습니다. 예외 타입을 지정할 필요가 있을 때 `on`을 사용하십시오. 예외 핸들러가 예외 오브젝트를 필요로 할 때 `catch`를 사용하십시오.
+
+`catch()`에 하나 또는 둘 이상의 매개변수를 지정할 수 있습니다. 첫 번째는 던져진 예외이며, 두 번째는 스택 트레이스([StackTrace](https://api.dartlang.org/stable/dart-core/StackTrace-class.html)) 오브젝트입니다.
+
+```dart
+try {
+  // ···
+} on Exception catch (e) {
+  print('Exception details:\n $e');
+} catch (e, s) {
+  print('Exception details:\n $e');
+  print('Stack trace:\n $s');
+}
+```
+
+부분적으로 예외를 처리하기 위해, 그것이 전파되도록 하고 `rethrow` 키워드를 사용하십시오.
+
+```dart
+void misbehave() {
+  try {
+    dynamic foo = true;
+    print(foo++); // 런타임 에러
+  } catch (e) {
+    print('misbehave() partially handled ${e.runtimeType}.');
+    rethrow; // 호출자가 예외를 확인할 수 있게 함
+  }
+}
+
+void main() {
+  try {
+    misbehave();
+  } catch (e) {
+    print('main() finished handling ${e.runtimeType}.');
+  }
+}
+```
+
+### finally
+
+예외를 던지든 던지지 않든 어떠한 코드를 실행하고 싶다면 `finally`절을 사용하십시오. 어떠한 `clause`절도 예외와 일치되지 않는다면 예외는 `finally`절이 실행된 후 전파됩니다.
+
+```dart
+try {
+  breedMoreLlamas();
+} finally {
+  // 예외가 던져졌을지라도 항상 정리 작업을 수행함
+  cleanLlamaStalls();
+}
+```
+
+`finally`절은 어떠한 `catch`절과 일치된 후 실행됩니다.
+
+```dart
+try {
+  breedMoreLlamas();
+} catch (e) {
+  print('Error: $e'); // 최초로 예외를 처리함
+} finally {
+  cleanLlamaStalls(); // 그리고 나서 정리함
+}
+```
+
+라이브러리 투어의 [예외](https://www.dartlang.org/guides/libraries/library-tour#exceptions) 섹션에서 더 많은 것을 확인하십시오.
 
 ## 클래스
 
