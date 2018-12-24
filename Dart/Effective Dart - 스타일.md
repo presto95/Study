@@ -44,3 +44,14 @@ const foo = Foo();
 @foo
 class C { ... }
 ```
+
+## DO | 밑줄과 함께 소문자를 사용하여 라이브러리와 소스 코드 파일의 이름을 짓기
+
+몇몇 파일 시스템은 대소문자를 구별하지 않습니다. 그러므로 많은 프로젝트는 모든 파일 이름이 소문자로 이루어지는 것을 요구합니다. 문자를 구분하는 것은 이름이 그 형식에서 더 가독성이 좋게 해줍니다. 구분자로 밑줄을 사용하는 것은 이름이 여전히 유효한 Dart의 식별자인 것을 보장하며, 나중에 언어가 symbolic import를 지원한다면 도움이 될 수 있습니다.
+
+```dart
+library peg_parser.source_scanner;
+
+import 'file_system.dart';
+import 'slider_menu.dart';
+```
