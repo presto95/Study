@@ -18,5 +18,5 @@ subscribe(observer:)
 
 **스트림은 에러가 발생하거나 완료되면 dispose된다.**
 
-`**DisposeBag` 에 들어간 `Disposable` 을 초기화하면 dispose된다.**
+**`DisposeBag` 에 들어간 `Disposable` 을 초기화하면 dispose된다.**
 
