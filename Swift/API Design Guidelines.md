@@ -26,13 +26,13 @@
     - **함수나 메소드가 무엇을 *하는지*, 무엇을 *반환하는지*에 대해 묘사하십시오.** null 효과와 `Void` 반환은 생략하십시오.
 
       ```swift
-      /// `self`의 시작에 `newHead` **삽입.**
+      /// `self`의 시작에 `newHead` 삽입.
       mutating func prepend(_ newHead: Int)
       
-      /// `self`의 요소에 뒤에 `head`를 포함하는 `List` **반환.**
+      /// `self`의 요소에 뒤에 `head`를 포함하는 `List` 반환.
       func prepending(_ head: Element) -> List
       
-      /// 비어 있지 않다면 `self`의 첫 번째 요소를 **제거하고 반환.**;
+      /// 비어 있지 않다면 `self`의 첫 번째 요소를 제거하고 반환.;
       /// 그렇지 않다면 `nil` 반환.
       mutating func popFirst() -> Element?
       ```
@@ -42,26 +42,26 @@
     - **서브스크립트가 *접근하는* 것을 묘사하십시오.**
 
       ```swift
-      /// `index`번째의 요소에 **접근.**
+      /// `index`번째의 요소에 접근.
       subscript(index: Int) -> Element { get set }
       ```
 
     - **이니셜라이저가 *생성하는* 것을 묘사하십시오.**
 
       ```swift
-      /// `x`를 `n`번 반복한 것을 포함하는 인스턴스 **생성.**
+      /// `x`를 `n`번 반복한 것을 포함하는 인스턴스 생성.
       init(count n: Int, repeatedElement x: Element)
       ```
 
     - 모든 다른 선언에서 **선언된 엔티티가 *무엇인지* 묘사하십시오.**
 
       ```swift
-      /// 어떠한 위치에서의 삽입이나 삭제에도 동등한 효율을 지원하는 **컬렉션.**
+      /// 어떠한 위치에서의 삽입이나 삭제에도 동등한 효율을 지원하는 컬렉션.
       struct List {
-          
-      	/// `self`의 **시작 위치의 요소.**, self가 비어 있다면 `nil`.
-      	var first: Element?
-      	...
+        
+        /// `self`의 시작 위치와 요소. `self`가 비어 있다면 `nil`.
+        var first: Element?
+        ...
       }
       ```
 
@@ -75,7 +75,7 @@
     /// - Parameter separator: 항목 사이에 출력될 텍스트
     /// - Parameter terminator: 끝에 출력될 텍스트
     ///
-    /// - Note: 끝 개행 없이 출력하기 위해 `terminator; ""`를 넘겨주십시오.
+    /// - Note: 끝 개행 없이 출력하기 위해 `terminator: ""`를 넘겨주십시오.
     ///
     /// - SeeAlso: `CustomDebugStringConvertible`, `CustomStringConvertible`, 
     ///   `debugPrint`.
@@ -600,7 +600,7 @@ x.move(from: x, to: y)
   /// 더 많은 저장소를 필요로 한다면, `allocate`는 할당하려는 바이트와
   /// 최대로 정렬된 숫자와 동등한 `byteCount`와 함께 호출된다.
   ///
-  /// - Returns:
+  ///	- Returns:
   ///		- reallocated: 새로운 메모리 블록이 할당되었다면 `true`.
   ///		- capacityChanged: `capacity`가 갱신되었다면 `true`.
   mutating func ensureUniqueStorage(
@@ -619,7 +619,7 @@ x.move(from: x, to: y)
   // ❌
   struct Array {
     /// `self.endIndex`에 `newElement` 삽입.
-  	public mutating func append(_ newElement: Element)
+    public mutating func append(_ newElement: Element)
     
     /// 순서대로, `self.endIndex`에 `newElements`의 컨텐츠 삽입.
     public mutating func append(_ newElements: S) where S.Generator.Element == Element
