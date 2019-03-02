@@ -600,9 +600,9 @@ x.move(from: x, to: y)
   /// 더 많은 저장소를 필요로 한다면, `allocate`는 할당하려는 바이트와
   /// 최대로 정렬된 숫자와 동등한 `byteCount`와 함께 호출된다.
   ///
-  ///	- Returns:
-  ///		- reallocated: 새로운 메모리 블록이 할당되었다면 `true`.
-  ///		- capacityChanged: `capacity`가 갱신되었다면 `true`.
+  /// - Returns:
+  ///   - reallocated: 새로운 메모리 블록이 할당되었다면 `true`.
+  ///   - capacityChanged: `capacity`가 갱신되었다면 `true`.
   mutating func ensureUniqueStorage(
     minimumCapacity requestedCapacity: Int, 
     allocate: (_ byteCount: Int) -> UnsafePointer<Void>
