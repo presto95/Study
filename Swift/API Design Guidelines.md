@@ -419,7 +419,7 @@
     func value() -> Int? { ... }
     
     /// 어떠한 것이든 `self`에 저장된 `String` 반환. 그렇지 않다면 `nil` 반환.
-  	func value() -> String? { ... }
+    func value() -> String? { ... }
   }
   ```
 
