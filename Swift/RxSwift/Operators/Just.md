@@ -22,12 +22,14 @@
 
 ```swift
 Observable<Int>.just(1)
-	.subscribe { print($0) }
+  .subscribe { print($0) }
+
 // next(1)
 // completed
 
 Observable<[Int]>.just([1, 2])
-	.subscribe { print($0) }
+  .subscribe { print($0) }
+
 // next([1, 2])
 // completed
 ```

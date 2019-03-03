@@ -10,11 +10,13 @@
 
 ```swift
 Observable<Int>.empty()
-	.subscribe { print($0) }
+  .subscribe { print($0) }
+
 // completed
 
 Observable<String>.empty()
-	.subscribe { print($0) }
+  .subscribe { print($0) }
+
 // completed
 ```
 

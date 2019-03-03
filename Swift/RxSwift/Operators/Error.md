@@ -10,7 +10,8 @@
 
 ```swift
 Observable<Int>.error(NSError(domain: "", code: 0, userInfo: nil))
-	.subscribe { print($0) }
+  .subscribe { print($0) }
+
 // error(Error Domain= Code=0 "(null)")
 ```
 
