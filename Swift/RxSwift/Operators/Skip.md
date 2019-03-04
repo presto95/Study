@@ -30,10 +30,11 @@ Observable.from[1, 2, 3, 4]
 ```swift
 // 2
 let subject = PublishSubject<Int>()
-  subject
-    .skip(0.5, scheduler: MainScheduler.instance)
-    .subscribe { print($0) }
-    .disposed(by: disposeBag)
+subject
+  .skip(0.5, scheduler: MainScheduler.instance)
+  .subscribe { print($0) }
+  .disposed(by: disposeBag)
+
 subject.onNext(1)
 Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { _ in
   subject.onNext(2)
