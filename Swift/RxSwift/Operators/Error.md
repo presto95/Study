@@ -11,6 +11,7 @@
 ```swift
 Observable<Int>.error(NSError(domain: "", code: 0, userInfo: nil))
   .subscribe { print($0) }
+  .disposed(by: disposeBag)
 
 // error(Error Domain= Code=0 "(null)")
 ```

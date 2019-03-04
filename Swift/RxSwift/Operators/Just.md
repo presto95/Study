@@ -23,12 +23,14 @@
 ```swift
 Observable<Int>.just(1)
   .subscribe { print($0) }
+  .disposed(by: disposeBag)
 
 // next(1)
 // completed
 
 Observable<[Int]>.just([1, 2])
   .subscribe { print($0) }
+  .disposed(by: disposeBag)
 
 // next([1, 2])
 // completed

@@ -11,11 +11,13 @@
 ```swift
 Observable<Int>.empty()
   .subscribe { print($0) }
+  .disposed(by: disposeBag)
 
 // completed
 
 Observable<String>.empty()
   .subscribe { print($0) }
+  .disposed(by: disposeBag)
 
 // completed
 ```

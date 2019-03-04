@@ -13,6 +13,7 @@ iterator의 아이템들을 Observable에 내려줄 때 사용 가능하다.
 ```swift
 Observable<[Int]>.from([1, 2, 3])
   .subscribe { print($0) }
+  .disposed(by: disposeBag)
 
 // next(1)
 // next(2)

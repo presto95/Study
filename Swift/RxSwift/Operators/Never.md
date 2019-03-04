@@ -11,6 +11,7 @@
 ```swift
 Observable<Int>.never()
   .subscribe { print($0) }
+  .disposed(by: disposeBag)
 
 // 출력 없음
 ```
