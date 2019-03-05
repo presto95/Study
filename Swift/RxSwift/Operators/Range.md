@@ -1,6 +1,15 @@
 # Range
 
-**Observable 생성**
+### 분류
+
+Observable 생성
+
+### Observable 연산자 결정 트리
+
+1. 새로운 Observable을 생성하고 싶은데 그 Observable이
+2. 연속된 정수를 배출해야 한다면
+
+---
 
 특정 범위의 순차적 정수를 배출하는 Observable 생성
 

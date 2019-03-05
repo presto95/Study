@@ -1,8 +1,15 @@
 # Single
 
-**Observable 필터링**
+### 분류
 
-**First의 변형**
+Observable 필터링
+
+First의 변형
+
+### Observable 연산자 결정 트리
+
+1. Observable이 배출한 특정 항목을 조회해야 하는데
+2. 배출된 항목이 단 하나이고 이것을 조회해야 한다면
 
 ---
 

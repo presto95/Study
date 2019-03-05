@@ -1,6 +1,15 @@
 # FlatMap
 
-**Observable 변환**
+### 분류
+
+Observable 변환
+
+### Observable 연산자 결정 트리
+
+1. Observable이 배출한 항목들을 변환한 후에 다시 배출해야 하는데
+2. 해당 Observable이 배출한 모든 항목들을 하나의 Observable이 배출하는 형태로 배출해야 한다면
+
+---
 
 어떠한 Observable이 배출한 아이템들을 Observable로 변환한다. 그리고 나서 그것들을 하나의 Observable로 평평하게 한다.
 

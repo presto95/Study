@@ -1,8 +1,16 @@
 # DistinctUntilChanged
 
-**Observable 필터링**
+### 분류
 
-**Distinct의 변형**
+Observable 필터링
+
+Distinct의 변형
+
+### Observable 연산자 결정 트리
+
+1. Observable의 특정 항목만 재배출해야 하는데
+2. 이미 배출된 항목과 동일한 것들을 제외시켜 재배출해야 하며
+3. 만약 중복된 항목이 바로 연이어 배출된다면
 
 ---
 

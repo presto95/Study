@@ -1,6 +1,15 @@
 # Skip
 
-**Observable 필터링**
+### 분류
+
+Observable 필터링
+
+### Observable 연산자 결정 트리
+
+1. Observable의 특정 항목만 재배출해야 하는데
+2. 재배출할 항목들이 처음 몇 개의 항목들 이후의 것들이라면
+
+---
 
 Observable이 배출한 최초의 n개의 아이템을 버리기
 

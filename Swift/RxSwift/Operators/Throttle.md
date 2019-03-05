@@ -1,8 +1,10 @@
 # Throttle
 
-**Observable 필터링**
+### 분류
 
-**Debounce의 변형**
+Observable 필터링
+
+Debounce의 변형
 
 ---
 

@@ -1,6 +1,10 @@
 # Subscribe
 
-**Observable 변환**
+### 분류
+
+Observable 변환
+
+---
 
 Observable로부터의 배출과 알림에 따라 동작
 

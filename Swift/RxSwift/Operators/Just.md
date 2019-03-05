@@ -1,6 +1,15 @@
 # Just
 
-**Observable 생성**
+### 분류
+
+Observable 생성
+
+### Observable 연산자 결정 트리
+
+1. 새로운 Observable을 생성하고 싶은데 그 Observable이
+2. 특정 항목을 생성해야 한다면
+
+---
 
 특정 아이템을 배출하는 Observable 생성
 

@@ -1,6 +1,15 @@
 # ElementAt
 
-**Observable 필터링**
+### 분류
+
+Observable 필터링
+
+### Observable 연산자 결정 트리
+
+1. Observable의 특정 항목만 재배출해야 하는데
+2. 몇 번째 위치한 항목만 재배출해야 한다면
+
+---
 
 Observable이 배출한 n번째 아이템만을 배출함
 

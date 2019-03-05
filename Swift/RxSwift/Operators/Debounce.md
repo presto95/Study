@@ -1,6 +1,15 @@
 # Debounce
 
-**Observable 필터링**
+### 분류
+
+Observable 필터링
+
+### Observable 연산자 결정 트리
+
+1. Observable의 특정 항목만 재배출해야 하는데
+2. 특정 시간이 지나고 나서 배출된 항목들만 재배출해야 한다면
+
+---
 
 특정 기간 동안 또다른 아이템을 배출하지 않았을 때만 Observable이 아이템을 배출
 

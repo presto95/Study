@@ -1,6 +1,14 @@
 # Do
 
-**Observable 유틸리티 연산자**
+### 분류
+
+Observable 유틸리티 연산자
+
+### Observable 연산자 결정 트리
+
+1. 특정 이벤트가 발생할 때 Observable 상에서 어떤 동작을 실행시켜야 한다면
+
+---
 
 다양한 Observable의 생명 주기 이벤트에서 취할 액션을 등록
 

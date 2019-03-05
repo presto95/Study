@@ -1,6 +1,15 @@
 # CombineLatest
 
-**Observable 결합**
+### 분류
+
+Observable 결합
+
+### Observable 연산자 결정 트리
+
+1. 다른 Observable을 결합시켜 새로운 Observable을 생성해야 한다
+2. Observable 중 하나라도 항목을 배출할 경우에 마지막으로 배출된 항목들을 결합시켜 배출해야 한다면
+
+---
 
 둘 중 하나의 Observable에서 아이템이 배출될 때, 각 Observable에서 배출된 마지막 아이템을 특정 함수를 통해 결합하고, 그 결과 아이템을 배출한다.
 

@@ -1,8 +1,10 @@
 # WithLatestFrom
 
-**Observable 결합**
+### 분류
 
-**CombineLatest의 변형**
+Observable 결합
+
+CombineLatest의 변형
 
 ---
 

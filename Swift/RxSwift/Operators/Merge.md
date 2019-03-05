@@ -1,6 +1,15 @@
 # Merge
 
-**Observable 결합**
+### 분류
+
+Observable 결합
+
+### Observable 연산자 결정 트리
+
+1. 다른 Observable을 결합시켜 새로운 Observable을 생성해야 한다
+2. 그리고 순서와 상관 없이 전달된 모든 Observable이 가진 항목 전체를 배출해야 한다면
+
+---
 
 여러 개의 Observable의 배출들을 합하여 하나의 Observable로 결합
 
