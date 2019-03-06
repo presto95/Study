@@ -6,6 +6,11 @@
 
 DefaultIfEmpty의 변형
 
+### Observable 연산자 결정 트리
+
+1. Observable이 가진 항목을 그대로 배출하지만 배출 전에 다른 항목들을 먼저 배출할 수 있도록 추가해야 하며
+2. 만약 소스 Observable이 비어 있을 경우 기본 항목을 추가해야 할 때
+
 ---
 
 RxSwift에서는 두 가지의 형태로 존재한다.
