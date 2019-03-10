@@ -39,6 +39,10 @@ Map에 전달되는 클로저의 반환 타입은 `ObservableConvertibleType` �
 
 Map처럼 자주 사용되나 잘 사용하는 것이 매우 중요할 것 같다.
 
+특히 비동기 상황에서 머지 순서를 보장하지 않으므로 사용에 유의해야 한다.
+
+`concatMap` / `flatMapFiirst` / `flatMapLatest` 등을 고려해보자.
+
 ```swift
 Observable.from([1, 2, 3])
   .flatMap { Observable.just(Double($0)) }
