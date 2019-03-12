@@ -45,6 +45,6 @@ Observable<Int>.repeatElement(1)
 // next(1)
 // next(1)
 // next(1)
-// completed
+// 
 ```
 
