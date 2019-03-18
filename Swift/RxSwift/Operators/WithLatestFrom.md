@@ -24,6 +24,8 @@ WithLatestFrom은 소스 Observable을 주어진 Observable과 결합하여 하�
 
 소스 Observable이 아이템을 배출할 때 주어진 Observable이 마지막으로 배출한 아이템을 배출하고 싶을 때, 또는 각각의 아이템을 특정 함수를 통해 결합하여 배출하고 싶을 때 사용한다.
 
+예를 들어 버튼의 탭 이벤트가 발생했을 때 다른 Observable이 배출한 마지막 아이템을 취하려면 이 오퍼레이터를 사용할 수 있다. 텍스트 필드의 리턴 버튼을 탭했을 때 텍스트 필드의 텍스트를 취하고 싶다면 `textField.controlEvent(.editingDidEndOnExit).withLatestFrom(textField.rx.text)` 와 같이 작성할 수 있을 것이다.
+
 ```swift
 let subject1 = PublishSubject<Int>()
 let subject2 = PublishSubject<String>()
