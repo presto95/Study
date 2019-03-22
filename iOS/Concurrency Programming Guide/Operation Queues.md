@@ -391,3 +391,39 @@ func performOperation(_ operation: Operation) -> Bool {
 ### 큐 일시정지 및 재개
 
 오퍼레이션의 실행에 일시적인 중지를 발행하기 원한다면, `isSuspended` 프로퍼티를 사용하여 상응하는 오퍼레이션 큐를 일시정지할 수 있습니다. 큐를 일시정지하는 것은 이미 실행 중인 오퍼레이션이 작업 도중에 중지되는 것을 유발하지 않습니다. 새로운 오퍼레이션이 실행을 위해 스케줄링되는 것을 방지하는 것뿐입니다. 어떠한 진행 중인 작업을 중단하라는 사용자 요청의 대한 응답으로 큐를 중단할 수 있으며, 결국에 사용자는 그 작업이 재개되기를 원하는 것을 기대하기 때문입니다.
+
+---
+
+## 예제
+
+```swift
+let operation1 = BlockOperation {
+  (1...10).forEach { print($0) }
+}
+let operation2 = BlockOperation {
+  (101...110).forEach { print($0) }
+}
+let queue = OperationQueue()
+queue.addOperation(operation1)
+queue.addOperation(operation2)
+
+// 실행 결과가 매번 다르다.
+// 두 개의 오퍼레이션이 동시적으로 실행되기 때문.
+```
+
+```swift
+let operation1 = BlockOperation {
+  (1...10).forEach { print($0) }
+}
+let operation2 = BlockOperation {
+  (101...110).forEach { print($0) }
+}
+operation2.addDependency(operation1)
+let queue = OperationQueue()
+queue.addOperation(operation1)
+queue.addOperation(operation2)
+
+// operation1의 실행이 종료된 이후 operation2가 실행된다.
+// operation2는 operation1의 종료에 의존하기 때문이다.
+```
+

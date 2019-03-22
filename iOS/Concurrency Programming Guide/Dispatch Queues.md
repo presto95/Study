@@ -124,3 +124,45 @@ Grand Central Dispatch는 애플리케이션에서 몇 가지 공통 디스패�
 ### 디스패치 큐의 메모리 관리
 
 > 너무 옛날 문서라서.. 더는 못읽겠습니다
+
+---
+
+## 예제
+
+```swift
+let queue = DispatchQueue(label: "com.example.Queue1")
+queue.async { (1...10).forEach { print($0) } }
+queue.async { (11...20).forEach { print($0) } }
+
+// 1부터 10까지 출력된 후 11부터 20까지 출력됨
+// 기본적으로 DispatchQueue가 serial queue이기 때문
+```
+
+```swift
+let queue1 = DispatchQueue(label: "com.example.Queue1")
+let queue2 = DispatchQueue(label: "com.example.Queue2")
+queue1.async {
+  (1...10).forEach { print($0) }
+}
+queue2.async {
+  (11...20).forEach { print($0) }
+}
+
+// 매번 출력 결과가 다르게 나옴
+// 두 개의 직렬 큐를 만들었고, 각각에 블록을 설정해 두었기 때문.
+// 지양해야 하는 방법이다.
+```
+
+```swift
+let queue = DispatchQueue(label: "com.example.Queue1", attributes: .concurrent)
+queue.async {
+  (1...10).forEach { print($0) }
+}
+queue.async {
+  (11...20).forEach { print($0) }
+}
+
+// 매번 출력 결과가 다르게 나옴
+// 작업들을 동시적으로 실행하기 원한다면, 병렬 디스패치 큐를 만드는 방법을 사용하는 것이 좋음.
+```
+
