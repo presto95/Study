@@ -4,7 +4,7 @@
 
 Swift 5.0은 Swift의 다음 주요 릴리즈이며, 마침내 ABI 안정성을 가져왔습니다. 하지만 이것이 다가 아닙니다. 몇 가지 주요한 새로운 기능이 이미 구현되었는데, 이는 원시 문자열*raw strings*, 미래의 열거형 케이스*future enum cases*, `Result` 타입, 정수형 배수 확인*checking for integer multiples* 등을 포함합니다.
 
-## 표준 `Result` 타입
+## 표준 `Result` 타입*Standard Result Type*
 
 SE-0235는 표준 라이브러리에 `Result` 타입을 도입하였습니다. 이는 비동기 API와 같은 복잡한 코드에서 더 간단하고 명확한 에러 처리 방식을 제공합니다.
 
@@ -69,7 +69,7 @@ let result = Result { try String(contentsOfFile: someFile) }
 
 그래서, `Result<Int, NetworkError>`를 사용하기보다는, `Result<Int, Error>`를 사용할 수 있습니다. 이는 당신이 타입이 있는 예외 던지기의 안전성을 잃는 것을 의미할지라도, 다양한 에러 열거형을 던질 수 있는 능력을 얻게 됩니다. 이는 정말로 당신의 코딩 스타일에 따라 선호도가 결정되는 것입니다.
 
-## 원시 문자열
+## 원시 문자열*Raw String*
 
 SE-0200은 원시 문자열을 생성할 수 있는 능력을 추가하였는데, 백슬래시와 큰따옴표가 문자나 문자열 터미네이터를 탈출하는 대신 그 자체의 리터럴 심볼로 해석됩니다. 이것은 많은 유즈 케이스를 더 쉽게 만들지만, 특히 정규 표현식에서 도움이 될 것입니다.
 
@@ -128,7 +128,7 @@ let regex2 = #"\\[A-Z]+[A-Za-z]+\.[a-z]+"#
 
 우리는 여전히 *어떠한 것* *some*이 필요한데, 정규 표현식이 그것들도 사용하기 때문입니다.
 
-### 문자열 보간법 커스터마이징하기
+## 문자열 보간법 커스터마이징하기*Customizing String Interpolation*
 
 SE-0228은 Swift의 문자열 보간법 체계를 극적으로 쇄신하여, 더욱 능률적이고 더욱 유연하게 하였으며, 이전에는 불가능했던 완전히 새로운 기능의 범위를 만들고 있습니다.
 
@@ -241,16 +241,19 @@ struct HTMLComponent: ExpressibleByStringLiteral, ExpressibleByStringInterpolati
     
     // 하드코딩된 텍스트 조각 - 단지 추가
     mutating func appendLiteral(_ literal: String) {
+      print("Appending \(literal)")
       output.append(literal)
     }
     
     // 트위터 사용자 이름 - 링크로 추가
     mutating func appendInterpolation(twitter: String) {
+      print("Appending \(twitter)")
       output.append("<a href=\"https://twitter/\(twitter)\">@\(twitter)</a>")
     }
     
     // 이메일 주소 - mailto 사용하여 추가
     mutating func appendInterpolation(email: String) {
+      print("Appending \(email)")
       output.append("<a href=\"mailto:\(email)\">\(email)</a>")
     }
   }
@@ -274,5 +277,25 @@ struct HTMLComponent: ExpressibleByStringLiteral, ExpressibleByStringInterpolati
 
 ```swift
 let text: HTMLComponent = "You should follow me on Twitter \(twitter: "twostraws"), or you can email me at \(email: "paul@hackingwithswift.com")."
+```
+
+산재해 있는 `print()` 호출 덕분에, 문자열 보간 기능이 어떻게 작동하는지 확실하게 알 수 있을 것입니다. "Appending You should follow me on Twitter", "Appending twostraws", "Appending, or you can email me at", "Appending paul@hackingwithswift.com", "Appending ."을 확인할 수 있을 것입니다. 각 부분은 메소드 호출을 일으키며, 우리의 문자열에 추가됩니다.
+
+## 동적으로 호출 가능한 타입*Dynamically callable types*
+
+SE-0216은 Swift에 새로운 `@dynamicCallable` 특성을 추가하였으며, 이는 해당 타입이 직접적으로 호출 가능하다는 것으로 표시할 수 있는 능력을 가져옵니다. 이것은 컴파일러의 마법의 한 종류라기보다는 syntatic sugar인데, 다음의 코드는 다음의 코드로 능률적으로 변형됩니다.
+
+```swift
+let result = random(numberOfZeroes: 3)
+let result = random.dynamicallyCall(withKeywordArguments: ["numberOfZeros": 3])
+```
+
+이전에 Swift 4.2의 @dynamicMemberLookup에 대한 기능을 소개했습니다. `@dynamicCallable`은 `@dynamicMemberLookup`의 순수 확장이며, 같은 목적을 제공합니다. 이는 Swift 코드가 Python과 JavaScript와 같은 동적 언어와 나란히 작동하는 것을 쉽게 해줍니다.
+
+이 기능을 당신의 타입에 추가하기 위해, `@dynamicCallable` 특성을 추가하고 다음의 하나 또는 둘 모드의 메소드를 추가할 필요가 있습니다.
+
+```swift
+func dynamicallyCall(withArguments args: [Int]) -> Double
+func dynamicallyCall(withKeywordArguments args: KeyValuePairs<String, Int>) -> Double
 ```
 
