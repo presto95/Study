@@ -583,3 +583,464 @@ let hypotenuse = side * root2 // what is root2?
 
 ### 옵셔널
 
+`nil` 값을 취할 수 있는 곳에 변수 및 함수의 반환형을 `?`을 사용하여 옵셔널로 선언하라.
+
+사용되기 전에 이후에 초기화될 것이라고 알고 있는 인스턴스 변수, 예를 들면 `viewDidLoad()`에서 설정될 서브뷰에 대해서만 `!`을 사용하여 암시적 추출 타입을 사용하라. 대부분의 다른 경우 암시적 추출 옵셔널보다 옵셔널 바인딩을 사용하라.
+
+옵셔널 값에 접근할 때, 그 값에 오직 한 번 접근하거나 체인에 많은 옵셔널이 있을 때 옵셔널 체이닝을 사용하라.
+
+```swift
+textContainer?.textLabel?.setNeedsDisplay()
+```
+
+한 번 언래핑하고 여러 개의 작업을 수행하는 것을 더 편리하게 할 때 옵셔널 바인딩을 사용하라.
+
+```swift
+if let textContainer = textContainer {
+  // do many things with textContainer
+}
+```
+
+옵셔널 변수 및 프로퍼티에 이름을 지을 때, 그것들이 옵셔널이라는 것이 이미 타입 선언에 나타나 있다면 `optionalString`이나 `maybeView`와 같이 네이밍하지 마라.
+
+옵셔널 바인딩에 대하여, `unwrappedView`나 `actualLabel`과 같은 이름을 사용하기보다는, 가능할 때마다 기존 이름을 넌지시 나타내어라.
+
+#### 선호:
+
+```swift
+var subview: UIView?
+var volume: Double?
+
+// later on...
+if let subview = subview, let volume = volume {
+  // do something with unwrapped subview and volume
+}
+
+// another example
+UIView.animate(withDuration: 2.0) { [weak self] in
+  guard let self = self else { return }
+  self.alpha = 1.0
+}
+```
+
+#### 선호하지 않음:
+
+```swift
+var optionalSubview: UIView?
+var volume: Double?
+
+if let unwrappedSubview = optionalSubview {
+  if let realVolume = volume {
+    // do something with unwrappedSubview and realVolume
+  }
+}
+
+// another example
+UIView.animate(withDuration: 2.0) { [weak self] in
+  guard let strongSelf = self else { return }
+  strongSelf.alpha = 1.0
+}
+```
+
+### 지연 초기화
+
+오브젝트의 수명을 세밀하게 제어하기 위해 지연 초기화를 사용하는 것을 고려하라. 이는 특히 뷰를 지연하여 로드하는 `UIViewController`에 대하여 그렇다. 즉시 호출되는 클로저 `{ }()`나 private 팩토리 메소드를 호출할 때 사용할 수 있다.
+
+```swift
+lazy var locationManager = makeLocationManager()
+
+private func makeLocationManager() -> CLLocationManager {
+  let manager = CLLocationManager()
+  manager.desiredAccuracy = kCLLocationAccuracyBest
+  manager.delegate = self
+  manager.requestAlwaysAuthorization()
+  return manager
+}
+```
+
+**알아두기**
+
+- `[unowned self]`는 여기서 요구하는 것이 아니다. 리테인 사이클은 생성되지 않는다.
+- 로케이션 매니저는 사용자에게 권한을 요청하기 위한 UI를 띄우는 사이드 이펙트를 갖는다. 때문에 여기서는 세밀한 제어가 필요하다.
+
+### 타입 추론
+
+간결한 코드를 산호하고 컴파일러가 하나의 인스턴스의 상수나 변수에 대한 타입을 추론할 수 있게 하라. 타입 추론은 작고, 비어 있지 않은 배열과 딕셔너리에도 적절하다. 필요하다면 `CGFloat`나 `Int16`과 같은 특정 타입을 명시하라.
+
+#### 선호:
+
+```swift
+let message = "Click the button"
+let currentBounds = computeViewBounds()
+var names = ["Mic", "Sam", "Christine"]
+let maximumWidth: CGFloat = 106.5
+```
+
+#### 선호하지 않음:
+
+```swift
+let message: String = "Click the button"
+let currentBounds: CGRect = computeViewBounds()
+var names = [String]()
+```
+
+#### 빈 배열과 디셔너리에 대한 타입 선언
+
+빈 배열과 딕셔너리에 대하여 타입 선언을 사용하라. (크고, 여러 줄의 리터럴로 할당된 배열과 딕셔너리에 대하여 타입 선언을 사용하라.)
+
+#### 선호:
+
+```swift
+var names: [String] = []
+var lookup: [String: Int] = [:]
+```
+
+#### 선호하지 않음:
+
+```swift
+var names = [String]()
+var lookup = [String: Int]()
+```
+
+**알아두기** : 이 가이드라인을 따르는 것은 설명적인 이름을 고르는 것이 이전보다 훨씬 더 중요하다는 것을 의미한다.
+
+### Syntatic Sugar
+
+전체 제네릭 문법을 사용하기보다는 타입 선언의 단축 버전을 선호하라.
+
+#### 선호:
+
+```swift
+var deviceModels: [String]
+var employees: [Int: String]
+var faxNumber: Int?
+```
+
+#### 선호하지 않음:
+
+```swift
+var deviceModels: Array<String>
+var employees: Dictionary<Int, String>
+var faxNumber: Optional<Int>
+```
+
+## 함수 vs. 메소드
+
+어떠한 클래스나 타입에 붙어 있지 않은 전역 함수는 드물게 사용되어야 한다. 가능하다면 전역 함수 대신 메소드를 사용하라. 이는 가독성과 찾을 수 있는 능력을 도와준다.
+
+전역 함수는 특정 타입이나 인스턴스와 연관되지 않았을 때 가장 적절하다.
+
+#### 선호:
+
+```swift
+let sorted = items.mergeSorted()  // easily discoverable
+rocket.launch()  // acts on the model
+```
+
+#### 선호하지 않음:
+
+```swift
+let sorted = mergeSort(items)  // hard to discover
+launch(&rocket)
+```
+
+#### 전역 함수의 예외:
+
+```swift
+let tuples = zip(a, b)  // feels natural as a free function (symmetry)
+let value = max(x, y, z)  // another free function that feels natural
+```
+
+## 메모리 관리
+
+프로덕션 코드가 아니고, 튜토리얼 데모 코드일지라도, 코드는 참조 사이클을 생성해서는 안된다. 오브젝트 그래프를 분석하고 `weak`와 `unowned` 참조를 사용하여 강한 사이클을 막아라. 대안으로, 사이클을 막기 위해 값 타입 (`struct`, `enum`) 을 사용하라.
+
+### 오브젝트의 수명 연장하기
+
+`[weak self]`와 `guard let self = self else { return }` 상용구를 사용하여 오브젝트의 수명을 연장하라. `[weak self]`는 `self`가 클로저보다 오래 남아 있을 것이라는 것이 즉시 명백하지 않은 곳에서 `[unowned self]`보다 선호된다. 명시적으로 수명을 연장하는 것은 옵셔널 체이닝보다 선호된다.
+
+#### 선호:
+
+```swift
+resource.request().onComplete { [weak self] response in
+  guard let self = self else {
+    return
+  }
+  let model = self.updateModel(response)
+  self.updateUI(model)
+}
+```
+
+#### 선호하지 않음:
+
+```swift
+// might crash if self is released before response returns
+resource.request().onComplete { [unowned self] response in
+  let model = self.updateModel(response)
+  self.updateUI(model)
+}
+```
+
+#### 선호하지 않음:
+
+```swift
+// deallocate could happen between updating the model and updating UI
+resource.request().onComplete { [weak self] response in
+  let model = self?.updateModel(response)
+  self?.updateUI(model)
+}
+```
+
+## 접근 제어
+
+튜토리얼에서 모든 접근 제어 선언은 주요 토픽과 동떨어져 있으며 필수적이지 않다. 하지만, 적절하게 `private`과 `fileprivate`을 사용하여 명백함을 추가하고 캡슐화를 촉진하라. `fileprivate`보다 `private`을 선호하라. 오직 컴파일러가 주장할 때만 `fileprivate`을 사용하라.
+
+모든 접근 제어 명세를 필요로 할 때만 명시적으로 `open`, `public`, `internal`을 사용하라.
+
+프로퍼티 지정자 앞에 접근 제어를 사용하라. 접근 제어 이전에 오는 유일한 것은 `static` 지정자나 `@IBAction`, `@IBOutlet`, `@discardableResult`와 같은 특성 뿐이다.
+
+#### 선호:
+
+```swift
+private let message = "Great Scott!"
+
+class TimeMachine {  
+  private dynamic lazy var fluxCapacitor = FluxCapacitor()
+}
+```
+
+#### 선호하지 않음:
+
+```swift
+fileprivate let message = "Great Scott!"
+
+class TimeMachine {  
+  lazy dynamic private var fluxCapacitor = FluxCapacitor()
+}
+```
+
+## 흐름 제어
+
+`while-condition-increment` 스타일보다 `for` 루프의 `for-in` 스타일을 사용하라.
+
+#### 선호:
+
+```swift
+for _ in 0..<3 {
+  print("Hello three times")
+}
+
+for (index, person) in attendeeList.enumerated() {
+  print("\(person) is at position #\(index)")
+}
+
+for index in stride(from: 0, to: items.count, by: 2) {
+  print(index)
+}
+
+for index in (0...3).reversed() {
+  print(index)
+}
+```
+
+#### 선호하지 않음:
+
+```swift
+var i = 0
+while i < 3 {
+  print("Hello three times")
+  i += 1
+}
+
+
+var i = 0
+while i < attendeeList.count {
+  let person = attendeeList[i]
+  print("\(person) is at position #\(i)")
+  i += 1
+}
+```
+
+### 삼항 연산자
+
+삼항 연산자 `? : `는 이것이 코드의 명백함이나 단정함을 증가시킬 때만 사용되어야 한다. 하나의 조건은 일반적으로 평가되어야 하는 모든 것이다. 여러 개의 조건을 평가하는 것은 일반적으로 `if`문을 사용하거나 인스턴스 변수로 리팩토링하여 더 이해하기 쉬워진다. 일반적으로, 삼항 연산자의 가장 좋은 사용은 변수에 할당 중이고 어떠한 값을 사용할지 결정하는 동안이다.
+
+#### 선호:
+
+```swift
+let value = 5
+result = value != 0 ? x : y
+
+let isHorizontal = true
+result = isHorizontal ? x : y
+```
+
+#### 선호하지 않음:
+
+```swift
+result = a > b ? x = c > d ? c : d : y
+```
+
+## Golden Path
+
+조건절과 함께 코딩할 때, `if`문을 중첩시키지 않는다. 여러 개의 리턴문은 괜찮다. `guard`문이 이를 위해 생긴 것이다.
+
+#### 선호:
+
+```swift
+func computeFFT(context: Context?, inputData: InputData?) throws -> Frequencies {
+
+  guard let context = context else {
+    throw FFTError.noContext
+  }
+  guard let inputData = inputData else {
+    throw FFTError.noInputData
+  }
+
+  // use context and input to compute the frequencies
+  return frequencies
+}
+```
+
+#### 선호하지 않음:
+
+```swift
+func computeFFT(context: Context?, inputData: InputData?) throws -> Frequencies {
+
+  if let context = context {
+    if let inputData = inputData {
+      // use context and input to compute the frequencies
+
+      return frequencies
+    } else {
+      throw FFTError.noInputData
+    }
+  } else {
+    throw FFTError.noContext
+  }
+}
+```
+
+여러 개의 옵셔널이 `guard`나 `if let`으로 언래핑될 때, 가능하다면 조합하여 중첩을 최소화하라. 조합된 버전에서, `guard`를 그 자신의 라인에 두고, 각각의 조건을 그 자신의 라인에서 들여쓰기하라. `else`절은 조건들과 일치한 들여쓰기 수준을 갖고, 코드는 추가적인 들여쓰기 수준을 갖는다.
+
+#### 선호:
+
+```swift
+guard 
+  let number1 = number1,
+  let number2 = number2,
+  let number3 = number3 
+  else {
+    fatalError("impossible")
+}
+// do something with numbers
+```
+
+#### 선호하지 않음:
+
+```swift
+if let number1 = number1 {
+  if let number2 = number2 {
+    if let number3 = number3 {
+      // do something with numbers
+    } else {
+      fatalError("impossible")
+    }
+  } else {
+    fatalError("impossible")
+  }
+} else {
+  fatalError("impossible")
+}
+```
+
+### 실패하는 Guard문
+
+Guard문은 어떠한 방법으로 탈출할 필요가 있다. 일반적으로, 이는 `return`, `throw`, `break`, `continue`, `fatalError()`와 같은 간단한 한 줄 문장이어야 한다. 큰 코드 블록은 피해야 한다. 정리하는 코드가 여러 개의 탈출 지점에서 필요하다면, 정리 코드의 중복을 피하기 위해 `defer` 블록을 사용하는 것을 고려하라.
+
+## 세미콜론
+
+Swift는 코드에서 각각의 선언문 뒤에 세미콜론을 필요로 하지 않는다. 하나의 라인에 여러 개의 선언문을 조합하고 싶을 때만 필요하다.
+
+세미콜론으로 분리된 여러 개의 선언문을 하나의 라인에 작성하지 마라.
+
+#### 선호:
+
+```swift
+let swift = "not a scripting language"
+```
+
+#### 선호하지 않음:
+
+```swift
+let swift = "not a scripting language";
+```
+
+## 괄호
+
+조건절 주위에 있는 괄호는 필수적이지 않으며 생략될 필요가 있다.
+
+#### 선호:
+
+```swift
+if name == "Hello" {
+  print("World")
+}
+```
+
+#### 선호하지 않음:
+
+```swift
+if (name == "Hello") {
+  print("World")
+}
+```
+
+더 큰 표현식에서, 옵셔널 괄호는 때때로 코드를 더 명백하게 읽을 수 있게 할 수 있다.
+
+#### 선호:
+
+```swift
+let playerMark = (player == current ? "X" : "O")
+```
+
+## 여러 줄 문자열 리터럴
+
+긴 문자열 리터럴을 만들 때, 여러 줄 문자열 리터럴 문법을 사용하는 것을 장려한다. 할당하는 것과 같은 라인에서 리터럴을 열지만 그 라인에 텍스트를 포함하지는 말아라. 텍스트 블록에 추가적인 들여쓰기 수준을 적용하라.
+
+#### 선호:
+
+```swift
+let message = """
+  You cannot charge the flux \
+  capacitor with a 9V battery.
+  You must use a super-charger \
+  which costs 10 credits. You currently \
+  have \(credits) credits available.
+  """
+```
+
+#### 선호하지 않음:
+
+```swift
+let message = """You cannot charge the flux \
+  capacitor with a 9V battery.
+  You must use a super-charger \
+  which costs 10 credits. You currently \
+  have \(credits) credits available.
+  """
+```
+
+#### 선호하지 않음:
+
+```swift
+let message = "You cannot charge the flux " +
+  "capacitor with a 9V battery.\n" +
+  "You must use a super-charger " +
+  "which costs 10 credits. You currently " +
+  "have \(credits) credits available."
+```
+
+## 이모지 사용하지 않기
+
+프로젝트에 이모지를 사용하지 말아라. 실제로 그 코드에 타이핑할 독자들에게, 이는 불필요한 충돌의 근원이 될 수있다. 그것은 귀여울지라도, 그것은 학습에 추가되지 않으며 독자를 위한 코딩 흐름을 방해한다.
