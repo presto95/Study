@@ -175,3 +175,170 @@ class Product extends StatelessWidget {
 
 # Creating the "Product Manager" Widget
 
+UI 설계에 계층적 구조를 적용, Manager 클래스가 최종 형태의 UI를 만들어내게끔 한다.
+
+어떻게 UI 요소를 분리하고 재사용할 수 있게 할지 생각해야 한다.
+
+일반적으로 Stateless Widget을 사용하고, 데이터를 관리하고 변경할 필요가 있는 것에는 Stateful Widget을 사용한다.
+
+# Passing Data to Stateful Widget
+
+외부에서 데이터 전달하기
+
+StatefulWidget 클래스를 상속받는 클래스는 immutable하며, State를 상속받은 클래스는 mutable하다.
+
+State 클래스는 `widget` 프로퍼티를 통해 해당 클래스의 제네릭 타입에 명시된 위젯 클래스의 프로퍼티와 메소드에 접근할 수 있도록 한다.
+
+State 클래스를 상속받는 클래스는 `initState` 메소드를 재정의하여 초기 상태를 설정할 수 있다.
+
+`initState` 메소드는 `build` 메소드 이전에 호출된다.
+
+# initState() and super.initState()
+
+```dart
+@override
+void initState() {
+  super.initState();
+  _products.add(widget.startingProduct);
+}
+```
+
+위와 같이 먼저 상위 클래스의 메소드를 호출한 후 구현하는 것을 추천한다.
+
+# Understanding Lifecycle Hooks
+
+Stateless Widget의 경우 위젯에 데이터를 주입하여 UI를 렌더링한다. 데이터는 외부에 의해 변경될 수 있고 이 변화에 따라 다시 렌더링되어 UI를 갱신한다.
+
+Stateful Widget의 경우 Stateless Widget에 더하여 내부 상태를 가질 수 있다. 이는 외부 또는 내부에 의한 데이터 변화에 따라 다시 렌더링되어 UI를 갱신한다.
+
+## Life Cycle
+
+- Stateless Widget
+  1. 생성자 호출
+  2. `build()` 호출
+     - 외부 데이터의 변화에 따라 여러 번 호출될 수 있음
+
+> Stateless Widget의 Constructor -> build()
+
+- Stateful Widget
+
+  1. Widget의 생성자 호출
+  2. Widget의 `createState()` 호출
+  3. State의 `initState()` 호출
+  4. State의 `build()` 호출
+     - `setState()` 에 의하여 다시 렌더링해야 하는 경우 호출될 수 있음. 버튼 탭 이벤트나 네트워크 요청이 종료된 후 등 `setState()` 를 호출할 수 있음
+
+  - `didUpdateWidget()`
+    - 외부 데이터에 의해 변화가 일어난 경우 호출되며, 이후 `build()` 가 호출됨
+    - hot reload되는 경우에도 호출됨 
+
+> Stateful Widget의 Constructor -> createState() 이후 State의 initState() -> build()
+
+Widget의 생명주기를 이해하는 것은 iOS에서 `UIViewController` 의 생명주기를 이해하는 것처럼 중요한 부분일 것이므로 충분히 이해하도록 하자.
+
+# Diving Into Google's Material Design
+
+Flutter에 내장된 Material Design System이 적용된 Widget을 사용하여 자유롭게 커스터마이징할 수 있으나 유려한 디자인을 취할 수 있다.
+
+- MaterialApp 클래스의 `theme` 프로퍼티에 테마 정보를 넘겨줄 수 있으며, 일반적으로 ThemeData 클래스를 사용한다.
+  - ThemeData 클래스의 `primarySwatch` 프로퍼티에 미리 정의된 색상 집합을 넘겨줄 수 있다.
+  - 해당 테마를 외부에서는 `Theme.of(context)` 를 사용하여 접근할 수 있다.
+  - 테마와 관련된 여러 프로퍼티에 값을 할당하여 앱 전체의 테마 설정을 할 수 있다.
+
+# Understanding Additional Dart Features
+
+final과 const의 차이
+
+```dart
+class Product {
+  final String product;
+  Product(this.product);
+}
+
+Product("Product");
+
+///////////
+
+class Product {
+  final String product;
+  Product({this.product});
+}
+
+Product(product: "Product");
+```
+
+Dart에서 생성자를 정의하고 사용할 때의 syntactic sugar를 이해하기.
+
+매개 변수 기본값을 사용할 수 있음
+
+- 중괄호 안에 위치하는 named argument의 경우
+  - 다른 언어에서 하는 것처럼 매개 변수 기본값 정의해주기
+  - `void enableFlags({bool bold = false, bool hidden = false}) { ... }`
+    - `enableFlags(bold: true, hidden: true,)`
+- 일반적인 positional argument의 경우
+  - 대괄호 안에 위치시킴
+  - `String say(String from, String msg, [String device = "carrier pigeon"])`
+    - `say("From", "Msg", "Device")`
+  - 매개 변수에 값이 넘겨지지 않은 경우 null
+
+공식 문서에서 Dart 언어의 사용법 확인하기
+
+# Passing Data Up
+
+**위젯 트리의 상위 위젯에서 하위 위젯의 상태를 관리하도록 한다.** 이 때 상위 위젯은 Stateful하며, 나머지는 Stateless하다.
+
+상위 위젯은 하위 위젯에 상태를 전파할 필요가 있다.
+
+`Function` 이라는 추상 클래스가 존재하며, 모든 함수 타입의 기반 클래스이다.
+
+**Pass Data Up** / **Pass Reference Down**
+
+상위 위젯에 버튼(하위 위젯)을 설정하고, 버튼이 눌렸을 때 호출할 콜백 메소드를 등록한 형태로 생각하기.
+
+# Understanding "const" & "final"
+
+### final
+
+final로 지정된 변수는 한번 초기화된 이후 **새로운 값으로 다시 할당될 수 없다.**
+
+하지만 Dart에서 모든 타입은 클래스이고 참조 타입이므로, 메모리에 존재하는 객체를 변경하는 것은 가능하다.
+
+### const
+
+final의 행위에 더하여 모든 경우에 대한 변경이 불가능하다.
+
+`final List<String> _products = const [];` 의 코드가 있을 때 `_products` 에 `add` 와 같은 메소드를 호출하면 런타임 에러가 발생한다. 초기화된 빈 배열은 변경이 불가능하기 때문이다.
+
+`final List<String> _products = [];` 의 코드가 있을 때는 `add` 와 같은 메소드를 호출할 수 있다.
+
+어떠한 값이 절대 변하지 않을 것임을 명시하기 위해 r-value에 `const` 키워드를 사용하여 할당한다.
+
+l-value에 `final`, r-value에 `const` 를 사용하여 해당 변수에는 새로운 객체를 할당할 수 없고, 할당된 객체를 변경할 수도 없게 한다.
+
+# Dart Types, Syntax & Core Features
+
+- Dart의 모든 것은 오브젝트, 참조 타입이다.
+- Dart는 강타입 언어다.
+- `num` 은 `int` 나 `double` 같은 숫자 타입의 기반 클래스다.
+- 텍스트는 `String` 타입.
+- 불리언 값은 `bool` 타입.
+- 리스트 `List<T>`
+- 맵은 Swift의 딕셔너리를 생각하기. 중괄호를 사용.
+
+# Wrap Up
+
+- Flutter는 여러 개의 Widget에 대한 것이다.
+  - 내장 또는 커스텀 위젯을 사용하여 UI를 구성한다.
+  - Stateless Widget은 데이터를 입력으로만 취한다. 내부적으로 데이터를 조작하지 않는다. 새로운 위젯 트리를 렌더링한다.
+  - Stateful Widget은 외부 데이터와 내부 데이터를 모두 취할 수 있으며, 내부 데이터는 state라고도 불린다.
+    - 내부 데이터는 State 객체가 관리한다.
+  - 외부 또는 내부 데이터의 변화는 다시 렌더링하는 결과를 낳는다. 이는 라이프 사이클에 따라 진행된다.
+- Dart와 Flutter 간 관계
+  - Dart는 Flutter가 사용하는 프로그래밍 언어
+  - Flutter는 Flutter SDK와 Dart Framework를 말한다.
+- 데이터 전달 / 위젯 생명주기
+  - 생성자를 정의하여 데이터 전달
+  - Stateful Widget의 경우 State에서 `widget` 프로퍼티를 사용하여 Widget의 프로퍼티에 접근 가능하다.
+  - Stateful Widget의 생명주기
+    - initState : 위젯과 그 상태가 최초로 만들어질 때 호출됨
+    - didUpdateWidget : 위젯이 새로운 외부 데이터를 받을 때 호출됨
