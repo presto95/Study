@@ -1,8 +1,10 @@
-# Diving Into the "main.dart" File
+# Diving Into the Basics & Understanding Widgets
+
+## Diving Into the "main.dart" File
 
 Flutter에서 `main.dart` 파일은 무조건 존재해야 한다. `main` 전역 함수도 존재해야 한다.
 
-# Widgets in Flutter - Theory
+## Widgets in Flutter - Theory
 
 Widget은 기본적으로 블록, UI 컴포넌트 등을 만들 때 사용한다. 화면 그 자체도 Widget이다.
 
@@ -10,11 +12,11 @@ Widget은 기본적으로 블록, UI 컴포넌트 등을 만들 때 사용한다
 
 Flutter App == Widget Tree
 
-# Creating a Widget
+## Creating a Widget
 
 `import`로 외부 모듈 가져오기 (`package:flutter/material.dart`)
 
-# Adding the "Build" Method
+## Adding the "Build" Method
 
 `Widget build(BuildContext context)`
 
@@ -26,7 +28,7 @@ Flutter App == Widget Tree
 
 `MaterialApp`은 앱의 최상단에 위치할 수 있는 Widget. 앱의 테마 설정 등.
 
-# Adding the Scaffold
+## Adding the Scaffold
 
 `MaterialApp` 만으로는 아무것도 표시할 수 없다. 앱 전체에서 사용할 Wrapper를 명시해 주어야 한다.
 
@@ -54,7 +56,7 @@ void main() {
 
 `main` 함수에서 `runApp` 메소드를 호출한다.
 
-# Diving Deeper Into the Syntax
+## Diving Deeper Into the Syntax
 
 단일 표현식을 반환하는 함수의 경우 `=>` 를 사용하여 함수를 구현할 수 있다.
 
@@ -62,7 +64,7 @@ void main() {
 void main() => runApp(MyApp());
 ```
 
-# Adding Cards & Images
+## Adding Cards & Images
 
 이미지 등의 리소스를 담는 폴더의 이름은 `assets` 정도로 해주면 좋다.
 
@@ -77,13 +79,13 @@ Material에 있는 `Card` 는 drop shadow 효과가 있는 컨테이너의 역�
 
 iOS의 `UIStackView`와 비교 가능한 `Column`이나 `Row` 같은 위젯은 `children` 프로퍼티에 여러 개의 위젯을 추가할 수 있다.
 
-# Diving Into the Official Docs
+## Diving Into the Official Docs
 
 공식 문서에서 Widget들에 대해 참고하기
 
 머터리얼 쪽이 예제도 많으므로 빠른 개발을 위해서는 Material Components를 우선적으로 참고하기
 
-# Adding a Button
+## Adding a Button
 
 ---
 
@@ -97,7 +99,7 @@ Scaffold 위젯의 body 프로퍼티에 Card를 바로 넘겨주면 Card가 화�
 
 Widget을 Container에 감싸 마진, 패딩, 색상 등을 설정할 수 있다.
 
-# Creating a Stateful Widget
+## Creating a Stateful Widget
 
 `build` 메소드는 앱이 최초에 로드될 때, 데이터가 변경될 때 호출된다.
 
@@ -121,7 +123,7 @@ command . 을 눌러 오류가 발생한 라인이 제안하는 것을 빠르게
 
 StatefulWidget 클래스를 상속받기 위해 `createState` 메소드를 재정의해야 한다. 이는 해당 위젯의 상태를 관리하는 클래스를 반환하도록 한다.
 
-# Managing Data Inside Stateful Widgets
+## Managing Data Inside Stateful Widgets
 
 State를 상속받은 클래스에 프로퍼티를 선언하여 내부 데이터를 정의한다.
 
@@ -135,7 +137,7 @@ Dart의 `List<String>` 은 Swift의 `[String]` (`Array<String>`)와 비교 가�
 
 ---
 
-# Adding the Stateful Widget & Lists
+## Adding the Stateful Widget & Lists
 
 데이터가 변화할 때 Flutter가 알아서 `build` 메소드를 호출해 주지는 않는다.
 
@@ -145,7 +147,7 @@ Dart의 `List<String>` 은 Swift의 `[String]` (`Array<String>`)와 비교 가�
 
 예를 들어 버튼의 `onPressed` 프로퍼티에 넘겨줄 익명 함수에 `setState` 메소드를 구현해 주어 데이터에 변화를 주고 렌더링을 다시 하게 할 수 있다.
 
-# Splitting our Code Up
+## Splitting our Code Up
 
 코드를 잘 분리하고 여러 개의 파일에 위치시켜 가독성과 유지보수성을 최대화해야 한다.
 
@@ -173,7 +175,7 @@ class Product extends StatelessWidget {
 
 ---
 
-# Creating the "Product Manager" Widget
+## Creating the "Product Manager" Widget
 
 UI 설계에 계층적 구조를 적용, Manager 클래스가 최종 형태의 UI를 만들어내게끔 한다.
 
@@ -181,7 +183,7 @@ UI 설계에 계층적 구조를 적용, Manager 클래스가 최종 형태의 U
 
 일반적으로 Stateless Widget을 사용하고, 데이터를 관리하고 변경할 필요가 있는 것에는 Stateful Widget을 사용한다.
 
-# Passing Data to Stateful Widget
+## Passing Data to Stateful Widget
 
 외부에서 데이터 전달하기
 
@@ -193,7 +195,7 @@ State 클래스를 상속받는 클래스는 `initState` 메소드를 재정의�
 
 `initState` 메소드는 `build` 메소드 이전에 호출된다.
 
-# initState() and super.initState()
+## initState() and super.initState()
 
 ```dart
 @override
@@ -205,13 +207,13 @@ void initState() {
 
 위와 같이 먼저 상위 클래스의 메소드를 호출한 후 구현하는 것을 추천한다.
 
-# Understanding Lifecycle Hooks
+## Understanding Lifecycle Hooks
 
 Stateless Widget의 경우 위젯에 데이터를 주입하여 UI를 렌더링한다. 데이터는 외부에 의해 변경될 수 있고 이 변화에 따라 다시 렌더링되어 UI를 갱신한다.
 
 Stateful Widget의 경우 Stateless Widget에 더하여 내부 상태를 가질 수 있다. 이는 외부 또는 내부에 의한 데이터 변화에 따라 다시 렌더링되어 UI를 갱신한다.
 
-## Life Cycle
+### Life Cycle
 
 - Stateless Widget
   1. 생성자 호출
@@ -236,7 +238,7 @@ Stateful Widget의 경우 Stateless Widget에 더하여 내부 상태를 가질 
 
 Widget의 생명주기를 이해하는 것은 iOS에서 `UIViewController` 의 생명주기를 이해하는 것처럼 중요한 부분일 것이므로 충분히 이해하도록 하자.
 
-# Diving Into Google's Material Design
+## Diving Into Google's Material Design
 
 Flutter에 내장된 Material Design System이 적용된 Widget을 사용하여 자유롭게 커스터마이징할 수 있으나 유려한 디자인을 취할 수 있다.
 
@@ -245,7 +247,7 @@ Flutter에 내장된 Material Design System이 적용된 Widget을 사용하여 
   - 해당 테마를 외부에서는 `Theme.of(context)` 를 사용하여 접근할 수 있다.
   - 테마와 관련된 여러 프로퍼티에 값을 할당하여 앱 전체의 테마 설정을 할 수 있다.
 
-# Understanding Additional Dart Features
+## Understanding Additional Dart Features
 
 final과 const의 차이
 
@@ -283,7 +285,7 @@ Dart에서 생성자를 정의하고 사용할 때의 syntactic sugar를 이해�
 
 공식 문서에서 Dart 언어의 사용법 확인하기
 
-# Passing Data Up
+## Passing Data Up
 
 **위젯 트리의 상위 위젯에서 하위 위젯의 상태를 관리하도록 한다.** 이 때 상위 위젯은 Stateful하며, 나머지는 Stateless하다.
 
@@ -295,7 +297,7 @@ Dart에서 생성자를 정의하고 사용할 때의 syntactic sugar를 이해�
 
 상위 위젯에 버튼(하위 위젯)을 설정하고, 버튼이 눌렸을 때 호출할 콜백 메소드를 등록한 형태로 생각하기.
 
-# Understanding "const" & "final"
+## Understanding "const" & "final"
 
 ### final
 
@@ -315,7 +317,7 @@ final의 행위에 더하여 모든 경우에 대한 변경이 불가능하다.
 
 l-value에 `final`, r-value에 `const` 를 사용하여 해당 변수에는 새로운 객체를 할당할 수 없고, 할당된 객체를 변경할 수도 없게 한다.
 
-# Dart Types, Syntax & Core Features
+## Dart Types, Syntax & Core Features
 
 - Dart의 모든 것은 오브젝트, 참조 타입이다.
 - Dart는 강타입 언어다.
@@ -325,7 +327,7 @@ l-value에 `final`, r-value에 `const` 를 사용하여 해당 변수에는 새�
 - 리스트 `List<T>`
 - 맵은 Swift의 딕셔너리를 생각하기. 중괄호를 사용.
 
-# Wrap Up
+## Wrap Up
 
 - Flutter는 여러 개의 Widget에 대한 것이다.
   - 내장 또는 커스텀 위젯을 사용하여 UI를 구성한다.
