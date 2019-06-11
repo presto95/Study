@@ -77,14 +77,72 @@ Notify the framework that the internal state of this object has changed.
 
 ## Outputting Lists of Products
 
+ListTile을 사용하여 ListView에 요소를 표시하였다.
 
+ListTile의 `leading`, `trailing` 프로퍼티를 사용하여 각각 좌측과 우측에 적절한 위젯을 배치할 수 있다.
+
+iOS의 `UITableViewCell` 의 경우 기본적으로 좌측에 이미지, 우측에 액세서리 뷰가 들어갈 수 있도록 되어 있으며, 이와 비교하여 생각할 수 있다.
 
 ## Re-Using the Product Create Form
 
+정보를 생성하는 폼을 재사용하여 정보를 수정하는 용도에 재사용하기
+
 ## Setting Initial Values
+
+TextFormField의 `initialValue` 프로퍼티를 통해 필드의 초기값을 지정할 수 있다.
+
+---
+
+### Dart
+
+```dart
+// 1.
+int sum(int a, int b) => a + b;
+// 2.
+int sum({int a, int b}) => a + b;
+// 3.
+int sum([int a, int b]) => a + b;
+```
+
+1. a와 b 인자에 대해 모두 값이 넘겨져야 하며, 인자의 이름이 주어지지 않았다.
+   - `sum(3, 4)` 와 같이 호출 가능하다.
+   - 매개변수 기본값을 사용할 수 없다. 필수적으로 인자에 대해 값이 넘어와야 하기 때문이다.
+2. a와 b 인자에 대해 모두 값이 넘겨지지 않아도 되며, 인자의 이름이 주어졌다.
+   - `sum(a: 3)` / `sum(b: 3)` / `sum(a: 3, b: 4)` / `sum()` 과 같이 호출 가능하다.
+   - 매개변수 기본값을 사용할 수 있다.
+   - `@required` 선언을 통해 필수 매개변수가 되도록 할 수 있다.
+3. a와 b 인자에 대해 모두 값이 넘겨지지 않아도 되며, 인자의 이름이 주어지지 않았다.
+   - `sum(3)` / `sum(3, 4)` / `sum()` 과 같이 호출 가능하다.
+   - 매개변수 기본값을 사용할 수 있다.
+
+`??` 연산자는 왼쪽 값이 null일 때 오른쪽 값으로 대체할 수 있게 한다. (`a ?? b`)
+
+---
+
+새로운 화면은 Scaffold와 같은, 화면의 틀을 잡는 위젯부터 위젯 트리를 구성해야 한다. 
 
 ## Updating Products
 
+한 화면에서 Create와 Update를 분기하여 수행할 수 있도록 하기
+
+- 두 기능에 필요한 모든 정보를 필요로 함
+- 선택적으로 넘겨진 특정 인자가 null인지 체크하여 Create인지 Update인지 분기하여 처리
+
 ## Ensuring Input Visibility
 
+특정 필드가 입력 중인 상태가 될 때 다른 UI 요소(키보드 등)에 가려지는 것을 방지하기 위해 자동으로 스크롤되도록 하기
+
+- TextField나 TextFormField와 같은 포커스를 획득할 수 있는 (`focusNode` 프로퍼티를 갖는) 위젯에 대하여 임의로 FocusNode 오브젝트를 생성하여 할당해주어 외부에서 해당 위젯의 포커스를 다룰 수 있다.
+
 ## Wrap Up
+
+- Form 다루기
+
+  - Form을 활용하여 유효성 검증 등 특별한 기능을 사용할 수 있다.
+    - 기존 위젯에 정보의 입력에 특화된 기능을 더한 더욱 세부적인 위젯이 제공된다.
+      - TextField / TextFormField
+      - 초기값 / 유효성 검사를 위한 함수 등을 가질 수 있다.
+  - formKey와 save() 메소드 사용하여 입력 값 저장
+    - `GlobalState<FormState>` 클래스 사용
+
+  - 어느 정도 외워서 사용해야 할 필요성
