@@ -87,14 +87,51 @@ Geocoding API가 내려주는 응답을 잘 골라내어 주소와 위경도 정
 
 `location` 써드 파티 패키지를 사용하여 위치 정보 기능을 사용한다.
 
-## Using the Location Package with Version >=1.4
-
 ## Getting the User Location
+
+위치 정보 사용 권한을 체크한 후 위치를 가져오도록 한다.
+
+패키지가 제공하는 API를 사용하여 쉽게 위치 관련 기능을 구현할 수 있다.
 
 ## Preventing Memory Leaks
 
-## Displaying the Address
+State 객체의 `mounted` 프로퍼티를 검사하여 true일 때만 State 객체 내의 작업을 수행하도록 하는 것이 좋다.
+
+특히 `setState` 작업의 경우 상태 객체가 unmounted되어 있을 때 호출되면 에러를 발생시키므로 더욱 주의해야 한다.
+
+`mounted` 프로퍼티는 `createState` 메소드를 통해 상태 객체가 만들어질 때 true가 되며, `dispose` 메소드를 통해 메모리에서 해제될 때 false가 된다.
 
 ## Showing a Fullscreen Map
 
+```dart
+final mapView = MapView();
+mapView.show(
+  MapOptions(
+    mapViewType: MapViewType.normal,
+    title: "Product Location",
+  ),
+  toolbarActions: <ToolbarAction>[
+    ToolbarAction("Close", 1),
+  ],
+);
+mapView.onToolbarAction.listen((id) {
+  if (id == 1) {
+    mapView.dismiss();
+  }
+});
+mapView.onMapReady.listen((_) {
+  mapView.setMarkers(markers);
+});
+```
+
+패키지가 제공하는 API를 활용하여 화면 전체에 지도를 띄울 수 있다.
+
+여러 이벤트에 대한 스트림을 제공하며, 이를 구독하여 이벤트 처리를 할 수 있다.
+
+- 카메라 시점 이동 / 마커 탭 / 툴바 액션 탭 / 위치 갱신 등
+
 ## Wrap Up
+
+- 지도 및 위치 정보를 사용하기 위해 써드 파티 패키지 사용하기
+- 안드로이드와 iOS 각각의 프로젝트에 설정해주어야 하는 것들이 있음
+  - 권한 관련 : Info.plist(iOS) / AndroidManifest.xml(Android)
