@@ -27,12 +27,4 @@ final _platformChannel = MethodChannel("com.presto.flutter_course");
 final result = await _platformChannel.invokeMethod<int>("getBattery");
 ```
 
-## Writing Native Android Code
-
-
-
-## Running Native Android Code
-
-## Writing Native iOS Code
-
-## Running Native iOS Code
+문서를 보자.
