@@ -301,9 +301,26 @@ var result = expression.evaluate(context)
 
 내부를 알 필요 없이 구성된 자료 구조를 탐색할 수 있게 한다.
 
+컨테이너로부터 알고리즘을 분리시킨다.
+
+컬렉션의 인덱스 접근에 의한 예외, 요소의 개수 등에 신경쓰지 않아도 되게 된다.
+
 ### 코드
 
-Swift가 제공하는 IteratorProtocol을 활용한다.
+Swift가 제공하는 IteratorProtocol, Sequence 프로토콜을 활용할 수 있다.
+
+- IteratorProtocol
+  - 한 번에 하나씩 시퀀스의 값을 제공하는 타입
+  - Sequence 프로토콜과 밀접한 관계가 있음
+    - Sequence 프로토콜의 Iterator 연관 타입은 IteratorProtocol을 채택하는 타입이어야 한다.
+- Sequence
+  - 요소에 순차적이고 반복적인 접근을 제공하는 타입
+
+IteratorProtocol 프로토콜은 iterator에 의해 탐색되는 요소의 타입인 `Element` 를 연관 타입으로 갖고, 다음 요소를 탐색하는 `next()` 메소드를 요구한다.
+
+Swift에서 `for-in` 반복문을 사용하려면 Sequence 프로토콜을 채택해야 한다.
+
+결과적으로 `Array<Novella>` 가 아닌 반복자 패턴을 활용하여 `Novellas` 타입을 순회할 수 있도록 코드를 작성한다.
 
 ```swift
 struct Novella {
@@ -314,8 +331,530 @@ struct Novellas {
   let novellas: [Novella]
 }
 
+// 반복자 패턴을 구현하기 위한 타입
 struct NovellasIterator: IteratorProtocol {
+  private var current = 0
+  private let novellas: [Novella]
   
+  init(novellas: [Novella]) {
+    self.novellas = novellas
+  }
+  
+  mutating func next() -> Novella? {
+    defer {
+      current += 1
+    }
+    return novellas.count > current ? novellas[current] : nil
+  }
+}
+
+extension Novellas: Sequence {
+  func makeIterator() -> NovellasIterator {
+    return NovellasIterator(novellas: novellas)
+  }
+}
+
+/* 사용 */
+
+let greatNovellas = Novellas(novellas: [Novella(name: "The Mist")])
+
+for novella in greatNovellas {
+  print("I've read: \(novella)")
 }
 ```
+
+## Mediator
+
+####  중재자 패턴
+
+> 중재자 패턴은 서로 상호 작용하는 클래스 간 결합도를 줄이기 위해 사용된다. 직접적으로 상호 작용하는 클래스 대신, 그들의 구현에 대한 지식이 필요하므로 중재자 객체를 통해 메세지를 전달한다.
+
+객체들의 집합이 상호 작용하는 방식을 함축한 객체를 정의하며, 이것이 중재자 객체가 된다.
+
+객체 간 의존성을 줄여 결합도를 감소시킨다.
+
+런타임 시의 행위를 중재자 객체에 묶어둔다.
+
+프로그램에 존재하는 수많은 클래스 간 상호 작용을 분리하여 유지 보수성을 높인다.
+
+### 코드
+
+수신자를 추상화한 Receiver 프로토콜, 전송자를 추상화한 Sender 프로토콜을 정의한다.
+
+Sender를 채택하는 중재자 클래스를 정의하고, 해당 객체를 사용하여 클래스 간 상호 작용을 구현한다.
+
+```swift
+protocol Receiver {
+  associatedType MessageType
+  func receive(message: MessageType)
+}
+
+protocol Sender {
+  associatedType MessageType
+  associatedType ReceiverType: Receiver
+  var recipients: [ReceiverType] { get }
+  func send(message: MessageType)
+}
+
+struct Programmer: Receiver {
+  let name: String
+  
+  func receive(message: String) {
+    print("\(name) received: \(message)")
+  }
+}
+
+final class MessageMediator: Sender {
+  var recipients: [Programmer] = []
+  
+  func add(recipient: Programmer) {
+    recipients.append(recipient)
+  }
+  
+  func send(message: String) {
+    for recipient in recipients {
+      recipient.receive(message: message)
+    }
+  }
+}
+
+/* 사용 */
+
+// 중재자 객체를 참조하여 객체 간 상호 작용을 실현한다.
+func spamMonster(message: String, worker: MessageMediator) {
+  worker.send(message: message)
+}
+
+let messagesMediator = MessageMediator()
+
+let user0 = Programmer(name: "Linus Torvalds")
+let user1 = Programmer(name: "Avadis 'Avie' Tevanian")
+messagesMediator.add(recipient: user0)
+messagesMediator.add(recipient: user1)
+
+spamMonster(message: "I'd Like to Add you to My Professional Network", worker: messagesMediator)
+```
+
+## Memento
+
+#### 메멘토 패턴
+
+> 메멘토 패턴은 캡슐화 규칙을 어기지 않고 나중에 다시 획득할 수 있는 어떠한 방법으로 객체의 현재 상태를 획득하고 저장하기 위해 사용된다.
+
+객체를 이전 상태로 되돌릴 수 있는 기능을 제공한다. (롤백을 통한 실행 취소)
+
+Originator / Caretaker / Memento라고 불리는 세 개의 객체로 구현된다.
+
+- Originator
+  - 내부 상태 객체
+- Caretaker
+  - 원하는 곳으로 돌아갈 정보를 담고 있는 객체
+  - Originator에 대해 무언가를 하지만 변경에 대한 실행 취소를 하기를 원함
+  - 먼저 Originator에게 Memento 객체를 요청하고 예정된 일련의 명령을 수행함
+  - 명령 이전의 상태로 되돌리기 위해 Memento 객체를 Originator에 반환함
+- Memento
+  - 현재 정보를 담고 있는 객체
+  - 불투명 자료형
+
+상태 값을 저장하고 복원하기만을 위한 패턴이다.
+
+### 코드
+
+- 현재 정보인 Memento는 String 키와 String 값을 갖는 딕셔너리 타입이다.
+- 내부 상태 객체인 Originator는 상태를 갖도록 한다.
+- Caretaker에 Originator들을 저장하여 원하는 곳으로 돌아갈 정보를 담을 수 있도록 한다. 데이터 저장을 위해 UserDefaults를 활용한다.
+
+#### Memento
+
+```swift
+typealias Memento = [String: String]
+```
+
+#### Originator
+
+```swift
+protocol MementoConvertible {
+  var memento: Memento { get }
+  init?(memento: Memento)
+}
+
+struct GameState: MementoConvertible {
+  private enum Keys {
+    static let chapter = "com.value.halflife.chapter"
+    static let weapon = "com.value.halflife.weapon"
+  }
+  
+  var chapter: String
+  var weapon: String
+  
+  init(chapter: String, weapon: String) {
+    self.chapter = chapter
+    self.weapon = weapon
+  }
+  
+  init?(memento: Memento) {
+    guard let mementoChapter = memento[Keys.chapter], let mementoWeapon = memento[Keys.weapon] else {
+      return nil
+    }
+    chapter = mementoChapter
+    weapon = mementoWeapon
+  }
+  
+  var memento: Memento {
+    return [Keys.chapter: chapter, Keys.weapon: weapon]
+  }
+}
+```
+
+#### Caretaker
+
+```swift
+enum CheckPoint {
+  private static let defaults = UserDefaults.standard
+  
+  static func save(_ state: MementoConvertible, saveName: String) {
+    defaults.set(state.memento, forKey: saveName)
+    defaults.synchronize()
+  }
+  
+  static func restore(saveName: String) -> Any? {
+    return defaults.object(forKey: saveName)
+  }
+}
+```
+
+#### Usage
+
+```swift
+// 내부 상태 객체 `Originator` 객체를 만듦.
+var gameState = GameState(chapter: "Black Mesa Inbound", weapon: "Crowbar")
+
+gameState.chapter = "Anomalous Materials"
+gameState.weapon = "Glock 17"
+// 원하는 곳으로 돌아갈 정보를 담기 위한 `Caretaker` 객체를 활용하여 상태 저장.
+CheckPoint.save(gameState, saveName: "gameState1")
+
+gameState.chapter = "Unforeseen Consequences"
+gameState.weapon = "MP5"
+// 원하는 곳으로 돌아갈 정보를 담기 위한 `Caretaker` 객체를 활용하여 상태 저장.
+CheckPoint.save(gameState, saveName: "gameState2")
+
+gameState.chapter = "Office Complex"
+gameState.weapon = "Crossbow"
+// 원하는 곳으로 돌아갈 정보를 담기 위한 `Caretaker` 객체를 활용하여 상태 저장.
+CheckPoint.save(gameState, saveName: "gameState3")
+
+// 원하는 곳 `gameState`으로 돌아가기 위한 로직.
+if let memento = CheckPoint.restore(saveName: "gameState1") as? Memento {
+  let finalState = GameState(memento: memento)
+  dump(finalState)
+}
+```
+
+## Observer
+
+#### 옵저버 패턴
+
+> 옵저버 패턴은 객체가 그 상태 변화를 낼 수 있도록 하기 위해 사용된다. 다른 객체는 어떠한 변화에 즉시 알림 받기 위해 구독한다.
+
+일대다 객체 관계에서 하나의 객체가 수정되었을 때 이에 의존하는 객체들이 자동으로 통보를 받는 구조를 갖는다.
+
+발행 / 구독 모델 (Publish / Subscribe)
+
+분산 이벤트 핸들링 시스템 구현
+
+iOS에서도 많은 곳에서 이 패턴을 찾아볼 수 있다. (NotificationCenter 등)
+
+### 코드
+
+Swift의 프로퍼티 감시자를 활용하면 상태의 변경 직전과 직후를 관찰할 수 있다.
+
+콜백을 등록하는 대신, 관찰을 위한 프로토콜을 정의하고 이를 구현하는 클래스를 옵저버로 사용한다. (델리게이트 패턴)
+
+이해하는 데 큰 어려움이 없다.
+
+```swift
+protocol PropertyObserver: class {
+  func willChange(propertyName: String, newPropertyValue: Any?)
+  func didChange(propertyName: String, oldPropertyValue: Any?)
+}
+
+final class TestChambers {
+  weak var observer: PropertyObserver?
+  
+  private let testChamberNumberName = "testChamberNumber"
+  
+  var testChamerNumber: Int = 0 {
+    willSet {
+      observer?.willChange(propertyName: testChamberNumberName, newPropertyValue: newValue)
+    }
+    didSet {
+      observer?.didChange(propertyName: testChamberNumberName, oldPropertyValue: oldValue)
+    }
+  }
+}
+
+final class Observer: PropertyObserver {
+  func willChange(propertyName: String, newPropertyValue: Any?) {
+    if newPropertyValue as? Int == 1 {
+      print("Okay. Look. We both said a lot of things that you're going to regret.")
+    }
+  }
+  
+  func didChange(propertyName: String, oldPropertyValue: Any?) {
+    if oldPropertyValue as? Int == 0 {
+      print("Sorry about the mess. I've really let the place go since you killed me.")
+    }
+  }
+}
+
+/* 사용 */
+
+var observerInstance = Observer()
+var testChambers = TestChambers()
+testChambers.observer = observerInstance
+testChambers.testChamberNumber += 1
+```
+
+## State
+
+#### 상태 패턴
+
+> 상태 패턴은 내부 상태가 변경될 때 객체의 행위를 변경하기 위해 사용된다. 이 패턴은 객체의 클래스가 런타임에 변경될 수 있도록 한다.
+
+정보 객체를 상태 객체로 넘겨 상태 객체마다 다른 정보를 담는다.
+
+객체 지향 방식으로 상태 기계를 구현한다.
+
+상태 패턴 인터페이스의 파생 클래스로 각각의 상태를 구현한다.
+
+런타임에서 객체의 행위를 손쉽게 바꿀 수 있다.
+
+### 코드
+
+컨텍스트 객체를 상태 객체로 넘겨 해당 상태를 가져온다.
+
+```swift
+// 컨텍스트 객체가 상태를 담는다.
+final class Context {
+  private var state: State = Unauthorized()
+  
+  var isAuthorized: Bool {
+    return state.isAuthorized(context: self)
+  }
+  
+  func changeStateToAuthorized(userID: String) {
+    state = AuthorizedState(userID: userID)
+  }
+  
+  func changeStateToUnauthorized() {
+    state = UnauthorizedState()
+  }
+}
+
+// 상태 인터페이스 정의.
+protocol State {
+  func isAuthorized(context: Context) -> Bool
+  func userID(context: Context) -> String?
+}
+
+// 상태 인터페이스를 구현하는 각각의 상태 정의.
+class UnauthorizedState: State {
+  func isAuthorized(context: Context) -> Bool {
+    return false
+  }
+  
+  func userID(context: Context) -> String? {
+    return nil
+  }
+}
+
+// 상태 인터페이스를 구현하는 각각의 상태 정의.
+class AuthorizedState: State {
+  let userID: String
+  
+  init(userID: String) {
+    self.userID = userID
+  }
+  
+  func isAuthorized(context: Context) -> Bool {
+    return true
+  }
+  
+  func userID(context: Context) -> String? {
+    return userID
+  }
+}
+
+/* 사용 */
+
+let userContext = Context()
+(userContext.isAuthorized, userContext.userID)
+userContext.changeStateToAuthorized(userID: "admin")
+(userContext.isAuthorized, userContext.userID)
+userContext.changeStateToUnauthorized()
+(userContext.isAuthorized, userContext.userID)
+```
+
+## Strategy
+
+#### 전략 패턴
+
+> 전략 패턴은 필요한 프로세스가 런타임에서 선택되는 상호 교환 가능한 알고리즘 패밀리를 생성하기 위해 사용된다.
+
+런타임에서 알고리즘을 선택할 수 있게 한다.
+
+특정 계열의 알고리즘을 정의하고 (is-a 관계) / 각 알고리즘을 캡슐화하고 / 해당 계열 안에서 상호 교체 가능하게 한다.
+
+전략은 알고리즘을 사용하는 클라이언트에 독립적이다.
+
+클라이언트가 직접 전략 객체를 지정하여 변환을 시도한다.
+
+### 상태 패턴과의 차이
+
+상태 패턴은 상태 객체에서 수행 후 컨텍스트 객체에 상태를 가져온다.
+
+전략 패턴은 컨텍스트에 전략 객체를 넣고 컨텍스트를 통해 수행한다.
+
+### 코드
+
+전략을 추상화하는 RealnessTesting 프로토콜을 정의하고, 이를 채택하는 각각의 구체 전략을 구현한다.
+
+수행하는 객체는 이 전략을 주입받아 특정 전략에 의해 로직을 수행할 수 있도록 한다.
+
+이해하는 데 큰 어려움이 없다.
+
+```swift
+struct TestSubject {
+  let pupilDiameter: Double
+  let blushResponse: Double
+  let isOrganic: Bool
+}
+
+protocol RealnessTesting: class {
+  func testRealness(_ testSubject: TestSubject) -> Bool
+}
+
+final class VoightKampffTest: RealnessTesting {
+  func testRealness(_ testSubject: TestSubject) -> Bool {
+    return testSubject.pupilDiameter < 30 || testSubject.blushResponse == 0
+  }
+}
+
+final class GeneticTest: RealnessTesting {
+  func testRealness(_ testSubject: TestSubject) -> Bool {
+    return testSubject.isOrganic
+  }
+}
+
+// 컨텍스트 클래스.
+final class BladeRunner {
+  private let strategy: RealnessTesting
+  
+  init(test: RealnessTesting) {
+    strategy = test
+  }
+  
+  func testIfAndroid(_ testSubject: TestSubject) -> Bool {
+    return !strategy.testRealness(testSubject)
+  }
+}
+
+/* 사용 */
+
+let rachel = TestSubject(pupilDiameter: 30.2, blushResponse: 0.3, isOrganic: false)
+
+let deckard = BladeRunner(test: VoightKampffTest())
+let isRachelAndroid = deckard.testIfAndroid(rachel)
+
+let gaff = BladeRunner(test: GeneticTest())
+let isDeckardAndroid = gaff.testIfAndroid(rachel)
+```
+
+## Visitor
+
+#### 방문자 패턴
+
+> 방문자 패턴은 상대적으로 복잡한 구조화된 데이터 클래스 집합을 보유하고 있는 데이터에서 수행할 수 있는 기능과 분리하기 위해 사용된다.
+
+알고리즘을 객체 구조에서 분리시킨다. 구조를 수정하지 않고도 새로운 동작을 기존의 객체 구조에 추가할 수 있게 된다.
+
+OCP를 적용하는 방법 중 하나이다.
+
+### 코드
+
+행성을 추상화한 Planet 프로토콜을 정의하고 이를 채택하는 각각의 구체 행성 클래스를 만든다.
+
+위에서 정의한 데이터에서 수행할 수 있는 기능을 분리한다.
+
+```swift
+protocol PlanetVisitor {
+  func visit(planet: PlanetAlderaan)
+  func visit(planet: PlanetCoruscant)
+  func visit(planet: PlanetTatooine)
+  func visit(planet: MoonJedha)
+}
+
+protocol Planet {
+  func accept(visitor: PlanetVisitor)
+}
+
+final class MoonJedha: Planet {
+  func accept(visitor: PlanetVisitor) {
+    visitor.visit(planet: self)
+  }
+}
+
+final class PlanetAlderaan: Planet {
+  func accept(visitor: PlanetVisitor) {
+    visitor.visit(planet: self)
+  }
+}
+
+final class PlanetCoruscant: Planet {
+  func accept(visitor: PlanetVisitor) {
+    visitor.visit(planet: self)
+  }
+}
+
+final class PlanetTatoonie: Planet {
+  func accept(visitor: PlanetVisitor) {
+    visitor.visit(planet: self)
+  }
+}
+
+final class NameVisitor: PlanetVisitor {
+  var name = ""
+  
+  func visit(planet: PlanetAlderaan) {
+    name = "Alderaan"
+  }
+  
+  func visit(planet: PlanetCoruscant) {
+    name = "Coruscant"
+  }
+  
+  func visit(planet: PlanetTatooine) {
+    name = "Tatooine"
+  }
+  
+  func visit(planet: MoonJedha) {
+    name = "Jedha"
+  }
+}
+
+/* 사용 */
+
+let planets: [Planet] = [PlanetAlderaan(), PlanetCoruscant(), PlanetTatooine(), MoonJedha()]
+
+let names = planets.map { planet in
+  let visitor = NameVisitor()
+  planet.accept(visitor: visitor)
+  return visitor.name
+}
+
+names
+```
+
+
 
