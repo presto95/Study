@@ -8,9 +8,9 @@
 
 각 특징을 갖는 클래스를 모아서 객체를 생성한다.
 
-### 추상 메소드 패턴과의 차이
+### 추상 팩토리 패턴과의 차이
 
-- 추상 메소드 패턴은 Product를 알아야 한다.
+- 추상 팩토리 패턴은 Product를 알아야 한다.
 - 빌더 패턴은 Product를 알 필요가 없다. 사용자는 빌더 객체를 통해 명령을 내리며 빌더가 알아서 작업을 수행한다.
 - 빌더 패턴은 Product에 대한 의존이 모두 빌더 객체에 위치한다.
 
@@ -55,3 +55,123 @@ let empire = DeathStarBuilder { builder in
 
 let deathStar = DeathStar(builder: empire)
 ```
+
+---
+
+일반적으로 아래와 같은 형태를 띈다.
+
+```swift
+final class ThreeDimension {
+  var x: Double = 0
+  var y: Double = 0
+  var z: Double = 0
+}
+
+final class ThreeDimensionBuilder {
+  
+  private let dimension = ThreeDimension()
+  
+  func withX(_ x: Double) -> ThreeDimensionBuilder {
+    dimension.x = x
+    return self
+  }
+  
+  func withY(_ y: Double) -> ThreeDimensionBuilder {
+    dimension.y = y
+    return self
+  }
+  
+  func withZ(_ z: Double) -> ThreeDimensionBuilder {
+    dimension.z = z
+    return self
+  }
+  
+  func build() -> ThreeDimension {
+    return dimension
+  }
+}
+
+ThreeDimensionBuilder()
+  .withX(1)
+  .withY(1)
+  .withZ(1)
+  .build()
+```
+
+메소드 체이닝을 통해 멤버 변수를 채워 나간다.
+
+어떠한 타입을 인스턴스화할 때 필요한 인자의 개수가 많은 경우에도 유용하게 사용될 수 있다.
+
+Swift의 extension 기능을 활용하여 빌더 클래스를 따로 정의하지 않고도 비슷하게 구현할 수 있겠다.
+
+```swift
+final class ThreeDimension {
+  var x: Double = 0
+  var y: Double = 0
+  var z: Double = 0
+}
+
+extension ThreeDimension {
+  
+  static func make() -> ThreeDimension {
+    return .init()
+  }
+  
+  func withX(_ x: Double) -> ThreeDimension {
+    self.x = x
+    return self
+  }
+  
+  func withY(_ y: Double) -> ThreeDimension {
+    self.y = y
+    return self
+  }
+  
+  func withZ(_ z: Double) -> ThreeDimension {
+    self.z = z
+    return self
+  }
+}
+
+ThreeDimension.make()
+  .withX(1)
+  .withY(1)
+  .withZ(1)
+```
+
+내가 자주 쓰는 UIAlertController extension이 위와 비슷한 형태로 구현되어 있다.
+
+```swift
+extension UIAlertController {
+  
+  static func alert(title: String?,
+                    message: String?,
+                    style: UIAlertController.Style = .alert) -> UIAlertController {
+    return .init(title: title, message: message, preferredStyle: style)
+  }
+  
+  @discardableResult
+  func textField(configurationHandler: ((UITextField) -> Void)? = nil) -> UIAlertController {
+    addTextField(configurationHandler: configurationHandler)
+    return self
+  }
+  
+  @discardableResult
+  func action(title: String?,
+              style: UIAlertAction.Style = .default,
+              handler: ((UIAlertAction, [UITextField]?) -> Void)? = nil) -> UIAlertController {
+    let action = UIAlertAction(title: title, style: style) { action in
+      handler?(action, self.textFields)
+    }
+    addAction(action)
+    return self
+  }
+  
+  func present(to viewController: UIViewController,
+               animated: Bool = true,
+               completion: (() -> Void)? = nil) {
+    viewController.present(self, animated: animated, completion: completion)
+  }
+}
+```
+

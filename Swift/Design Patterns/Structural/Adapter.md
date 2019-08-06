@@ -50,3 +50,12 @@ let newFormat = NewDeathStarSuperLaserTarget(target)
 newFormat.angleH
 newFormat.angleV
 ```
+
+---
+
+220V-110V 변환기 비유가 아주 잘 들어맞는다.
+
+변환기는 220V용 기기의 콘센트를 110V 콘센트에 연결할 수 있게 해주며, 이와 같은 개념을 생각하면 된다.
+
+Adaptee와 Adapter가 있다. 구체 구현된 Adaptee는 Adapter가 의존하며, Adapter는 Adaptee에 구현된 것을 이용해 다른 인터페이스를 구현한다.
+
