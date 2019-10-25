@@ -23,9 +23,11 @@ Combine에서 `Publisher`는 프로토콜로 정의되어 있으며, 다음의 �
 
 일반적으로 `Publisher` 프로토콜을 구현하는 타입은 RxSwift의 `Observable`과 비교 가능하다.
 
-에러 연관 타입이 `Never`로 에러 값을 전달하지 않는다는 것이 보장되는 것은 RxSwift의 `Driver`와 비교 가능하다.
+에러 연관 타입이 `Never`로 에러 값을 전달하지 않는다는 것이 보장되는 것은 RxCocoa의 `Driver`와 비교 가능하다.
 
-`Single`, `Maybe`와 같은 RxSwift의 Traits는 Combine에 별도의 타입으로 구현되어 있지 않다.
+하나의 값을 전달하고 종료하거나, 에러를 내고 종료하는 `Single`의 동작은 Combine의 `Future` Publisher를 사용하여 구현할 수 있다.
+
+`Completable`, `Maybe`와 같은 RxSwift의 Traits는 Combine에 별도의 타입으로 구현되어 있지 않다.
 
 ## ReactiveSwift
 
