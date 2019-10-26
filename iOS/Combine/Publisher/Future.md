@@ -64,9 +64,9 @@ Observable 생성 오퍼레이터 `create`를 사용하면 다음과 같은 코�
 ```swift
 Observable<Void>.create { observer in
   observer.onNext(Void())
+  observer.onCompleted()
   // 에러를 내는 경우 위의 코드 대신 다음과 같이 작성한다.
   // observer.onError(error)
-  observer.onCompleted()
   return Disposables.create()
 }
 .subscribe(onNext: { print("RxSwift Future") })
@@ -75,7 +75,9 @@ Observable<Void>.create { observer in
 // RxSwift Future
 ```
 
-위의 코드에서 `observer.onCompleted()`를 작성하지 않으면 해당 Observable은 값을 낸 후 종료하지 않으므로 Combine의 Future의 동작을 구현하려면 `.onNext` 또는 `onError`를 호출한 후 반드시 `.onCompleted`를 호출해야 한다.
+위의 코드에서 `observer.onCompleted()`를 작성하지 않으면 해당 Observable은 값을 낸 후 종료하지 않는다.
+
+그러므로 Combine의 Future의 동작을 구현하려면 `.onNext`를 호출한 후 반드시 `.onCompleted`를 호출해야 한다. `.onError`를 호출하면 에러로 인해 종료하므로 `.onCompleted`를 호출할 필요가 없다.
 
 또한 RxSwift의 Single이라는 Trait을 사용하여 구현할 수 있다. Single은 하나의 아이템을 내며 종료하거나, 실패하는 동작을 나타내므로 이를 사용하여 Combine의 Future를 구현할 수 있다.
 
@@ -96,14 +98,14 @@ Single<Void>.create { observer in
 
 `SignalProducer`의 이니셜라이저 중 액션을 클로저로 받는 `init(_:)` 이니셜라이저를 사용하여 구현할 수 있다.
 
-RxSwift의 Single과 같은 것을 제공하지 않으므로 값 이벤트나 에러 이벤트를 낸 후 반드시 종료 이벤트를 내야 Combine의 Future의 동작을 구현할 수 있다. 
+RxSwift의 Single과 같은 것을 제공하지 않으므로 값 이벤트를 낸 후 반드시 종료 이벤트를 내야 Combine의 Future의 동작을 구현할 수 있다. 
 
 ```swift
 SignalProducer<Void, Never> { observer, lifetime in
   observer.send(value: Void())
+  observer.sendCompleted()
   // 에러를 내는 경우 위의 코드 대신 다음과 같이 작성한다.
   // observer.send(error: error)
-  observer.sendCompleted()
 }
 .startWithValues { print("ReactiveSwift Future") }
 
