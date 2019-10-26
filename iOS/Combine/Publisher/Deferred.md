@@ -8,6 +8,8 @@
 Deferred { Just(Void()) }
   .sink(receiveValue: { print("Combine Deferred") })
   .store(in: &cancellables)
+
+// Combine Deferred
 ```
 
 ## RxSwift
@@ -18,6 +20,8 @@ Observable 생성 오퍼레이터 `deferred`를 사용하여 구현할 수 있�
 Observable.deferred { Observable.just(Void()) }
   .subscribe(onNext: { print("RxSwift Deferred") })
   .disposed(by: disposeBag)
+
+// RxSwift Deferred
 ```
 
 ## ReactiveSwift
@@ -29,6 +33,8 @@ ReactiveSwift에는 `defer`와 같은 오퍼레이터를 제공하지 않지만,
 ```swift
 SignalProducer(value: Void())
   .startWithValues { print("ReactiveSwift Deferred") }
+
+// ReactiveSwift Deferred
 ```
 
 ## 참고
