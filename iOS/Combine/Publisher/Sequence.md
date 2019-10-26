@@ -1,4 +1,4 @@
-# Sequence
+# Publishers.Sequence
 
 **제네릭 구조체** | 요소의 주어진 시퀀스를 발행하는 Publisher
 
@@ -29,7 +29,7 @@ Publishers.Sequence<[Int], Never>(sequence: [1, 2])
 
 ## RxSwift
 
-Observable 생성 연산자 `from`을 사용하여 구현할 수 있다.
+Observable 생성 오퍼레이터 `from`을 사용하여 구현할 수 있다.
 
 ```swift
 Observable.from([1, 2])
