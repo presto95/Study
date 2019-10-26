@@ -12,8 +12,28 @@
 `catch` 오퍼레이터는 해당 Publisher를 반환한다.
 
 ```swift
-Fail(error: error)
+// 1 : Publishers.Catch Publisher
+let publisher = Fail(error: error)
+Publishers.Catch(upstream: publisher) { _ in Just("Error") }
   .catch { error in Just("Error") }
+  .sink(receiveCompletion: { completion in
+    switch completion {
+    case .failure:
+      print("Combine Catch Error")
+    case .finished:
+      print("Combine Catch Finish")
+    }
+  }, receiveValue: {
+    print("Combine Catch : \($0)")
+  })
+  .store(in: &cancellables)
+
+// Combine Catch : Error
+// Combine Catch Finish
+
+// 2 : catch Operator
+Fail(error: error)
+  .catch { _ in Just("Error") }
   .sink(receiveCompletion: { completion in
     switch completion {
     case .failure:
