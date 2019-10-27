@@ -28,7 +28,7 @@ RxSwift에도 Subject의 개념이 존재한다. 이들은 `SubjectType` 프로�
 
 Combine의 `CurrentValueSubject`는 초기값을 가지므로 RxSwift의 `BehaviorSubject`와 비교할 수 있다. 
 
-Combine의 `PassthroughSubject`는 초기값을 갖지 않으므로 최근에 발행된 요소를 기억하는 버퍼를 갖지 않으므로 RxSwift의 `PublishSubject`와 비교할 수 있다.
+Combine의 `PassthroughSubject`는 초기값을 갖지 않고 최근에 발행된 요소를 기억하는 버퍼를 갖지 않으므로 RxSwift의 `PublishSubject`와 비교할 수 있다.
 
 ## ReactiveSwift
 
@@ -36,9 +36,9 @@ ReactiveSwift에도 Subject의 개념이 존재한다. `Property`라는 이름�
 
 `Property` / `MutableProperty` 등이 존재한다. `Property`는 읽기 전용인 반면에 `MutableProperty`는 읽고 쓰기가 모두 가능하다.
 
-각 Property에서 Signal 또는 SignalProducer를 만들 수 있으며, 각각 'Hot Observable'과 'Cold Observable'의 개념을 적용하고 싶을 때 사용할 수 있다.
+Combine과 RxSwift가 초기값을 갖는 Subject와 초기값을 갖지 않는 Subject를 구분해 놓은 반면 ReactiveSwift의 Property는 초기값을 가질 수 있다.
 
-모두 초기값을 가지므로 Combine의 `CurrentValueSubject`와 비교할 수 있다.
+각 Property에서 Signal 또는 SignalProducer를 만들 수 있으며, 각각 'Hot Observable'과 'Cold Observable'의 개념을 적용하고 싶을 때 사용할 수 있다.
 
 ## 문서화된 항목
 

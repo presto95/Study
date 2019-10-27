@@ -37,6 +37,8 @@ Combine에서 `Publisher`는 프로토콜로 정의되어 있으며, 다음의 �
 
 ## 문서화된 항목
 
+- [AnyPublisher](./AnyPublisher.md)
+
 ### Convenience Publishers
 
 - [Future](./Future.md)
@@ -61,7 +63,7 @@ Combine에서 `Publisher`는 프로토콜로 정의되어 있으며, 다음의 �
 #### Mapping Elements
 
 - TryScan
-- TryMap
+- [TryMap](./TryMap.md)
 - FlatMap
 - Map
 - MapError

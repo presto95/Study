@@ -13,8 +13,7 @@
 
 ```swift
 // 1 : Publishers.Catch Publisher
-let publisher = Fail(error: error)
-Publishers.Catch(upstream: publisher) { _ in Just("Error") }
+Publishers.Catch(upstream: Fail(error: error)) { _ in Just("Error") }
   .catch { error in Just("Error") }
   .sink(receiveCompletion: { completion in
     switch completion {

@@ -18,8 +18,7 @@ Combine은 `Scheduler` 프로토콜을 정의하며, 기존의 `OperationQueue`,
 
 ```swift
 // 1 : Publishers.ReceiveOn Publisher
-let publisher = Just(Void())
-Publishers.ReceiveOn(upstream: publisher, scheduler: DispatchQueue.main, options: nil)
+Publishers.ReceiveOn(upstream: Just(Void()), scheduler: DispatchQueue.main, options: nil)
   .sink(receiveCompletion: { completion in
     switch completion {
     case .failure:
