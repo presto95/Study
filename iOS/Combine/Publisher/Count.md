@@ -54,49 +54,9 @@ Publishers.Sequence<[Int], Never>(sequence: [1, 2, 3])
 
 RxSwift는 해당 동작을 구현하기 위한 오퍼레이터를 제공하지 않는다.
 
-초기값이 0이고 값을 1씩 축적하는 `reduce` 오퍼레이터를 사용하여 직접 구현할 수 있다.
-
-```swift
-Observable.from([1, 2, 3])
-  .reduce(0) { current, _ in current + 1 }
-  .subscribe(onNext: { value in
-    print("RxSwift Count : \(value)")
-  }, onError: { _ in
-    print("RxSwift Count Error")
-  }, onCompleted: {
-    print("RxSwift Count Finish")
-  })
-  .disposed(by: disposeBag)
-
-// RxSwift Count : 3
-// RxSwift Count Finish
-```
-
 ## ReactiveSwift
 
 ReactiveSwift는 해당 동작을 구현하기 위한 오퍼레이터를 제공하지 않는다.
-
-초기값이 0이고 값을 1씩 축적하는 `reduce` 오퍼레이터를 사용하여 직접 구현할 수 있다.
-
-```swift
-SignalProducer([1, 2, 3])
-  .reduce(0) { current, _ in current + 1 }
-  .start { event in
-    switch event {
-    case let .value(value):
-      print("ReactiveSwift Count : \(value)")
-    case .failed:
-      print("ReactiveSwift Count Error")
-    case .completed:
-      print("ReactiveSwift Count Finish")
-    default:
-      break
-    }
-  }
-
-// ReactiveSwift Count : 3
-// ReactiveSwift Count Finish
-```
 
 ## 참고
 

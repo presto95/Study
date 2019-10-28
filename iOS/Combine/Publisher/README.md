@@ -92,15 +92,15 @@ Combine에서 `Publisher`는 프로토콜로 정의되어 있으며, 다음의 �
 
 #### Applying Mathematical Operations on Elements
 
-- Comparison
+- [Comparison](./Comparison.md)
 - TryComparison
 - [Count](./Count.md)
 
 #### Applying Matching Criteria to Elements
 
 - TryAllSatisfy
-- AllSatisfy
-- Contains
+- [AllSatisfy](./AllSatisfy.md)
+- [Contains](./Contains.md)
 - ContainsWhere
 - TryContainsWhere
 
