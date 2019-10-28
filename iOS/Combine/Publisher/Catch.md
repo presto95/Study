@@ -14,7 +14,6 @@
 ```swift
 // 1 : Publishers.Catch Publisher
 Publishers.Catch(upstream: Fail(error: error)) { _ in Just("Error") }
-  .catch { error in Just("Error") }
   .sink(receiveCompletion: { completion in
     switch completion {
     case .failure:
@@ -55,27 +54,9 @@ Fail(error: error)
 
 Observable 오류 처리 오퍼레이터 `catchError`를 사용하여 구현할 수 있다. 
 
-대체하는 Observable이 값을 내고 종료하는 `just`인 경우 `catchErrorJustReturn` 오퍼레이터를 사용하여 좀 더 쉽게 구현할 수 있다.
-
 ```swift
-// 1
 Observable.error(error)
-  .catchError { error in Observable.just("Error") }
-  .subscribe(onNext: {
-    print("RxSwift Catch : \($0)")
-  }, onError: { _ in
-    print("RxSwift Catch Error")
-  }, onCompleted: {
-    print("RxSwift Catch Finish")
-  })
-  .disposed(by: disposeBag)
-
-// RxSwift Catch : Error
-// RxSwift Catch Finish
-
-// 2
-Observable.error(error)
-  .catchErrorJustReturn("Error")
+  .catchError { _ in Observable.just("Error") }
   .subscribe(onNext: {
     print("RxSwift Catch : \($0)")
   }, onError: { _ in
@@ -89,11 +70,7 @@ Observable.error(error)
 // RxSwift Catch Finish
 ```
 
-1의 코드는 에러를 내는 Observable을 만든 후, `catchError` 오퍼레이터를 사용하여 다른 Observable로 대체한다.
-
-2의 코드는 에러를 내는 Observable을 만든 후, `catchErrorJustReturn` 오퍼레이터를 사용하여 인자로 넘긴 값을 바로 내는 다른 Observable로 대체한다.
-
-1의 코드가 대체하는 다른 Observable을 만드는 클로저에서 `Observable.just`를 사용하였으므로 1의 코드와 2의 코드는 같은 동작을 한다.
+에러를 내는 Observable을 만든 후, `catchError` 오퍼레이터를 사용하여 다른 Observable로 대체한다.
 
 ## ReactiveSwift
 

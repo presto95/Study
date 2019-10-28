@@ -107,3 +107,5 @@ ReactiveSwift는 `skipRepeats`의 동작을 수행할 때 에러를 던질 수 �
 ## 참고
 
 [ReactiveX - Operators - Distinct](http://reactivex.io/documentation/operators/distinct.html)
+
+[Publishers.RemoveDuplicates](./RemoveDuplicates.md)

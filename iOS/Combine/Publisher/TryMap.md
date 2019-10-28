@@ -107,3 +107,5 @@ SignalProducer(value: Data())
 ## 참고
 
 [ReactiveX - Operators - Map](http://reactivex.io/documentation/operators/map.html)
+
+[Publishers.Map](./Map.md)
