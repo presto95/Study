@@ -86,15 +86,15 @@ Combine에서 `Publisher`는 프로토콜로 정의되어 있으며, 다음의 �
 - [Collect](./Collect.md)
 - CollectByCount
 - CollectByTime
-- IgnoreOutput
+- [IgnoreOutput](./IgnoreOutput.md)
 - [Reduce](./Reduce)
-- TryReduce
+- [TryReduce](./TryReduce.md)
 
 #### Applying Mathematical Operations on Elements
 
 - Comparison
 - TryComparison
-- Count
+- [Count](./Count.md)
 
 #### Applying Matching Criteria to Elements
 
