@@ -33,8 +33,6 @@ Publishers
   })
   .store(in: &cancellables)
 
-// Combine TryReduce Error
-
 // 2 : tryReduce Operator
 Publishers.Sequence<[Int], Never>(sequence: [1, 2, 3])
   .tryReduce(0) {

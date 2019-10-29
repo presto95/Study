@@ -32,8 +32,6 @@ Publishers
   })
   .store(in: &cancellables)
 
-// Combine TryMap Error
-
 // 2 : tryMap Operator
 Just(Data())
   .tryMap { data -> ResponseModel in

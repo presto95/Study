@@ -38,13 +38,6 @@ Publishers
   })
   .store(in: &cancellables)
 
-// receive subscription: (Just)
-// request unlimited
-// receive value: (())
-// Combine Print
-// receive finished
-// Combine Print Finish
-
 // 2 : print Operator
 Just(Void())
   .print()

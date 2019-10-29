@@ -32,9 +32,6 @@ Publishers
   })
   .store(in: &cancellables)
 
-// Combine Contains : false
-// Combine Contains Finish
-
 // 2 : contains(_:) Operator
 Publishers.Sequence<[Int], Never>(sequence: [2, 4, 6])
   .contains(5)

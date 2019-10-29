@@ -29,10 +29,6 @@ Publishers.Map(upstream: Publishers.Sequence<[Int], Never>(sequence: [1, 2])) { 
   })
   .store(in: &cancellables)
 
-// Combine Map : 2
-// Combine Map : 4
-// Combine Map Finish
-
 // 2 : map Operator
 Publishers.Sequence<[Int], Never>(sequence: [1, 2])
   .map { $0 * 2 }

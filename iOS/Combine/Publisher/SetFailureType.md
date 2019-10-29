@@ -29,8 +29,6 @@ Just(Void())
   })
   .store(in: &cancellables)
 
-// Combine SetFailureType Error
-
 // 2 : setFailureType Operator
 Publishers.SetFailureType<Just<Void>, SomeError>(upstream: Just(Void()))
   .combineLatest(Fail<Void, SomeError>(error: .some))

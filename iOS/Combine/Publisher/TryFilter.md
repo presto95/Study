@@ -34,9 +34,6 @@ Publishers
   })
   .store(in: &cancellables)
 
-// Combine TryFilter : 2
-// Combine TryFilter Error
-
 // 2 : tryFilter Operator
 Publishers.Sequence<[Int], Never>(sequence: [1, 2, 3])
   .tryFilter {

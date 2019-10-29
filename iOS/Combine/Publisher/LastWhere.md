@@ -30,9 +30,6 @@ Publishers
   })
   .store(in: &cancellables)
 
-// Combine LastWhere : 5
-// Combine LastWhere Finish
-
 // 2 : last(where:) Operator
 Publishers.Sequence<[Int], Never>(sequence: [1, 2, 3, 4, 5])
   .last { !$0.isMultiple(of: 2) }

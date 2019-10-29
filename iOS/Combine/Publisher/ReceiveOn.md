@@ -31,9 +31,6 @@ Publishers.ReceiveOn(upstream: Just(Void()), scheduler: DispatchQueue.main, opti
   })
   .store(in: &cancellables)
 
-// Combine ReceiveOn
-// Combine ReceiveOn Finish
-
 // 2 : receive Operator
 Just(Void())
   .receive(on: DispatchQueue.main)

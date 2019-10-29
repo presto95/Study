@@ -28,10 +28,6 @@ Publishers.CompactMap(upstream: Publishers.Sequence<[Int?], Never>(sequence: [1,
   })
   .store(in: &cancellables)
 
-// Combine CompactMap : 1
-// Combine CompactMap : 2
-// Combine CompactMap Finish
-
 // 2 : compactMap Operator
 Publishers.Sequence<[Int?], Never>(sequence: [1, nil, 2])
   .compactMap { $0 }

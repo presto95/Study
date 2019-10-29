@@ -34,10 +34,6 @@ Publishers
   })
   .store(in: &cancellables)
 
-// Combine TryRemoveDuplicates : 1
-// Combine TryRemoveDuplicates : 2
-// Combine TryRemoveDuplicates Error
-
 // 2 : tryRemoveDuplicates Operator
 Publishers.Sequence<[Int], Never>(sequence: [1, 2, 2, 3])
   .tryRemoveDuplicates {

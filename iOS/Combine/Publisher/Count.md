@@ -26,9 +26,6 @@ Publishers
   })
   .store(in: &cancellables)
 
-// Combine Count : 3
-// Combine Count Finish
-
 // 2 : count Operator
 Publishers.Sequence<[Int], Never>(sequence: [1, 2, 3])
   .count()

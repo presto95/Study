@@ -28,9 +28,6 @@ Publishers.ReplaceError(upstream: Fail(error: NSError()), output: Void())
   })
   .store(in: &cancellables)
 
-// Combine ReplaceError
-// Combine ReplaceError Finish
-
 // 2 : replaceError Operator
 Fail(error: NSError())
   .replaceError(with: Void())

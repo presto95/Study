@@ -40,10 +40,6 @@ Publishers
   })
   .store(in: &cancellables)
 
-// Combine TryScan : 1
-// Combine TryScan : 3
-// Combine TryScan Error
-
 // 2 : tryScan Operator
 Publishers.Sequence<[Int], Never>(sequence: [1, 2, 3])
   .tryScan(0) { current, next in

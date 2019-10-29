@@ -38,10 +38,6 @@ Publishers
   })
   .store(in: &cancellables)
 
-// Combine TryCompactMap : 1
-// Combine TryCompactMap : 3
-// Combine TryCompactMap Error
-
 // 2 : tryCompactMap Operator
 Publishers.Sequence<[Int?], Never>(sequence: [1, nil, 3, 4])
   .tryCompactMap { element -> Int? in

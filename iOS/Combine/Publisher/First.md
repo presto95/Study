@@ -25,9 +25,6 @@ Publishers
   })
   .store(in: &cancellables)
 
-// Combine First : 1
-// Combine First Finish
-
 // 2 : first Operator
 Publishers.Sequence<[Int], Never>(sequence: [1, 2, 3, 4, 5])
   .first()

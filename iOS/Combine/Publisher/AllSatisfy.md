@@ -29,9 +29,6 @@ Publishers
   })
   .store(in: &cancellables)
 
-// Combine AllSatisfy : false
-// Combine AllSatisfy Finish
-
 // 2 : allSatisfy Operator
 Publishers.Sequence<[Int], Never>(sequence: [2, 4, 7])
   .allSatisfy { $0.isMultiple(of: 2) }

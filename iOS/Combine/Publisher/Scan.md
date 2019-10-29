@@ -31,11 +31,6 @@ Publishers.Scan(upstream: Publishers.Sequence<[Int], Never>(sequence: [1, 2, 3])
   })
   .store(in: &cancellables)
 
-// Combine Scan : 1
-// Combine Scan : 3
-// Combine Scan : 6
-// Combine Scan Finish
-
 // 2 : scan Operator
 Publishers.Sequence<[Int], Never>(sequence: [1, 2, 3])
   .scan(0) { $0 + $1 }

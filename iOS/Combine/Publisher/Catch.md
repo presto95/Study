@@ -26,9 +26,6 @@ Publishers.Catch(upstream: Fail(error: error)) { _ in Just("Error") }
   })
   .store(in: &cancellables)
 
-// Combine Catch : Error
-// Combine Catch Finish
-
 // 2 : catch Operator
 Fail(error: error)
   .catch { _ in Just("Error") }

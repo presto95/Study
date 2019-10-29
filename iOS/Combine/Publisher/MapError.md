@@ -28,8 +28,6 @@ Publishers.MapError(upstream: Fail<Void, NSError>(error: error), { $0 as Error }
   })
   .store(in: &cancellables)
 
-// Combine MapError Error
-
 // 2 : mapError Operator
 Fail(error: error)
   .mapError { $0 as Error }

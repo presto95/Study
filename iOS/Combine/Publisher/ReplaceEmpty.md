@@ -30,9 +30,6 @@ Publishers.ReplaceEmpty(upstream: Publishers.Sequence<[Int], Never>(sequence: []
   })
   .store(in: &cancellables)
 
-// Combine ReplaceEmpty : 0
-// Combine ReplaceEmpty Finish
-
 // 2 : replaceEmpty Operator
 Publishers.Sequence<[Int], Never>(sequence: [])
   .replaceEmpty(with: 0)

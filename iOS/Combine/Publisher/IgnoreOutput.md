@@ -26,8 +26,6 @@ Publishers
    })
   .store(in: &cancellables)
 
-// Combine IgnoreOutput Finish
-
 // 2 : ignoreOutput Operator
 Publishers.Sequence<[Int], Never>(sequence: [1, 2, 3])
   .ignoreOutput()

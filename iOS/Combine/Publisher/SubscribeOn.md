@@ -31,9 +31,6 @@ Publishers.SubscribeOn(upstream: Just(Void()), scheduler: DispatchQueue.main, op
   })
   .store(in: &cancellables)
 
-// Combine SubscribeOn
-// Combine SubscribeOn Finish
-
 // 2 : subscribe Operator
 Just(Void())
   .subscribe(on: DispatchQueue.main)

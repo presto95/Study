@@ -45,13 +45,6 @@ Publishers
   })
   .store(in: &cancellables)
 
-// Combine HandleEvents Receive Request
-// Combine HandleEvents Receive Subscription
-// Combine HandleEvents Receive Output
-// Combine HandleEvents
-// Combine HandleEvents Receive Completion
-// Combine HandleEvents Finish
-
 // 2 : handleEvents Operator
 Just(Void())
   .handleEvents(receiveSubscription: { _ in print("Combine HandleEvents ReceiveSubscription") },

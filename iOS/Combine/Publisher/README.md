@@ -112,8 +112,8 @@ Combine에서 `Publisher`는 프로토콜로 정의되어 있으며, 다음의 �
 
 - [FirstWhere](./FirstWhere.md)
 - [LastWhere](./LastWhere.md)
-- DropUntilOutput
-- DropWhile
+- [DropUntilOutput](./DropUntilOutput.md)
+- [DropWhile](./DropWhile.md)
 - TryDropWhile
 - Concatenate
 - Drop
@@ -196,5 +196,5 @@ Combine에서 `Publisher`는 프로토콜로 정의되어 있으며, 다음의 �
 #### Debugging
 
 - Breakpoint
-- HandleEvents
+- [HandleEvents](./HandleEvents.md)
 - [Print](./Print.md)

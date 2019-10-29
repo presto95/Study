@@ -28,10 +28,6 @@ Publishers.Filter(upstream: Publishers.Sequence<[Int], Never>(sequence: [1, 2, 3
   })
   .store(in: &cancellables)
 
-// Combine Filter : 2
-// Combine Filter : 4
-// Combine Filter Finish
-
 // 2 : filter Operator
 Publishers.Sequence<[Int], Never>(sequence: [1, 2, 3, 4])
   .filter { $0.isMultiple(of: 2) }

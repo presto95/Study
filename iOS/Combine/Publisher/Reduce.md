@@ -31,9 +31,6 @@ Publishers.Reduce(upstream: Publishers.Sequence<[Int], Never>(sequence: [1, 2, 3
   })
   .store(in: &cancellables)
 
-// Combine Reduce : 6
-// Combine Reduce Finish
-
 // 2 : reduce Operator
 Publishers.Sequence<[Int], Never>(sequence: [1, 2, 3])
   .reduce(0) { $0 + $1 }

@@ -30,10 +30,6 @@ Publishers.RemoveDuplicates(upstream: Publishers.Sequence<[Int], Never>(sequence
   })
   .store(in: &cancellables)
 
-// Combine RemoveDuplicates : 1
-// Combine RemoveDuplicates : 2
-// Combine RemoveDuplicates Finish
-
 // 2 : removeDuplicates Operator
 Publishers.Sequence<[Int], Never>(sequence: [1, 2, 2, 2])
   .removeDuplicates()
