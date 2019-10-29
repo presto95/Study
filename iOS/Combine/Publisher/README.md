@@ -106,8 +106,8 @@ Combine에서 `Publisher`는 프로토콜로 정의되어 있으며, 다음의 �
 
 #### Applying Sequence Operations to Elements
 
-- FirstWhere
-- LastWhere
+- [FirstWhere](./FirstWhere.md)
+- [LastWhere](./LastWhere.md)
 - DropUntilOutput
 - DropWhile
 - TryDropWhile
@@ -115,8 +115,8 @@ Combine에서 `Publisher`는 프로토콜로 정의되어 있으며, 다음의 �
 - Drop
 - PrefixUntilOutput
 - PrefixWhile
-- First
-- Last
+- [First](./First.md)
+- [Last](./Last.md)
 - TryFirstWhere
 - TryLastWhere
 - TryPrefixWhile
