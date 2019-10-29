@@ -38,6 +38,10 @@ Combine에서 `Publisher`는 프로토콜로 정의되어 있으며, 다음의 �
 ## 문서화된 항목
 
 - [AnyPublisher](./AnyPublisher.md)
+- NotificationCenter.Publisher
+- [Optional.Publisher](./Optional.Publisher.md)
+- [Result.Publisher](./Result.Publisher.md)
+- URLSession.DataTaskPublisher
 
 ### Convenience Publishers
 
