@@ -1,0 +1,4 @@
+[submodule "iOS/Combine-RxSwift-ReactiveSwift"]
+	path = iOS/Combine-RxSwift-ReactiveSwift
+	url = https://github.com/presto95/Combine-RxSwift-ReactiveSwift
+  branch = master
