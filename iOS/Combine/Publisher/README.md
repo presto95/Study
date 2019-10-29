@@ -17,7 +17,7 @@ Combine에서 `Publisher`는 프로토콜로 정의되어 있으며, 다음의 �
 
 `Publisher` 프로토콜의 익스텐션으로 여러 오퍼레이터*operator*가 정의되어 있으며, 이를 사용해서 이벤트 처리 체인을 구성할 수 있다.
 
-각 오퍼레이터는 `Publisher` 프로토콜을 구현하는 타입을 반환하며, 대부분은 `Publishers` 열거형의 익스텐션에 구현된 중첩 타입이다. 예를 들어 `map(_:)` 오퍼레이터는 `Publishers.Map` 구조체를 반환한다.
+각 오퍼레이터는 `Publisher` 프로토콜을 구현하는 타입을 반환하며, 대부분은 `Publishers` 열거형의 익스텐션에 구현된 중첩 타입이다. 예를 들어 `map(_:)` 오퍼레이터는 `Publishers.Map` 구조체를 반환한다. 오퍼레이터의 이름과 Publisher의 이름이 항상 동일하지는 않다.
 
 ## RxSwift
 
@@ -115,7 +115,7 @@ Combine에서 `Publisher`는 프로토콜로 정의되어 있으며, 다음의 �
 - [DropUntilOutput](./DropUntilOutput.md)
 - [DropWhile](./DropWhile.md)
 - TryDropWhile
-- Concatenate
+- [Concatenate](./Concatenate.md)
 - Drop
 - PrefixUntilOutput
 - PrefixWhile
